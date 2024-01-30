@@ -1,24 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import AuthPage from "./pages/auth/auth.pages";
+import AuthMiddleware from "./core/middleware/auth-middleware";
+import { AuthProvider } from "./core/context/auth-context";
+import HomePage from "./pages/home/home.page";
+import "react-toastify/dist/ReactToastify.css";
+import UserPage from "./pages/user/user.page";
+import CategoryPage from "./pages/category/category.page";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="h-screen w-screen">
+      <BrowserRouter>
+        <AuthMiddleware>
+          <AuthProvider>
+            <Routes>
+              <Route path="/" element={<AuthPage />} />
+              <Route path="/dashboard" element={<HomePage />} />
+              <Route path="/dashboard/category" element={<CategoryPage />} />
+              <Route path="/dashboard/users" element={<UserPage />} />
+            </Routes>
+          </AuthProvider>
+        </AuthMiddleware>
+      </BrowserRouter>
+      <ToastContainer />
     </div>
   );
 }
