@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Card,
-  List,
-  ListItem,
-  ListItemPrefix,
-} from "@material-tailwind/react";
+import { Card, List, ListItem, ListItemPrefix } from "@material-tailwind/react";
 import {
   PresentationChartBarIcon,
   UserCircleIcon,
@@ -16,6 +11,7 @@ import {
 import { TailwindIcon } from "../components/icons";
 import { NavLink, useLocation } from "react-router-dom";
 import classNames from "classnames";
+import { useAuthContext } from "../core/context/auth-context";
 
 const navigations = {
   one: [
@@ -52,6 +48,7 @@ const navigations = {
 };
 
 export function Sidebar() {
+  const { signOut } = useAuthContext();
   const location = useLocation();
   // const [open, setOpen] = React.useState<number>(0);
 
@@ -208,7 +205,7 @@ export function Sidebar() {
         })}
 
         <hr className="my-2 border-blue-gray-50" />
-        <ListItem placeholder={""}>
+        <ListItem placeholder={""} onClick={() => signOut()}>
           <ListItemPrefix placeholder={""}>
             <PowerIcon className="h-5 w-5" />
           </ListItemPrefix>
