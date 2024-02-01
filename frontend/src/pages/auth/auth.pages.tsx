@@ -8,10 +8,16 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
-import { isEmpty } from "lodash";
+import { isEmpty, isNil, omit } from "lodash";
+import { useMutation } from "@tanstack/react-query";
 import { AlertNotification, SpinnerLoader } from "../../components";
 import { AlertType } from "../../components/alert-notification";
 import { TailwindIcon } from "../../components/icons";
+import { LoginRequest } from "../../core/entities";
+import { loginUser } from "../../core/api/api";
+import Cookies from "js-cookie";
+import { BEARER_TOKEN, USER_TOKEN } from "../../core/entities/contant";
+import { User } from "../../core/entities/user";
 
 export default function AuthPage() {
   const [email, setEmail] = React.useState<string>("");
@@ -24,43 +30,51 @@ export default function AuthPage() {
     color: any;
   }>();
 
-  const [_isLoading, setLoading] = React.useState<boolean>(false);
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setMessages({ message: null, type: null, color: "" });
-    setLoading(true);
-    setOpen(false);
-    // const query = new URLSearchParams({
-    //   action: AUTH_ACTIONS.LOGIN_ACTION,
-    // });
+  const { mutate, isPending } = useMutation({
+    mutationFn: (login: LoginRequest) => {
+      setOpen(true);
 
-    // const response = await web.post(
-    //   `/api/auth?${query}`,
-    //   JSON.stringify({
-    //     email,
-    //     password,
-    //   })
-    // );
-    // setOpen(true);
+      return loginUser(login);
+    },
+    onSuccess(data) {
+      if (!isNil(data.data)) {
+        setMessages({
+          message: "Connected you will be redirected....",
+          type: "success",
+          color: "green",
+        });
+        const user = data.data.user as User;
+        const token = data.data.token as string;
+        Cookies.set(BEARER_TOKEN, token, { path: "/" });
+        Cookies.set(USER_TOKEN, JSON.stringify(omit(user, "password")), {
+          path: "/",
+        });
+        window.location.href = "/dashboard";
+      } else {
+        setMessages({
+          message: data.message,
+          type: "danger",
+          color: "red",
+        });
+      }
+    },
+    onError(error) {
+      console.log(error);
+    },
+  });
 
-    // if (response.ok) {
-    //   setMessages({
-    //     message: "Connected you will be redirected....",
-    //     type: "success",
-    //     color: "green",
-    //   });
-    //   // router.("/admin/dashboard")
-    //   window.location.href = "/admin/dashboard/home";
-    // } else {
-    //   const error = await response.json();
-    //   setMessages({
-    //     message: error.message,
-    //     type: "danger",
-    //     color: "red",
-    //   });
-    // }
-    // setLoading(false);
-  };
+  const handleSubmit = React.useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      setMessages({ message: null, type: null, color: "" });
+      setOpen(false);
+      mutate({
+        email,
+        password,
+      });
+    },
+    [mutate, password, email]
+  );
 
   const message = !isEmpty(messages?.message) ? messages?.message! : "";
 
@@ -79,25 +93,30 @@ export default function AuthPage() {
                 placeholder={""}
                 shadow={false}
               >
-                <TailwindIcon className="text-blue-700"/>
+                <TailwindIcon className="text-blue-700" />
               </CardHeader>
               <CardBody className="flex flex-col gap-4" placeholder={""}>
-                <AlertNotification
-                  open={open}
-                  handleOpen={() => setOpen(!open)}
-                  content={message}
-                  color={messages ? messages!.color : "white"}
-                  type={messages ? messages?.type! : "info"}
-                >
-                  {" "}
-                </AlertNotification>
+                {!isPending ? (
+                  <AlertNotification
+                    open={open}
+                    handleOpen={() => setOpen(!open)}
+                    content={message}
+                    color={messages ? messages!.color : "white"}
+                    type={messages ? messages?.type! : "info"}
+                  >
+                    <></>
+                  </AlertNotification>
+                ) : (
+                  <></>
+                )}
+
                 <Typography variant="small" color="black" placeholder={""}>
                   Adresse email
                 </Typography>
                 <Input
                   crossOrigin=""
                   required={true}
-                  disabled={_isLoading}
+                  disabled={isPending}
                   onChange={(e) => setEmail(e.target.value)}
                   type="email"
                   label="Email"
@@ -111,7 +130,7 @@ export default function AuthPage() {
                   type="password"
                   label="Password"
                   required={true}
-                  disabled={_isLoading}
+                  disabled={isPending}
                   onChange={(e) => setPassword(e.target.value)}
                   size="lg"
                 />
@@ -119,12 +138,12 @@ export default function AuthPage() {
               <CardFooter className="pt-0" placeholder={""}>
                 <Button
                   variant="gradient"
-                  disabled={_isLoading}
+                  disabled={isPending}
                   fullWidth
                   type="submit"
                   placeholder={""}
                 >
-                  {!_isLoading ? "Connexion" : <SpinnerLoader size="sm" />}
+                  {!isPending ? "Connexion" : <SpinnerLoader size="sm" />}
                 </Button>
               </CardFooter>
               <div className="flex flex-row justify-center items-center gap-x-6 my-12">

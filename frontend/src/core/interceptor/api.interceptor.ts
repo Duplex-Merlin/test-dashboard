@@ -36,6 +36,7 @@ export async function post(
   data: any,
   options?: RequestOptions
 ): Promise<Response> {
+  console.log(process.env.REACT_APP_BASE_URL)
   return request(BASE_URL + url, "POST", {
     ...options,
     body: data,

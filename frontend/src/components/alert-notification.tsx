@@ -51,7 +51,6 @@ export default function AlertNotification({
   color,
   open,
   handleOpen,
-  ...props
 }: AlertNotificationProps) {
   return (
     <Alert

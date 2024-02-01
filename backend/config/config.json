@@ -1,9 +1,9 @@
 {
     "development": {
-      "username": "rwvaclgq",
-      "password": "0mGY35RE_Nmqud2kb1ycpO8F9u0ByPqc",
-      "database": "rwvaclgq",
-      "host": "salt.db.elephantsql.com",
+      "username": "postgres",
+      "password": "root",
+      "database": "dashboard-db",
+      "host": "127.0.0.1",
       "dialect": "postgres"
     },
     "test": {

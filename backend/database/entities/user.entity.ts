@@ -1,11 +1,16 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../config/sequelize";
 
+export enum UserRole {
+  SuperAdmin = 'super_admin',
+  Admin = 'admin',
+}
 class User extends Model {
   public id!: string;
   public username!: string;
   public email!: string;
   public password!: string;
+  public role!: string;
   public lastLogin!: string;
 
   public readonly createdAt!: Date;
@@ -29,6 +34,10 @@ User.init(
       unique: true,
     },
     password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    role: {
       type: DataTypes.STRING,
       allowNull: false,
     },

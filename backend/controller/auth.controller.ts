@@ -2,11 +2,11 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import config from "../utils/config";
-import User from "../database/entities/user.entity";
+import User, { UserRole } from "../database/entities/user.entity";
 
 export async function signup(req: Request, res: Response): Promise<void> {
   try {
-    const { email, password, username } = req.body;
+    const { email, password, role, username } = req.body;
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
@@ -19,6 +19,7 @@ export async function signup(req: Request, res: Response): Promise<void> {
     const newUser = await User.create({
       email,
       username,
+      role: role as UserRole,
       password: hashedPassword,
     });
 
@@ -56,19 +57,20 @@ export async function login(req: Request, res: Response): Promise<void> {
       { where: { id: user.id } }
     );
 
-    const token = generateToken(user.id);
+    const token = generateToken(user.id, user.role);
     const userInfo = user.toJSON();
     delete userInfo.password;
+    delete userInfo.role;
 
-    res.json({ message: "Successful connection", data: { user, token } });
+    res.json({ message: "Successful connection", data: { user: userInfo, token } });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "An error occurred while connecting" });
   }
 }
 
-function generateToken(userId: string): string {
-  return jwt.sign({ userId }, config.jwtSecret!, { expiresIn: "12h" });
+function generateToken(userId: string, userRole: string): string {
+  return jwt.sign({ userId, role: userRole }, config.jwtSecret!, { expiresIn: "12h" });
 }
 
 export async function changePassword(req: Request, res: Response) {

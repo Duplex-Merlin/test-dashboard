@@ -9,12 +9,12 @@ export default function AuthMiddleware({ children }: PropsWithChildren<{}>) {
   useEffect(() => {
     const inLoginPage = location.pathname === "/";
     const isAuthenticated = isTokenValid();
-    //TODO: ADD condition
-    if (isAuthenticated) {
+    
+    if (!isAuthenticated) {
       navigate("/");
     }
     if (isAuthenticated && inLoginPage) {
-      navigate("/dashboard/admin");
+      navigate("/dashboard");
     }
   }, [location.pathname, navigate]);
 
