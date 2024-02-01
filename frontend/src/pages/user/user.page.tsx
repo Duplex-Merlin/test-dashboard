@@ -8,6 +8,7 @@ import {
   IconButton,
   Button,
 } from "@material-tailwind/react";
+import { useQuery } from "@tanstack/react-query";
 import { PencilIcon, TrashIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import React, { useEffect } from "react";
 import { Content } from "../../layouts";
@@ -15,37 +16,43 @@ import { UpdateResponse, User } from "../../core/entities/user";
 import { DeleteDialog, SignUpDialog, SpinnerLoader } from "../../components";
 import { isNil } from "lodash";
 import { parseDateWith, parseDateWithHour } from "../../utils/common";
+import { getAllUsers } from "../../core/api/api";
 
 export default function UserPage() {
+  const { data: usersData, isLoading: isLoadingUsers } = useQuery<User[]>({
+    queryKey: ["all-users"],
+    queryFn: getAllUsers,
+  });
+
   const [open, setOpen] = React.useState(false);
   const [openSignUp, setOpenSignUp] = React.useState(false);
   const [openUpadeSignUp, setOpenUpdateSignUp] = React.useState(false);
-  const [isFecthUsers, setIsFecthUsers] = React.useState(false);
+  // const [isFecthUsers, setIsFecthUsers] = React.useState(false);
   const [isDeleteLoading, setDeleteLoading] = React.useState<boolean>(false);
 
   const [users, setUsers] = React.useState<User[]>([]);
   const [user, setUser] = React.useState<User>();
 
-  const onFecthUsers = async () => {
-    setIsFecthUsers(true);
+  // const onFecthUsers = async () => {
+  //   setIsFecthUsers(true);
 
-    // const query = new URLSearchParams({
-    //   action: USER_ACTIONS.GET_ALL_USER,
-    // });
-    // //@ts-ignore
-    // const response = await web.get(`/api/users`, query);
-    // if (response.ok) {
-    //   const data = await response.json();
-    //   setUsers(data.data as User[]);
-    // } else {
-    //   console.log(response);
-    // }
-    setIsFecthUsers(false);
-  };
+  //   // const query = new URLSearchParams({
+  //   //   action: USER_ACTIONS.GET_ALL_USER,
+  //   // });
+  //   // //@ts-ignore
+  //   // const response = await web.get(`/api/users`, query);
+  //   // if (response.ok) {
+  //   //   const data = await response.json();
+  //   //   setUsers(data.data as User[]);
+  //   // } else {
+  //   //   console.log(response);
+  //   // }
+  //   setIsFecthUsers(false);
+  // };
 
-  useEffect(() => {
-    onFecthUsers();
-  }, []);
+  // useEffect(() => {
+  //   onFecthUsers();
+  // }, []);
 
   const handleResponse = React.useCallback(
     (user: User) => {
@@ -133,32 +140,37 @@ export default function UserPage() {
             placeholder={""}
             className="overflow-x-scroll px-0 pt-0 pb-2"
           >
-            {isFecthUsers ? (
+            {isLoadingUsers ? (
               <SpinnerLoader size="xl" />
             ) : (
               <table className="w-full min-w-[640px] table-auto">
                 <thead>
                   <tr>
-                    {["Name", "email", "Last Connected", "created", ""].map(
-                      (el) => (
-                        <th
-                          key={el}
-                          className="border-b border-blue-gray-50 py-3 px-5 text-left"
+                    {[
+                      "Name",
+                      "email",
+                      "role",
+                      "Last Connected",
+                      "created",
+                      "",
+                    ].map((el) => (
+                      <th
+                        key={el}
+                        className="border-b border-blue-gray-50 py-3 px-5 text-left"
+                      >
+                        <Typography
+                          placeholder={""}
+                          variant="small"
+                          className="text-[11px] font-bold uppercase text-blue-gray-400"
                         >
-                          <Typography
-                            placeholder={""}
-                            variant="small"
-                            className="text-[11px] font-bold uppercase text-blue-gray-400"
-                          >
-                            {el}
-                          </Typography>
-                        </th>
-                      )
-                    )}
+                          {el}
+                        </Typography>
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map((item, key) => {
+                  {usersData!.map((item, key) => {
                     const className = `py-3 px-5 `;
                     return (
                       <tr key={key}>
@@ -193,6 +205,14 @@ export default function UserPage() {
                         <td className={className}>
                           <Typography
                             placeholder={""}
+                            className="text-xs font-normal text-blue-gray-500"
+                          >
+                            {item.role}
+                          </Typography>
+                        </td>
+                        <td className={className}>
+                          <Typography
+                            placeholder={""}
                             className="text-xs font-semibold text-blue-gray-600"
                           >
                             {isNil(item.lastLogin)
@@ -200,6 +220,7 @@ export default function UserPage() {
                               : parseDateWithHour(item.lastLogin)}
                           </Typography>
                         </td>
+
                         <td className={className}>
                           <Typography
                             placeholder={""}

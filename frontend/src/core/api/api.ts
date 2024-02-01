@@ -1,9 +1,14 @@
 import { LoginRequest } from "../entities";
-import { axiospost, post } from "../interceptor/api.interceptor";
+import { axiospost, get, post } from "../interceptor/api.interceptor";
 
 export const loginUser = async (body: LoginRequest) => {
   const res = await post("/auth/login", body);
   return await res.json();
+};
+
+export const getAllUsers = async () => {
+  const res = await get("/users");
+  return (await res.json()).data;
 };
 
 export const createArticle = async (data: any) => {
