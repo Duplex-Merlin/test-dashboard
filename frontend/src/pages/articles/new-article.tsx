@@ -90,7 +90,7 @@ export default function NewArticlePage() {
                   placeholder=""
                   
                 >
-                  Write information about all news
+                  Write information about your news
                 </Typography>
               </div>
             </div>
