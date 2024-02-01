@@ -4,6 +4,6 @@ export interface ArticleResponse {
     description: string;
     coverPicture: string;
     status: boolean;
-    content: string;
+    content: any;
     createdAt: string;
   }

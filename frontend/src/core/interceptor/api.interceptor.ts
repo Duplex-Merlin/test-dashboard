@@ -72,9 +72,12 @@ export async function axiospost(
   url: string,
   body?: any
 ): Promise<AxiosResponse> {
+  const TOKEN = Cookies.get(BEARER_TOKEN);
+  
   return await axios.post(BASE_URL + url, body, {
     headers: {
       "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${TOKEN}`,
     },
   });
 }

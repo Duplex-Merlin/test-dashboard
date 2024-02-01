@@ -7,6 +7,8 @@ import HomePage from "./pages/home/home.page";
 import "react-toastify/dist/ReactToastify.css";
 import UserPage from "./pages/user/user.page";
 import CategoryPage from "./pages/category/category.page";
+import ArticlePage from "./pages/articles/article.page";
+import NewArticlePage from "./pages/articles/new-article";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
               <Route path="/" element={<AuthPage />} />
               <Route path="/dashboard" element={<HomePage />} />
               <Route path="/dashboard/category" element={<CategoryPage />} />
+              <Route path="/dashboard/new-articles" element={<NewArticlePage />} />
+              <Route path="/dashboard/articles" element={<ArticlePage />} />
               <Route path="/dashboard/users" element={<UserPage />} />
             </Routes>
           </AuthProvider>

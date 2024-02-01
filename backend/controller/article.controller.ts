@@ -26,7 +26,7 @@ export async function createArticle(req: Request, res: Response) {
       status: true,
       content,
     });
-    res.json({ message: "Article created successfully!", data: article });
+    res.status(201).json({ message: "Article created successfully!", data: article });
   } catch (error) {
     res.status(500).json({ message: "An error occurred while registering" });
   }

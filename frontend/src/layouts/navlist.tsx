@@ -28,9 +28,10 @@ export function NavbarSimple() {
 
   return (
     <Navbar
-      className="ml-80 max-w-[calc(100vw-320px)] px-6 py-3 fixed top-0"
+      className="ml-80 max-w-[calc(100vw-320px)] px-6 py-3 z-40 fixed top-0 shadow-none"
       placeholder={""}
       fullWidth={true}
+
     >
       <div className="flex items-center justify-between text-blue-gray-900">
         <BreadcrumbsMenu />
