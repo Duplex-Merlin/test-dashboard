@@ -8,74 +8,70 @@ import {
   IconButton,
   Button,
 } from "@material-tailwind/react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { PencilIcon, TrashIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import React, { useEffect } from "react";
 import { Content } from "../../layouts";
-import { UpdateResponse, User } from "../../core/entities/user";
+import { UpdateRequest, User, UserRole } from "../../core/entities/user";
 import { DeleteDialog, SignUpDialog, SpinnerLoader } from "../../components";
 import { isNil } from "lodash";
 import { parseDateWith, parseDateWithHour } from "../../utils/common";
-import { getAllUsers } from "../../core/api/api";
+import { deleteUser, getAllUsers } from "../../core/api/api";
+import { toast } from "react-toastify";
 
 export default function UserPage() {
-  const { data: usersData, isLoading: isLoadingUsers } = useQuery<User[]>({
+  const {
+    data: usersData,
+    isLoading: isLoadingUsers,
+    refetch: refreshUsers,
+  } = useQuery<User[]>({
     queryKey: ["all-users"],
     queryFn: getAllUsers,
   });
 
+  const { mutate: handleDeleteUser, isPending: deleteISpending } = useMutation({
+    mutationFn: (userId: string) => {
+      return deleteUser(userId);
+    },
+    onSuccess(data) {
+      if (!isNil(data.data)) {
+        refreshUsers();
+        toast("User deleted", { type: "success" });
+        setOpen(!open);
+      } else {
+        toast(data.message, { type: "error" });
+        setOpen(!open);
+      }
+    },
+    onError(error) {},
+  });
   const [open, setOpen] = React.useState(false);
   const [openSignUp, setOpenSignUp] = React.useState(false);
   const [openUpadeSignUp, setOpenUpdateSignUp] = React.useState(false);
-  // const [isFecthUsers, setIsFecthUsers] = React.useState(false);
-  const [isDeleteLoading, setDeleteLoading] = React.useState<boolean>(false);
 
   const [users, setUsers] = React.useState<User[]>([]);
   const [user, setUser] = React.useState<User>();
 
-  // const onFecthUsers = async () => {
-  //   setIsFecthUsers(true);
-
-  //   // const query = new URLSearchParams({
-  //   //   action: USER_ACTIONS.GET_ALL_USER,
-  //   // });
-  //   // //@ts-ignore
-  //   // const response = await web.get(`/api/users`, query);
-  //   // if (response.ok) {
-  //   //   const data = await response.json();
-  //   //   setUsers(data.data as User[]);
-  //   // } else {
-  //   //   console.log(response);
-  //   // }
-  //   setIsFecthUsers(false);
-  // };
-
-  // useEffect(() => {
-  //   onFecthUsers();
-  // }, []);
-
-  const handleResponse = React.useCallback(
-    (user: User) => {
-      setUsers([user, ...users]);
-    },
-    [users]
-  );
+  const handleResponse = React.useCallback(() => {
+    refreshUsers();
+  }, [users]);
 
   const handleUpdateResponse = React.useCallback(
-    (user: UpdateResponse) => {
-      setUsers((prevUsers) => {
-        const index = users.findIndex((item) => item.id === user.id);
-        if (index > -1) {
-          const newUsers = [...prevUsers];
-          newUsers[index] = {
-            ...newUsers[index],
-            email: user.email,
-            username: user.username,
-          };
-          return newUsers;
-        }
-        return prevUsers;
-      });
+    (user: UpdateRequest) => {
+      refreshUsers();
+      // setUsers((prevUsers) => {
+      //   const index = users.findIndex((item) => item.id === user.id);
+      //   if (index > -1) {
+      //     const newUsers = [...prevUsers];
+      //     newUsers[index] = {
+      //       ...newUsers[index],
+      //       email: user.email,
+      //       username: user.username,
+      //     };
+      //     return newUsers;
+      //   }
+      //   return prevUsers;
+      // });
     },
     [users]
   );
@@ -91,24 +87,7 @@ export default function UserPage() {
   }, []);
 
   const handleConfirmDelete = React.useCallback(async () => {
-    setDeleteLoading(true);
-    //@ts-ignore
-    // const query = new URLSearchParams({
-    //   action: USER_ACTIONS.DELETE_USER,
-    //   userId: user?.id,
-    // });
-    // const response = await web.delete(`/api/users?${query}`);
-    // if (response.ok) {
-    //   const index = users.findIndex((item) => item.id === user?.id);
-
-    //   if (index > -1) {
-    //     users.splice(index, 1);
-    //   }
-    //   setOpen(!open);
-    // } else {
-    //   const error = await response.json();
-    // }
-    setDeleteLoading(false);
+    handleDeleteUser(user!.id);
   }, [open, user?.id, users]);
 
   return (
@@ -117,14 +96,25 @@ export default function UserPage() {
       <div className="mt-12 mb-8 flex flex-col gap-12">
         <Card placeholder={""}>
           <CardHeader
-            variant="filled"
-            color="blue"
-            className="w-full flex flex-row justify-between mb-8 p-6 mx-auto"
-            placeholder={""}
+            floated={false}
+            shadow={false}
+            className="rounded-none flex justify-between"
+            placeholder=""
           >
-            <Typography variant="h6" color="white" placeholder={""}>
-              Users Informations {user?.username}
-            </Typography>
+            <div className="mb-4 flex items-center justify-between gap-8">
+              <div>
+                <Typography variant="h5" color="blue-gray" placeholder="">
+                  Users Informations
+                </Typography>
+                <Typography
+                  color="gray"
+                  className="mb-1 font-normal"
+                  placeholder=""
+                >
+                  All users list
+                </Typography>
+              </div>
+            </div>
             <div>
               <Button
                 onClick={() => setOpenSignUp(true)}
@@ -207,7 +197,9 @@ export default function UserPage() {
                             placeholder={""}
                             className="text-xs font-normal text-blue-gray-500"
                           >
-                            {item.role}
+                            {item.role === UserRole.SuperAdmin
+                              ? "Super Admin"
+                              : "Admin"}
                           </Typography>
                         </td>
                         <td className={className}>
@@ -260,7 +252,7 @@ export default function UserPage() {
       </div>
       <DeleteDialog
         open={open}
-        loading={isDeleteLoading}
+        loading={deleteISpending}
         handleOpen={() => setOpen(!open)}
         handleDelete={() => handleConfirmDelete()}
         title="Remove this User"

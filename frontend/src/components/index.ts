@@ -3,6 +3,7 @@ import { BreadcrumbsMenu } from "./breadcrumbs";
 import CreateArticleDialog from "./create-article-dialog";
 import { DeleteDialog } from "./delete-dialog";
 import { DialogWithImage } from "./dialog-with-image";
+import { SelectedMenu } from "./selected-menu";
 import { SignUpDialog } from "./sign-up-dialog";
 import { SpinnerLoader } from "./spinner-loader";
 import StatisticsCard from "./statistics-card";
@@ -19,5 +20,6 @@ export {
   BreadcrumbsMenu,
   StatisticsCard,
   StatisticsChart,
-  SwitchCustom
+  SwitchCustom,
+  SelectedMenu,
 };

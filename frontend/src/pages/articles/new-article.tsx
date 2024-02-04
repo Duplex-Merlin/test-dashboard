@@ -70,7 +70,7 @@ export default function NewArticlePage() {
     <Content>
       <form
         onSubmit={handleSubmit}
-        className="mb-8 flex flex-col gap-12 h-full w-full"
+        className="mb-8 flex flex-col gap-12 w-full"
       >
         <Card className="h-full w-full" placeholder="">
           <CardHeader
@@ -88,7 +88,6 @@ export default function NewArticlePage() {
                   color="gray"
                   className="mb-1 font-normal"
                   placeholder=""
-                  
                 >
                   Write information about your news
                 </Typography>
@@ -145,7 +144,7 @@ export default function NewArticlePage() {
                   //   defaultValue={!isEmpty(article) ? article.description : ""}
                   disabled={_isLoading}
                   onChange={(e) => setDescription(e.target.value)}
-                  value={title}
+                  value={description}
                   crossOrigin=""
                 />
               </div>

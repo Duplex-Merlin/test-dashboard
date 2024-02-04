@@ -14,7 +14,6 @@ require("./utils/upload-file");
 // import "./nld";
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-const port = 8001;
 var corsOptions = {
     // origin: "http://localhost:8000",
     AccessControlAllowOrigin: "*",
@@ -32,10 +31,7 @@ app.get("/", (req, res) => {
 app.use("/api/v1/auth", auth_route_1.default);
 app.use("/api/v1", app_route_1.default);
 // app.use("/bot", chatBotRouter);
-app.listen(port, () => {
-    console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
-});
 const PORT = process.env.PORT || 8001;
 app.listen(PORT, () => {
-    console.log(`Serveur en cours d'exécution sur le port ${PORT}`);
+    console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
 });

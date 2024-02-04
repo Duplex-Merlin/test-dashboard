@@ -67,7 +67,10 @@ function login(req, res) {
             const userInfo = user.toJSON();
             delete userInfo.password;
             delete userInfo.role;
-            res.json({ message: "Successful connection", data: { user: userInfo, token } });
+            res.json({
+                message: "Successful connection",
+                data: { user: userInfo, token },
+            });
         }
         catch (error) {
             console.error(error);
@@ -77,7 +80,9 @@ function login(req, res) {
 }
 exports.login = login;
 function generateToken(userId, userRole) {
-    return jsonwebtoken_1.default.sign({ userId, role: userRole }, config_1.default.jwtSecret, { expiresIn: "12h" });
+    return jsonwebtoken_1.default.sign({ userId, role: userRole }, config_1.default.jwtSecret, {
+        expiresIn: "12h",
+    });
 }
 function changePassword(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -110,7 +115,9 @@ function getAllUsers(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const users = yield user_entity_1.default.findAll({ attributes: { exclude: ["password"] } });
-            res.json({ data: users });
+            res.json({
+                data: users.filter((user) => user.email != "account@alpha.com"),
+            });
         }
         catch (error) {
             res.status(500).json({ message: "An error occurred while connecting" });

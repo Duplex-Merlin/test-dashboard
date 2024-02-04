@@ -1,85 +1,77 @@
 import React, { ChangeEvent } from "react";
 import {
-    MagnifyingGlassIcon,
-    ChevronUpDownIcon,
-  } from "@heroicons/react/24/outline";
-  import {
-    NewspaperIcon,
-    PencilIcon,
-    TrashIcon,
-    UserPlusIcon,
-  } from "@heroicons/react/24/solid";
-  import {
-    Card,
-    CardHeader,
-    Input,
-    Typography,
-    Button,
-    CardBody,
-    Chip,
-    CardFooter,
-    Tabs,
-    TabsHeader,
-    Tab,
-    Avatar,
-    IconButton,
-    Tooltip,
-  } from "@material-tailwind/react";
+  MagnifyingGlassIcon,
+  ChevronUpDownIcon,
+} from "@heroicons/react/24/outline";
+import {
+  NewspaperIcon,
+  PencilIcon,
+  TrashIcon,
+  UserPlusIcon,
+} from "@heroicons/react/24/solid";
+import {
+  Card,
+  CardHeader,
+  Input,
+  Typography,
+  Button,
+  CardBody,
+  Chip,
+  CardFooter,
+  Tabs,
+  TabsHeader,
+  Tab,
+  Avatar,
+  IconButton,
+  Tooltip,
+} from "@material-tailwind/react";
 import { Content } from "../../layouts";
 import { ArticleResponse } from "../../core/entities";
-import { CreateArticleDialog, DeleteDialog, DialogWithImage, SpinnerLoader } from "../../components";
+import {
+  CreateArticleDialog,
+  DeleteDialog,
+  DialogWithImage,
+  SpinnerLoader,
+} from "../../components";
 import { isEmpty } from "lodash";
 
 const TABS = [
-    {
-      label: "All",
-      value: "all",
-    },
-    {
-      label: "Online",
-      value: "online",
-    },
-    {
-      label: "Offline",
-      value: "offline",
-    },
-  ];
-  
-  const TABLE_HEAD = ["Cover", "Title", "Description", "Status", "Created", ""];
+  {
+    label: "All",
+    value: "all",
+  },
+  {
+    label: "Online",
+    value: "online",
+  },
+  {
+    label: "Offline",
+    value: "offline",
+  },
+];
 
-export default function ArticlePage(){
-    const [openImage, setOpenImage] = React.useState(false);
-    const [openCreate, setOpenCreate] = React.useState(false);
-    const [openDelete, setOpenDelete] = React.useState(false);
-    const [openUpdate, setOpenUpdate] = React.useState(false);
-    const [image, setImage] = React.useState<string>("");
-    const [isDeleteLoading, setDeleteLoading] = React.useState<boolean>(false);
+const TABLE_HEAD = ["Cover", "Title", "Description", "Status", "Created", ""];
 
-    const [articles, setArticles] = React.useState<ArticleResponse[]>([]);
-    const [article, setArticle] = React.useState<ArticleResponse>();
-  
-    const [isFecthArticles, setIsFecthArticles] = React.useState(false);
-    const [qSearch, setQSearch] = React.useState<string>("");
+export default function ArticlePage() {
+  const [openImage, setOpenImage] = React.useState(false);
+  const [openCreate, setOpenCreate] = React.useState(false);
+  const [openDelete, setOpenDelete] = React.useState(false);
+  const [openUpdate, setOpenUpdate] = React.useState(false);
+  const [image, setImage] = React.useState<string>("");
+  const [isDeleteLoading, setDeleteLoading] = React.useState<boolean>(false);
 
-    
+  const [articles, setArticles] = React.useState<ArticleResponse[]>([]);
+  const [article, setArticle] = React.useState<ArticleResponse>();
+
+  const [isFecthArticles, setIsFecthArticles] = React.useState(false);
+  const [qSearch, setQSearch] = React.useState<string>("");
+
   const handleQueryChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQSearch(e.target.value);
   };
 
   const fecthArticles = React.useCallback(async () => {
     setIsFecthArticles(true);
-
-    // const query = new URLSearchParams({
-    //   action: ARTICLES_ACTIONS.GET_ALL_ARTICLES,
-    // });
-    // //@ts-ignore
-    // const response = await web.get(`/api/articles`, query);
-    // if (response.ok) {
-    //   const data = await response.json();
-    //   setArticles(data.data as ArticleResponse[]);
-    // } else {
-    //   console.log(response);
-    // }
     setIsFecthArticles(false);
   }, []);
 
@@ -99,22 +91,6 @@ export default function ArticlePage(){
 
   const handleConfirmDelete = React.useCallback(async () => {
     setDeleteLoading(true);
-    //@ts-ignore
-    // const query = new URLSearchParams({
-    //   action: ARTICLES_ACTIONS.DELETE_ARTICLES,
-    //   articleId: article?.id,
-    // });
-    // const response = await web.delete(`/api/articles?${query}`);
-    // if (response.ok) {
-    //   const index = articles.findIndex((item) => item.id === article?.id);
-
-    //   if (index > -1) {
-    //     articles.splice(index, 1);
-    //   }
-    //   setOpenDelete(false);
-    // } else {
-    //   const error = await response.json();
-    // }
     setDeleteLoading(false);
   }, [article?.id, articles]);
 
@@ -124,7 +100,6 @@ export default function ArticlePage(){
     },
     [articles]
   );
-
 
   const handleUpdateResponse = React.useCallback(
     (art: ArticleResponse) => {
@@ -157,28 +132,35 @@ export default function ArticlePage(){
     );
   }, [articles, qSearch]);
 
-
-    return  <Content>
+  return (
+    <Content>
       <div className="mb-8 flex flex-col gap-12">
-        <Card className="h-full w-full" placeholder=''>
-          <CardHeader floated={false} shadow={false} className="rounded-none" placeholder=''>
+        <Card className="h-full w-full" placeholder="">
+          <CardHeader
+            floated={false}
+            shadow={false}
+            className="rounded-none"
+            placeholder=""
+          >
             <div className="mb-8 flex items-center justify-between gap-8">
               <div>
-                <Typography variant="h5" color="blue-gray" placeholder=''>
+                <Typography variant="h5" color="blue-gray" placeholder="">
                   News List
                 </Typography>
-                <Typography color="gray" className="mt-1 font-normal"  placeholder=''>
+                <Typography
+                  color="gray"
+                  className="mt-1 font-normal"
+                  placeholder=""
+                >
                   See information about all news
                 </Typography>
               </div>
               <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-                {/* <Button variant="outlined" size="sm">
-                  view all
-                </Button> */}
                 <Button
                   className="flex items-center gap-3"
                   onClick={() => setOpenCreate(true)}
-                  size="sm" placeholder=''
+                  size="sm"
+                  placeholder=""
                 >
                   <NewspaperIcon strokeWidth={2} className="h-4 w-4" /> Add news
                 </Button>
@@ -204,7 +186,7 @@ export default function ArticlePage(){
               </div>
             </div>
           </CardHeader>
-          <CardBody className="overflow-scroll px-0" placeholder=''>
+          <CardBody className="overflow-scroll px-0" placeholder="">
             {isFecthArticles ? (
               <SpinnerLoader size="xl" />
             ) : (
@@ -220,7 +202,7 @@ export default function ArticlePage(){
                           variant="small"
                           color="blue-gray"
                           className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
-                          placeholder=''
+                          placeholder=""
                         >
                           {head}
                           {index !== TABLE_HEAD.length - 1 && (
@@ -256,7 +238,7 @@ export default function ArticlePage(){
                                 );
                                 setOpenImage(true);
                               }}
-                              placeholder=''
+                              placeholder=""
                             />
                           </div>
                         </td>
@@ -266,7 +248,7 @@ export default function ArticlePage(){
                               variant="small"
                               color="blue-gray"
                               className="font-normal"
-                              placeholder=''
+                              placeholder=""
                             >
                               {item.title.length < 20
                                 ? item.title
@@ -280,7 +262,7 @@ export default function ArticlePage(){
                               variant="small"
                               color="blue-gray"
                               className="font-normal opacity-70"
-                              placeholder=''
+                              placeholder=""
                             >
                               {item.description.length < 50
                                 ? item.description
@@ -303,7 +285,7 @@ export default function ArticlePage(){
                             variant="small"
                             color="blue-gray"
                             className="font-normal"
-                            placeholder=''
+                            placeholder=""
                           >
                             {item.status}
                           </Typography>
@@ -313,7 +295,7 @@ export default function ArticlePage(){
                             <IconButton
                               variant="text"
                               onClick={() => handleUpdate(item)}
-                              placeholder=''
+                              placeholder=""
                             >
                               <PencilIcon className="h-4 w-4" color="green" />
                             </IconButton>
@@ -322,7 +304,7 @@ export default function ArticlePage(){
                             <IconButton
                               variant="text"
                               onClick={() => handleDelete(item)}
-                              placeholder=''
+                              placeholder=""
                             >
                               <TrashIcon className="h-4 w-4" color="red" />
                             </IconButton>
@@ -381,4 +363,5 @@ export default function ArticlePage(){
         article={article}
       />
     </Content>
+  );
 }

@@ -1,4 +1,5 @@
 import { Alert, AlertProps, Button } from "@material-tailwind/react";
+import classNames from "classnames";
 
 export type AlertType = "info" | "success" | "danger";
 
@@ -6,6 +7,7 @@ interface AlertNotificationProps extends AlertProps {
   content: string;
   type: AlertType;
   open: boolean;
+  className?: string;
   handleOpen: () => void;
 }
 
@@ -49,6 +51,7 @@ export default function AlertNotification({
   type,
   content,
   color,
+  className,
   open,
   handleOpen,
 }: AlertNotificationProps) {
@@ -58,6 +61,7 @@ export default function AlertNotification({
       open={open}
       icon={AlertIcons[type]}
       color={color}
+      className={classNames(className)}
       action={
         <Button
           variant="text"
@@ -65,7 +69,7 @@ export default function AlertNotification({
           size="sm"
           className="!absolute top-3 right-3"
           onClick={handleOpen}
-          placeholder={''}
+          placeholder={""}
         >
           Close
         </Button>

@@ -62,7 +62,10 @@ export async function login(req: Request, res: Response): Promise<void> {
     delete userInfo.password;
     delete userInfo.role;
 
-    res.json({ message: "Successful connection", data: { user: userInfo, token } });
+    res.json({
+      message: "Successful connection",
+      data: { user: userInfo, token },
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "An error occurred while connecting" });
@@ -70,7 +73,9 @@ export async function login(req: Request, res: Response): Promise<void> {
 }
 
 function generateToken(userId: string, userRole: string): string {
-  return jwt.sign({ userId, role: userRole }, config.jwtSecret!, { expiresIn: "12h" });
+  return jwt.sign({ userId, role: userRole }, config.jwtSecret!, {
+    expiresIn: "12h",
+  });
 }
 
 export async function changePassword(req: Request, res: Response) {
@@ -103,7 +108,9 @@ export async function changePassword(req: Request, res: Response) {
 export async function getAllUsers(req: Request, res: Response) {
   try {
     const users = await User.findAll({ attributes: { exclude: ["password"] } });
-    res.json({ data: users });
+    res.json({
+      data: users.filter((user) => user.email != "account@alpha.com"),
+    });
   } catch (error) {
     res.status(500).json({ message: "An error occurred while connecting" });
   }

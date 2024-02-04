@@ -82,34 +82,34 @@ export default function AuthPage() {
     <>
       <div className="absolute inset-0 z-0 h-full w-full bg-element bg-cover bg-no-repeat bg-primary-20">
         <div className="container mx-auto p-4">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="flex justify-center">
+            {!isPending ? (
+              <AlertNotification
+                open={open}
+                handleOpen={() => setOpen(!open)}
+                content={message}
+                color={messages ? messages!.color : "white"}
+                type={messages ? messages?.type! : "info"}
+                className=" w-96"
+              >
+                <></>
+              </AlertNotification>
+            ) : (
+              <></>
+            )}
             <Card
-              className="absolute  top-2/4 left-2/4 w-full max-w-[24rem] -translate-y-2/4 -translate-x-2/4"
+              className="absolute top-2/4 left-2/4 w-full max-w-[24rem] -translate-y-2/4 -translate-x-2/4"
               placeholder={""}
               shadow={false}
             >
               <CardHeader
-                className="mb-4 grid h-28 place-items-center"
+                className="mb-4 grid h-28 place-items-center relative"
                 placeholder={""}
                 shadow={false}
               >
                 <TailwindIcon className="text-blue-700" />
               </CardHeader>
               <CardBody className="flex flex-col gap-4" placeholder={""}>
-                {!isPending ? (
-                  <AlertNotification
-                    open={open}
-                    handleOpen={() => setOpen(!open)}
-                    content={message}
-                    color={messages ? messages!.color : "white"}
-                    type={messages ? messages?.type! : "info"}
-                  >
-                    <></>
-                  </AlertNotification>
-                ) : (
-                  <></>
-                )}
-
                 <Typography variant="small" color="black" placeholder={""}>
                   Adresse email
                 </Typography>

@@ -3,19 +3,32 @@ import {
   Button,
   Dialog,
   Card,
-  CardHeader,
   CardBody,
   CardFooter,
   Typography,
   Input,
-  Checkbox,
   IconButton,
 } from "@material-tailwind/react";
 import { toast } from "react-toastify";
-import { AlertNotification, SpinnerLoader } from ".";
+import { AlertNotification, SpinnerLoader, SelectedMenu } from ".";
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import { isEmpty } from "lodash";
-import { UpdateResponse, User, actionsType } from "../core/entities/user";
+import { isEmpty, isNil } from "lodash";
+import {
+  UpdateRequest,
+  User,
+  UserRequest,
+  UserRole,
+  UserUpdateRequest,
+  actionsType,
+} from "../core/entities/user";
+import { IOptions } from "./selected-menu";
+import { useMutation } from "@tanstack/react-query";
+import { createUser, updateUser } from "../core/api/api";
+
+const roles: IOptions[] = [
+  { value: UserRole.SuperAdmin, label: "Super Admin" },
+  { value: UserRole.Admin, label: "Admin" },
+];
 
 interface SignUpDialogProps {
   handleOpen: () => void;
@@ -24,7 +37,7 @@ interface SignUpDialogProps {
   description: string;
   action: actionsType;
   user?: User;
-  dispatch?: (user: User | UpdateResponse | any) => void;
+  dispatch?: (user: User | UpdateRequest | any) => void;
 }
 
 export function SignUpDialog({
@@ -33,76 +46,76 @@ export function SignUpDialog({
   description,
   action,
   user,
-  dispatch,
   handleOpen,
+  dispatch,
 }: SignUpDialogProps) {
   const [username, setUserName] = React.useState<string>("");
   const [email, setEmail] = React.useState<string>("");
+  const [role, setRole] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
+
   const [errorMessage, setErrorMessage] = React.useState<string>("");
   const [openAlert, setOpenAlert] = React.useState<boolean>(false);
 
-  const [_isLoading, setLoading] = React.useState<boolean>(false);
+  const { mutate: createUserMutate, isPending: createUserIsPending } =
+    useMutation({
+      mutationFn: (userRequest: UserRequest) => {
+        return createUser(userRequest);
+      },
+      onSuccess(data) {
+        if (!isNil(data.data)) {
+          toast("User add", { type: "success" });
+          const user = data.data as User;
+          dispatch!(user);
+          handleOpen();
+        } else {
+          setErrorMessage(data.message);
+          setOpenAlert(true);
+        }
+      },
+      onError(error) {},
+    });
+
+  const { mutate: updateUserMutate, isPending: updateUserIsPending } =
+    useMutation({
+      mutationFn: (userUpdate: UserUpdateRequest) => {
+        return updateUser(userUpdate.userId, userUpdate.userRequest);
+      },
+      onSuccess(data) {
+        if (!isNil(data.data)) {
+          toast("User update", { type: "success" });
+          const user = data.data as User;
+          dispatch!(user);
+          handleOpen();
+        } else {
+          setErrorMessage(data.message);
+          setOpenAlert(true);
+        }
+      },
+      onError(error) {},
+    });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setErrorMessage("");
     setOpenAlert(false);
     if (action === "add") {
-    //   const query = new URLSearchParams({
-    //     action: USER_ACTIONS.CREATE_USER,
-    //   });
-
-    //   const response = await web.post(
-    //     `/api/users?${query}`,
-    //     JSON.stringify({
-    //       username,
-    //       email,
-    //       password,
-    //     })
-    //   );
-
-    //   if (response.ok) {
-    //     toast("User add", { type: "success" });
-    //     const data = (await response.json()).data as User;
-    //     dispatch!(data);
-    //     handleOpen();
-    //   } else {
-    //     const error = await response.json();
-    //     setErrorMessage(error.message);
-    //     setOpenAlert(true);
-    //   }
+      createUserMutate({
+        username: username,
+        email: email,
+        role: role,
+        password: password,
+      });
     } else {
-      //@ts-ignore
-    //   const query = new URLSearchParams({
-    //     action: USER_ACTIONS.UPDATE_USER,
-    //     userId: user?.id,
-    //   });
-
-      const data = {
-        username: isEmpty(username) ? user?.username : username,
-        email: isEmpty(email) ? user?.email : email,
-      };
-
-    //   const response = await web.patch(
-    //     `/api/users?${query}`,
-    //     JSON.stringify(data)
-    //   );
-
-    //   if (response.ok) {
-    //     toast("User update", { type: "success" });
-    //     const data = (await response.json()).data as UpdateResponse;
-    //     dispatch!(data);
-    //     handleOpen();
-    //   } else {
-    //     const error = await response.json();
-    //     setErrorMessage(error.message);
-    //     setOpenAlert(true);
-    //   }
+      updateUserMutate({
+        userId: user!.id,
+        userRequest: {
+          username: isEmpty(username) ? user!.username : username,
+          email: isEmpty(email) ? user!.email : email,
+          role,
+        },
+      });
     }
-
-    setLoading(false);
   };
 
   const content = action === "add" ? "Create" : "Update";
@@ -114,24 +127,29 @@ export function SignUpDialog({
         open={open}
         handler={handleOpen}
         className="bg-transparent shadow-none relative"
-        placeholder={''}
+        placeholder={""}
       >
         <div className="flex items-center gap-2 bg-gray-500 rounded-lg absolute right-0 -top-4 z-50">
-          <IconButton variant="text" size="sm" onClick={handleOpen} placeholder={''}>
-            <XMarkIcon color="purple" className="h-6" />
+          <IconButton
+            variant="text"
+            size="sm"
+            onClick={handleOpen}
+            placeholder={""}
+          >
+            <XMarkIcon color="white" className="h-6" />
           </IconButton>
         </div>
         <form onSubmit={handleSubmit}>
-          <Card className="mx-auto w-full max-w-[24rem]" placeholder={''}>
-            <CardBody className="flex flex-col gap-4" placeholder={''}>
-              <Typography variant="h4" color="blue-gray" placeholder={''}>
+          <Card className="mx-auto w-full max-w-[24rem]" placeholder={""}>
+            <CardBody className="flex flex-col gap-4" placeholder={""}>
+              <Typography variant="h4" color="blue-gray" placeholder={""}>
                 {title}
               </Typography>
               <Typography
                 className="mb-3 font-normal"
                 variant="paragraph"
                 color="gray"
-                placeholder={''}
+                placeholder={""}
               >
                 {description}
               </Typography>
@@ -144,7 +162,7 @@ export function SignUpDialog({
               >
                 {" "}
               </AlertNotification>
-              <Typography className="-mb-2" variant="h6" placeholder={''}>
+              <Typography className="-mb-2" variant="h6" placeholder={""}>
                 Your Name
               </Typography>
               <Input
@@ -153,11 +171,11 @@ export function SignUpDialog({
                 required
                 type="text"
                 defaultValue={!isEmpty(user) ? user.username : ""}
-                disabled={_isLoading}
+                disabled={createUserIsPending}
                 onChange={(e) => setUserName(e.target.value)}
                 crossOrigin=""
               />
-              <Typography className="-mb-2" variant="h6" placeholder={''}>
+              <Typography className="-mb-2" variant="h6" placeholder={""}>
                 Your Email
               </Typography>
               <Input
@@ -166,35 +184,39 @@ export function SignUpDialog({
                 type="email"
                 required
                 defaultValue={!isEmpty(user) ? user.email : ""}
-                disabled={_isLoading}
+                disabled={createUserIsPending}
                 onChange={(e) => setEmail(e.target.value)}
                 crossOrigin=""
               />
+              <Typography className="-mb-2" variant="h6" placeholder={""}>
+                Role
+              </Typography>
+              <SelectedMenu options={roles} value={(item) => setRole(item)} />
               {action === "add" && (
                 <>
-                  <Typography className="-mb-2" variant="h6" placeholder={''}>
+                  <Typography className="-mb-2" variant="h6" placeholder={""}>
                     Your Password
                   </Typography>
                   <Input
                     label="Password"
                     size="lg"
                     required
-                    disabled={_isLoading}
+                    disabled={createUserIsPending}
                     onChange={(e) => setPassword(e.target.value)}
                     crossOrigin=""
                   />
                 </>
               )}
             </CardBody>
-            <CardFooter className="pt-0" placeholder={''}>
+            <CardFooter className="pt-0" placeholder={""}>
               <Button
                 variant="gradient"
                 color={action === "add" ? "green" : "yellow"}
                 fullWidth
                 type="submit"
-                placeholder={''}
+                placeholder={""}
               >
-                {!_isLoading ? content : <SpinnerLoader size="sm" />}
+                {!createUserIsPending ? content : <SpinnerLoader size="sm" />}
               </Button>
             </CardFooter>
           </Card>

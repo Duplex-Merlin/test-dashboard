@@ -1,6 +1,3 @@
-
-
-
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -14,7 +11,6 @@ import "./utils/upload-file";
 dotenv.config();
 
 const app: Express = express();
-const port =  8001;
 var corsOptions = {
   // origin: "http://localhost:8000",
   AccessControlAllowOrigin: "*",
@@ -40,11 +36,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1", appRouter);
 // app.use("/bot", chatBotRouter);
 
-app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
-});
-
 const PORT = process.env.PORT || 8001;
 app.listen(PORT, () => {
-  console.log(`Serveur en cours d'exécution sur le port ${PORT}`);
+  console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
 });

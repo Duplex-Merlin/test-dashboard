@@ -1,5 +1,16 @@
 import { LoginRequest } from "../entities";
-import { axiospost, get, post } from "../interceptor/api.interceptor";
+import {
+  UpdateRequest,
+  UserRequest,
+  UserUpdateRequest,
+} from "../entities/user";
+import {
+  axiospost,
+  del,
+  get,
+  patch,
+  post,
+} from "../interceptor/api.interceptor";
 
 export const loginUser = async (body: LoginRequest) => {
   const res = await post("/auth/login", body);
@@ -9,6 +20,21 @@ export const loginUser = async (body: LoginRequest) => {
 export const getAllUsers = async () => {
   const res = await get("/users");
   return (await res.json()).data;
+};
+
+export const createUser = async (body: UserRequest) => {
+  const res = await post("/user/create", body);
+  return await res.json();
+};
+
+export const updateUser = async (userId: string, body: UpdateRequest) => {
+  const res = await patch(`/user/${userId}/update`, body);
+  return await res.json();
+};
+
+export const deleteUser = async (userId: String) => {
+  const res = await del(`/user/${userId}/delete`);
+  return await res.json();
 };
 
 export const createArticle = async (data: any) => {

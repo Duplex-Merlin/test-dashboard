@@ -35,11 +35,12 @@ const navigations = {
     },
   ],
   two: [
-    {
-      href: "/dashboard/category",
-      name: "Categories",
-      icon: <Squares2X2Icon className="h-5 w-5" />,
-    },
+    // {
+    //   href: "/dashboard/category",
+    //   name: "Categories",
+    //   icon: <Squares2X2Icon className="h-5 w-5" />,
+    //   children: [],
+    // },
     {
       href: "#",
       name: "News",
@@ -117,7 +118,7 @@ export function Sidebar() {
 
         <hr className="my-2 border-blue-gray-50" />
         {navigations.two.map((item, i) => {
-          return i === 1 ? (
+          return item.children.length > 0 ? (
             <Accordion
               open={open === 1}
               placeholder={""}
