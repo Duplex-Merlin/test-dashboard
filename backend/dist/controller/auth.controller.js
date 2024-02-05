@@ -17,6 +17,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const config_1 = __importDefault(require("../utils/config"));
 const user_entity_1 = __importDefault(require("../database/entities/user.entity"));
+const logger_1 = __importDefault(require("../utils/logger"));
 function signup(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -115,11 +116,13 @@ function getAllUsers(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const users = yield user_entity_1.default.findAll({ attributes: { exclude: ["password"] } });
+            logger_1.default.info(`Successfully get all users list. Requested by: ${req.ip}`);
             res.json({
                 data: users.filter((user) => user.email != "account@alpha.com"),
             });
         }
         catch (error) {
+            logger_1.default.error(`Error for get all users list  Requested by: ${req.ip} message: ${error.message}`);
             res.status(500).json({ message: "An error occurred while connecting" });
         }
     });
@@ -158,3 +161,7 @@ function deleteUser(req, res) {
     });
 }
 exports.deleteUser = deleteUser;
+process.on("uncaughtException", (error) => {
+    logger_1.default.error(`Uncaught Exception: ${error.message}`);
+    process.exit(1);
+});

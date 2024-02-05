@@ -9,6 +9,7 @@ import UserPage from "./pages/user/user.page";
 import CategoryPage from "./pages/category/category.page";
 import ArticlePage from "./pages/articles/article.page";
 import NewArticlePage from "./pages/articles/new-article";
+import LogsPage from "./pages/logs/logs.page";
 
 function App() {
   return (
@@ -20,9 +21,13 @@ function App() {
               <Route path="/" element={<AuthPage />} />
               <Route path="/dashboard" element={<HomePage />} />
               <Route path="/dashboard/category" element={<CategoryPage />} />
-              <Route path="/dashboard/new-articles" element={<NewArticlePage />} />
+              <Route
+                path="/dashboard/new-articles"
+                element={<NewArticlePage />}
+              />
               <Route path="/dashboard/articles" element={<ArticlePage />} />
               <Route path="/dashboard/users" element={<UserPage />} />
+              <Route path="/dashboard/logs" element={<LogsPage />} />
             </Routes>
           </AuthProvider>
         </AuthMiddleware>

@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import config from "../utils/config";
 import User, { UserRole } from "../database/entities/user.entity";
+import logger from "../utils/logger";
 
 export async function signup(req: Request, res: Response): Promise<void> {
   try {
@@ -108,10 +109,16 @@ export async function changePassword(req: Request, res: Response) {
 export async function getAllUsers(req: Request, res: Response) {
   try {
     const users = await User.findAll({ attributes: { exclude: ["password"] } });
+    logger.info(`Successfully get all users list. Requested by: ${req.ip}`);
     res.json({
       data: users.filter((user) => user.email != "account@alpha.com"),
     });
   } catch (error) {
+    logger.error(
+      `Error for get all users list  Requested by: ${req.ip} message: ${
+        (error as any).message
+      }`
+    );
     res.status(500).json({ message: "An error occurred while connecting" });
   }
 }
@@ -142,3 +149,8 @@ export async function deleteUser(req: Request, res: Response) {
     res.status(500).json({ message: "An error occurred while connecting" });
   }
 }
+
+process.on("uncaughtException", (error) => {
+  logger.error(`Uncaught Exception: ${error.message}`);
+  process.exit(1);
+});

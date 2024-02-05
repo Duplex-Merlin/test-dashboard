@@ -19,6 +19,7 @@ import {
   GlobeEuropeAfricaIcon,
   ChevronRightIcon,
   ChevronDownIcon,
+  CircleStackIcon,
 } from "@heroicons/react/24/solid";
 import { TailwindIcon } from "../components/icons";
 import { Link, NavLink, useLocation } from "react-router-dom";
@@ -66,14 +67,14 @@ const navigations = {
   tree: [
     {
       href: "#",
-      name: "Profile",
-      icon: <UserCircleIcon className="h-5 w-5" />,
+      name: "Settings",
+      icon: <Cog6ToothIcon className="h-5 w-5" />,
       children: [],
     },
     {
-      href: "#",
-      name: "Settings",
-      icon: <Cog6ToothIcon className="h-5 w-5" />,
+      href: "/dashboard/logs",
+      name: "Logs",
+      icon: <CircleStackIcon className="h-5 w-5" />,
       children: [],
     },
   ],

@@ -18,7 +18,7 @@ const sizes = {
 export function SpinnerLoader({ size }: SpinnerProps) {
   return (
     <div className="flex items-center justify-center">
-      <Spinner color="purple" className={classNames(sizes[size])} />
+      <Spinner color="blue" className={classNames(sizes[size])} />
     </div>
   );
 }

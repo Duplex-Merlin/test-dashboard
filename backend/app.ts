@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import authRouter from "./routes/auth.route";
 import appRouter from "./routes/app.route";
 import "./utils/upload-file";
+import logsRouter from "./routes/logs.route";
 // import chatBotRouter from "./routes/bot.route";
 // import "./nld";
 
@@ -34,6 +35,8 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1", appRouter);
+app.use("/api/v1", logsRouter);
+
 // app.use("/bot", chatBotRouter);
 
 const PORT = process.env.PORT || 8001;

@@ -17,6 +17,11 @@ export const loginUser = async (body: LoginRequest) => {
   return await res.json();
 };
 
+export const getAllLogs = async () => {
+  const res = await get("/logs");
+  return (await res.json()).logs;
+};
+
 export const getAllUsers = async () => {
   const res = await get("/users");
   return (await res.json()).data;

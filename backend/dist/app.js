@@ -10,6 +10,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const auth_route_1 = __importDefault(require("./routes/auth.route"));
 const app_route_1 = __importDefault(require("./routes/app.route"));
 require("./utils/upload-file");
+const logs_route_1 = __importDefault(require("./routes/logs.route"));
 // import chatBotRouter from "./routes/bot.route";
 // import "./nld";
 dotenv_1.default.config();
@@ -30,6 +31,7 @@ app.get("/", (req, res) => {
 });
 app.use("/api/v1/auth", auth_route_1.default);
 app.use("/api/v1", app_route_1.default);
+app.use("/api/v1", logs_route_1.default);
 // app.use("/bot", chatBotRouter);
 const PORT = process.env.PORT || 8001;
 app.listen(PORT, () => {
