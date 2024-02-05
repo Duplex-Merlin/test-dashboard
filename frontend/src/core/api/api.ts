@@ -42,7 +42,17 @@ export const deleteUser = async (userId: String) => {
   return await res.json();
 };
 
+export const getAllArticles = async () => {
+  const res = await get("/articles");
+  return (await res.json()).data;
+};
+
 export const createArticle = async (data: any) => {
   const res = await axiospost("/create-article", data);
   return res;
+};
+
+export const deleteArticle = async (articleId: String) => {
+  const res = await del(`/article/${articleId}/delete`);
+  return await res.json();
 };

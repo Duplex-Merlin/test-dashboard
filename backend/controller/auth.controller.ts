@@ -11,6 +11,9 @@ export async function signup(req: Request, res: Response): Promise<void> {
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
+      logger.warn(
+        `This user already exists. Requested by: ${req.ip}`
+      );
       res.status(400).json({ message: "This user already exists" });
       return;
     }
@@ -26,10 +29,12 @@ export async function signup(req: Request, res: Response): Promise<void> {
 
     const data = newUser.toJSON();
     delete data.password;
-
+    logger.info(`User created successfully. Requested by: ${req.ip}`);
     res.status(201).json({ message: "User created successfully!", data });
   } catch (error) {
-    console.error(error);
+    logger.error(
+      `Error for create user. Requested by: ${req.ip} message:An error occurred while registering`
+    );
     res.status(500).json({ message: "An error occurred while registering" });
   }
 }
@@ -48,6 +53,9 @@ export async function login(req: Request, res: Response): Promise<void> {
 
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
+      logger.warn(
+        `Error for verify user password. Requested by: ${req.ip} message: Incorrect password`
+      );
       res.status(401).json({ message: "Incorrect password" });
       return;
     }
@@ -62,13 +70,18 @@ export async function login(req: Request, res: Response): Promise<void> {
     const userInfo = user.toJSON();
     delete userInfo.password;
     delete userInfo.role;
-
+    logger.info(`Successful connection. Requested by: ${req.ip}`);
     res.json({
       message: "Successful connection",
       data: { user: userInfo, token },
     });
   } catch (error) {
     console.error(error);
+    logger.error(
+      `Error for change password user Requested by: ${req.ip} message: ${
+        (error as any).message
+      }`
+    );
     res.status(500).json({ message: "An error occurred while connecting" });
   }
 }
@@ -88,20 +101,34 @@ export async function changePassword(req: Request, res: Response) {
     });
 
     if (!user) {
+      logger.warn(
+        `User not found. Requested by: ${req.ip}`
+      );
       res.status(401).json({ message: "User not found" });
       return;
     }
 
     const passwordMatch = await bcrypt.compare(currentPassword, user.password);
     if (!passwordMatch) {
+      logger.info(
+        `Current password no match. Requested by: ${req.ip}`
+      );
       res.status(401).json({ message: "Current password no match" });
       return;
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await User.update({ password: hashedPassword }, { where: { id } });
+    logger.info(
+      `The password was changed successfully. Requested by: ${req.ip}`
+    );
     res.json({ message: "The password was changed successfully" });
   } catch (error) {
+    logger.error(
+      `Error for change password user Requested by: ${req.ip} message: ${
+        (error as any).message
+      }`
+    );
     res.status(500).json({ message: "An error occurred while connecting" });
   }
 }
@@ -128,11 +155,17 @@ export async function updateUser(req: Request, res: Response) {
     const { email, username } = req.body;
     const { id } = req.params;
     await User.update({ email, username }, { where: { id } });
+    logger.info(`Update user successfully.... Requested by: ${req.ip}`);
     res.json({
       message: "Update successfully...",
       data: { id, email, username },
     });
   } catch (error) {
+    logger.error(
+      `Error for update user Requested by: ${req.ip} message: ${
+        (error as any).message
+      }`
+    );
     res.status(500).json({ message: "An error occurred while connecting" });
   }
 }
@@ -145,7 +178,13 @@ export async function deleteUser(req: Request, res: Response) {
       message: "Delete successfully...",
       data: { id },
     });
+    logger.info(`Delete user successfully... Requested by: ${req.ip}`);
   } catch (error) {
+    logger.error(
+      `Error for delete user Requested by: ${req.ip} message: ${
+        (error as any).message
+      }`
+    );
     res.status(500).json({ message: "An error occurred while connecting" });
   }
 }

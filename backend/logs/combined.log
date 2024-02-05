@@ -1,10 +1,53 @@
-{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T04:39:41.292Z"}
-{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T04:39:41.292Z"}
-{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T04:39:43.675Z"}
-{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T04:52:37.794Z"}
-{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T04:52:55.490Z"}
-{"level":"error","message":"Error while fetching logs: file does not exist","timestamp":"2024-02-05T05:04:25.399Z"}
-{"level":"error","message":"Error while fetching logs: file does not exist","timestamp":"2024-02-05T05:04:27.110Z"}
-{"level":"error","message":"Error while fetching logs: file does not exist","timestamp":"2024-02-05T05:04:36.392Z"}
-{"level":"error","message":"Error while fetching logs: file does not exist","timestamp":"2024-02-05T05:04:39.148Z"}
-{"level":"error","message":"Error while fetching logs: file does not exist","timestamp":"2024-02-05T05:04:44.188Z"}
+{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T08:19:00.869Z"}
+{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T08:19:40.457Z"}
+{"level":"error","message":"Error while fetching logs: file does not exist","timestamp":"2024-02-05T08:20:08.890Z"}
+{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T08:52:11.740Z"}
+{"level":"info","message":"User created successfully. Requested by: ::1","timestamp":"2024-02-05T08:53:27.250Z"}
+{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T08:53:27.329Z"}
+{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T08:53:40.794Z"}
+{"level":"info","message":"Delete user successfully... Requested by: ::1","timestamp":"2024-02-05T08:53:44.154Z"}
+{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T08:53:44.200Z"}
+{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T08:54:24.597Z"}
+{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T08:56:04.740Z"}
+{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T08:56:26.798Z"}
+{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T08:58:23.910Z"}
+{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T09:01:12.973Z"}
+{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T09:15:03.453Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:30:58.046Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:31:22.432Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:32:14.204Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:33:29.806Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:35:35.474Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:36:02.550Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:36:04.435Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:36:22.160Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:40:28.269Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:40:38.182Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:41:23.840Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:41:28.065Z"}
+{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T09:43:53.969Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:43:55.945Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:45:40.236Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:46:32.342Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:46:33.187Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:51:10.898Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:52:18.455Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:52:26.254Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:52:43.277Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:53:06.446Z"}
+{"level":"info","message":"Delete article successfully!. Requested by: ::1","timestamp":"2024-02-05T09:53:08.971Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:53:09.008Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:53:36.108Z"}
+{"level":"info","message":"Delete article successfully!. Requested by: ::1","timestamp":"2024-02-05T09:53:38.461Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:53:38.493Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:54:44.908Z"}
+{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T09:56:20.464Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:56:23.585Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:56:56.868Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:56:57.500Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:57:02.203Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:57:32.179Z"}
+{"level":"info","message":"Delete article successfully!. Requested by: ::1","timestamp":"2024-02-05T09:57:46.739Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:57:46.807Z"}
+{"level":"info","message":"Delete article successfully!. Requested by: ::1","timestamp":"2024-02-05T09:57:49.320Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:57:49.362Z"}

@@ -32,7 +32,7 @@ export async function logsData(req: Request, res: Response) {
       }
     });
 
-    res.json({ logs });
+    res.json({ logs: logs.reverse() });
   } catch (error) {
     logger.error(`Error while fetching logs: ${(error as any).message}`);
     res.status(500).json({ message: "An error occurred while fetching logs" });

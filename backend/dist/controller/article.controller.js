@@ -16,6 +16,7 @@ exports.deleteArticle = exports.updateStatusArticle = exports.updateArticle = ex
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const article_entity_1 = __importDefault(require("../database/entities/article.entity"));
 const user_entity_1 = __importDefault(require("../database/entities/user.entity"));
+const logger_1 = __importDefault(require("../utils/logger"));
 function countDashboard(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -24,6 +25,7 @@ function countDashboard(req, res) {
             res.json({ data: [news, 0, 0, users] });
         }
         catch (error) {
+            logger_1.default.error(`An error occurred while registering. Requested by: ${req.ip} message: ${error.message}`);
             res.status(500).json({ message: "An error occurred while registering" });
         }
     });
@@ -42,9 +44,13 @@ function createArticle(req, res) {
                 status: true,
                 content,
             });
-            res.status(201).json({ message: "Article created successfully!", data: article });
+            logger_1.default.info(`Article created successfully!. Requested by: ${req.ip}`);
+            res
+                .status(201)
+                .json({ message: "Article created successfully!", data: article });
         }
         catch (error) {
+            logger_1.default.error(`An error occurred while registering. Requested by: ${req.ip} message: ${error.message}`);
             res.status(500).json({ message: "An error occurred while registering" });
         }
     });
@@ -54,9 +60,11 @@ function getAllArticle(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const articles = yield article_entity_1.default.findAll();
+            logger_1.default.info(`Get all l successfully!. Requested by: ${req.ip}`);
             res.json({ data: articles });
         }
         catch (error) {
+            logger_1.default.error(`An error occurred while registering. Requested by: ${req.ip} message: ${error.message}`);
             res.status(500).json({ message: "An error occurred while registering" });
         }
     });
@@ -72,6 +80,7 @@ function updateArticle(req, res) {
                 const { filename } = req.file;
                 const article = yield article_entity_1.default.findByPk(id);
                 if (!article) {
+                    logger_1.default.warn(`Article not found!. Requested by: ${req.ip}`);
                     return res.status(404).json({ message: "Article not found" });
                 }
                 const imagePath = `uploads/${article.coverPicture}`;
@@ -79,6 +88,7 @@ function updateArticle(req, res) {
                     fs_extra_1.default.unlinkSync(imagePath);
                 }
                 const articleUpdate = yield article_entity_1.default.update({ title, description, coverPicture: filename, status, content }, { where: { id }, returning: true });
+                logger_1.default.info(`Create article successfully!. Requested by: ${req.ip}`);
                 res.json({
                     message: "Update successfully...",
                     data: articleUpdate[1],
@@ -90,8 +100,10 @@ function updateArticle(req, res) {
                 message: "Update successfully...",
                 data: articleUpdate[1],
             });
+            logger_1.default.info(`Update article successfully!. Requested by: ${req.ip}`);
         }
         catch (error) {
+            logger_1.default.error(`An error occurred while registering. Requested by: ${req.ip} message: ${error.message}`);
             res.status(500).json({ message: "An error occurred while connecting" });
         }
     });
@@ -103,12 +115,14 @@ function updateStatusArticle(req, res) {
             const { status } = req.body;
             const { id } = req.params;
             yield article_entity_1.default.update({ status }, { where: { id } });
+            logger_1.default.info(`Article status changed successfully!. Requested by: ${req.ip}`);
             res.json({
                 message: "Status changed successfully...",
                 data: { id, status },
             });
         }
         catch (error) {
+            logger_1.default.error(`An error occurred while registering. Requested by: ${req.ip} message: ${error.message}`);
             res.status(500).json({ message: "An error occurred while connecting" });
         }
     });
@@ -120,6 +134,7 @@ function deleteArticle(req, res) {
             const { id } = req.params;
             const article = yield article_entity_1.default.findByPk(id);
             if (!article) {
+                logger_1.default.warn(`Article not found. Requested by: ${req.ip}`);
                 return res.status(404).json({ message: "Article not found" });
             }
             if (article.coverPicture) {
@@ -129,14 +144,20 @@ function deleteArticle(req, res) {
                 }
             }
             yield article_entity_1.default.destroy({ where: { id } });
+            logger_1.default.info(`Delete article successfully!. Requested by: ${req.ip}`);
             res.json({
                 message: "Delete successfully...",
                 data: { id },
             });
         }
         catch (error) {
+            logger_1.default.error(`An error occurred while registering. Requested by: ${req.ip} message: ${error.message}`);
             res.status(500).json({ message: "An error occurred while registering" });
         }
     });
 }
 exports.deleteArticle = deleteArticle;
+process.on("uncaughtException", (error) => {
+    logger_1.default.error(`Uncaught Exception: ${error.message}`);
+    process.exit(1);
+});

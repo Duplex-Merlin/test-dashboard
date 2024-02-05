@@ -11,6 +11,8 @@ import {
 import { getAllLogs } from "../../core/api/api";
 import { SpinnerLoader } from "../../components";
 import classNames from "classnames";
+import { ArrowDownTrayIcon, SpeakerWaveIcon } from "@heroicons/react/24/solid";
+import { Link } from "react-router-dom";
 
 export default function LogsPage() {
   const {
@@ -32,7 +34,7 @@ export default function LogsPage() {
             className="rounded-none flex justify-between"
             placeholder=""
           >
-            <div className="mb-4 flex items-center justify-between gap-8">
+            <div className="mb-4 flex items-center w-full justify-between gap-8">
               <div>
                 <Typography variant="h5" color="blue-gray" placeholder="">
                   Logs Informations
@@ -45,12 +47,17 @@ export default function LogsPage() {
                   All logs list
                 </Typography>
               </div>
+              <Button
+                placeholder={""}
+                className="flex items-center gap-2"
+                color="green"
+              >
+                <ArrowDownTrayIcon className="h-4 w-4" />
+                Download
+              </Button>
             </div>
           </CardHeader>
-          <CardBody
-            placeholder={""}
-            className="overflow-x-scroll px-0 pt-0 pb-2"
-          >
+          <CardBody placeholder={""} className="px-0 pt-0 pb-2">
             {isLoadingLogs ? (
               <SpinnerLoader size="xl" />
             ) : (

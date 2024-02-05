@@ -10,7 +10,7 @@ import {
 } from "@material-tailwind/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { PencilIcon, TrashIcon, UserPlusIcon } from "@heroicons/react/24/solid";
-import React, { useEffect } from "react";
+import React from "react";
 import { Content } from "../../layouts";
 import { UpdateRequest, User, UserRole } from "../../core/entities/user";
 import { DeleteDialog, SignUpDialog, SpinnerLoader } from "../../components";
@@ -128,11 +128,12 @@ export default function UserPage() {
           </CardHeader>
           <CardBody
             placeholder={""}
-            className="overflow-x-scroll px-0 pt-0 pb-2"
+            className="px-0 pt-0 pb-2"
           >
             {isLoadingUsers ? (
               <SpinnerLoader size="xl" />
             ) : (
+              
               <table className="w-full min-w-[640px] table-auto">
                 <thead>
                   <tr>
@@ -160,90 +161,96 @@ export default function UserPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {usersData!.map((item, key) => {
-                    const className = `py-3 px-5 `;
-                    return (
-                      <tr key={key}>
-                        <td className={className}>
-                          <div className="flex items-center gap-4">
-                            <Avatar
-                              placeholder={""}
-                              src={"/assets/images/avatar.jpg"}
-                              alt={item.username}
-                              size="sm"
-                            />
-                            <div>
-                              <Typography
+                  {usersData!.length > 0 ? (
+                    usersData!.map((item, key) => {
+                      const className = `py-3 px-5 `;
+                      return (
+                        <tr key={key}>
+                          <td className={className}>
+                            <div className="flex items-center gap-4">
+                              <Avatar
                                 placeholder={""}
-                                variant="small"
-                                color="blue-gray"
-                                className="font-semibold"
-                              >
-                                {item.username}
-                              </Typography>
+                                src={"/assets/images/avatar.jpg"}
+                                alt={item.username}
+                                size="sm"
+                              />
+                              <div>
+                                <Typography
+                                  placeholder={""}
+                                  variant="small"
+                                  color="blue-gray"
+                                  className="font-semibold"
+                                >
+                                  {item.username}
+                                </Typography>
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                        <td className={className}>
-                          <Typography
-                            placeholder={""}
-                            className="text-xs font-normal text-blue-gray-500"
-                          >
-                            {item.email}
-                          </Typography>
-                        </td>
-                        <td className={className}>
-                          <Typography
-                            placeholder={""}
-                            className="text-xs font-normal text-blue-gray-500"
-                          >
-                            {item.role === UserRole.SuperAdmin
-                              ? "Super Admin"
-                              : "Admin"}
-                          </Typography>
-                        </td>
-                        <td className={className}>
-                          <Typography
-                            placeholder={""}
-                            className="text-xs font-semibold text-blue-gray-600"
-                          >
-                            {isNil(item.lastLogin)
-                              ? "..."
-                              : parseDateWithHour(item.lastLogin)}
-                          </Typography>
-                        </td>
+                          </td>
+                          <td className={className}>
+                            <Typography
+                              placeholder={""}
+                              className="text-xs font-normal text-blue-gray-500"
+                            >
+                              {item.email}
+                            </Typography>
+                          </td>
+                          <td className={className}>
+                            <Typography
+                              placeholder={""}
+                              className="text-xs font-normal text-blue-gray-500"
+                            >
+                              {item.role === UserRole.SuperAdmin
+                                ? "Super Admin"
+                                : "Admin"}
+                            </Typography>
+                          </td>
+                          <td className={className}>
+                            <Typography
+                              placeholder={""}
+                              className="text-xs font-semibold text-blue-gray-600"
+                            >
+                              {isNil(item.lastLogin)
+                                ? "..."
+                                : parseDateWithHour(item.lastLogin)}
+                            </Typography>
+                          </td>
 
-                        <td className={className}>
-                          <Typography
-                            placeholder={""}
-                            className="text-xs font-semibold text-blue-gray-600"
-                          >
-                            {parseDateWith(item.createdAt)}
-                          </Typography>
-                        </td>
-                        <td className={className}>
-                          <Tooltip content="Edit User">
-                            <IconButton
-                              variant="text"
-                              onClick={() => handleUpdate(item)}
+                          <td className={className}>
+                            <Typography
                               placeholder={""}
+                              className="text-xs font-semibold text-blue-gray-600"
                             >
-                              <PencilIcon className="h-4 w-4" color="green" />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip content="Delete User">
-                            <IconButton
-                              variant="text"
-                              onClick={() => handleDelete(item)}
-                              placeholder={""}
-                            >
-                              <TrashIcon className="h-4 w-4" color="red" />
-                            </IconButton>
-                          </Tooltip>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                              {parseDateWith(item.createdAt)}
+                            </Typography>
+                          </td>
+                          <td className={className}>
+                            <Tooltip content="Edit User">
+                              <IconButton
+                                variant="text"
+                                onClick={() => handleUpdate(item)}
+                                placeholder={""}
+                              >
+                                <PencilIcon className="h-4 w-4" color="green" />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip content="Delete User">
+                              <IconButton
+                                variant="text"
+                                onClick={() => handleDelete(item)}
+                                placeholder={""}
+                              >
+                                <TrashIcon className="h-4 w-4" color="red" />
+                              </IconButton>
+                            </Tooltip>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td className={`py-3 px-5 `}>No data found</td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             )}

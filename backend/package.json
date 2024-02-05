@@ -44,6 +44,7 @@
     "multer": "^1.4.5-lts.1",
     "pg": "^8.11.3",
     "read-last-lines": "^1.8.0",
+    "reflect-metadata": "^0.2.1",
     "sequelize": "^6.32.1",
     "sequelize-typescript": "^2.1.5",
     "tail": "^2.2.6",

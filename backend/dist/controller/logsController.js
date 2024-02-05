@@ -58,7 +58,7 @@ function logsData(req, res) {
                     };
                 }
             });
-            res.json({ logs });
+            res.json({ logs: logs.reverse() });
         }
         catch (error) {
             logger_1.default.error(`Error while fetching logs: ${error.message}`);

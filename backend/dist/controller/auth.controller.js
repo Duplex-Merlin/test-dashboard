@@ -24,6 +24,7 @@ function signup(req, res) {
             const { email, password, role, username } = req.body;
             const existingUser = yield user_entity_1.default.findOne({ where: { email } });
             if (existingUser) {
+                logger_1.default.warn(`This user already exists. Requested by: ${req.ip}`);
                 res.status(400).json({ message: "This user already exists" });
                 return;
             }
@@ -36,10 +37,11 @@ function signup(req, res) {
             });
             const data = newUser.toJSON();
             delete data.password;
+            logger_1.default.info(`User created successfully. Requested by: ${req.ip}`);
             res.status(201).json({ message: "User created successfully!", data });
         }
         catch (error) {
-            console.error(error);
+            logger_1.default.error(`Error for create user. Requested by: ${req.ip} message:An error occurred while registering`);
             res.status(500).json({ message: "An error occurred while registering" });
         }
     });
@@ -59,6 +61,7 @@ function login(req, res) {
             }
             const passwordMatch = yield bcrypt_1.default.compare(password, user.password);
             if (!passwordMatch) {
+                logger_1.default.warn(`Error for verify user password. Requested by: ${req.ip} message: Incorrect password`);
                 res.status(401).json({ message: "Incorrect password" });
                 return;
             }
@@ -68,6 +71,7 @@ function login(req, res) {
             const userInfo = user.toJSON();
             delete userInfo.password;
             delete userInfo.role;
+            logger_1.default.info(`Successful connection. Requested by: ${req.ip}`);
             res.json({
                 message: "Successful connection",
                 data: { user: userInfo, token },
@@ -75,6 +79,7 @@ function login(req, res) {
         }
         catch (error) {
             console.error(error);
+            logger_1.default.error(`Error for change password user Requested by: ${req.ip} message: ${error.message}`);
             res.status(500).json({ message: "An error occurred while connecting" });
         }
     });
@@ -94,19 +99,23 @@ function changePassword(req, res) {
                 where: { id },
             });
             if (!user) {
+                logger_1.default.warn(`User not found. Requested by: ${req.ip}`);
                 res.status(401).json({ message: "User not found" });
                 return;
             }
             const passwordMatch = yield bcrypt_1.default.compare(currentPassword, user.password);
             if (!passwordMatch) {
+                logger_1.default.info(`Current password no match. Requested by: ${req.ip}`);
                 res.status(401).json({ message: "Current password no match" });
                 return;
             }
             const hashedPassword = yield bcrypt_1.default.hash(newPassword, 10);
             yield user_entity_1.default.update({ password: hashedPassword }, { where: { id } });
+            logger_1.default.info(`The password was changed successfully. Requested by: ${req.ip}`);
             res.json({ message: "The password was changed successfully" });
         }
         catch (error) {
+            logger_1.default.error(`Error for change password user Requested by: ${req.ip} message: ${error.message}`);
             res.status(500).json({ message: "An error occurred while connecting" });
         }
     });
@@ -134,12 +143,14 @@ function updateUser(req, res) {
             const { email, username } = req.body;
             const { id } = req.params;
             yield user_entity_1.default.update({ email, username }, { where: { id } });
+            logger_1.default.info(`Update user successfully.... Requested by: ${req.ip}`);
             res.json({
                 message: "Update successfully...",
                 data: { id, email, username },
             });
         }
         catch (error) {
+            logger_1.default.error(`Error for update user Requested by: ${req.ip} message: ${error.message}`);
             res.status(500).json({ message: "An error occurred while connecting" });
         }
     });
@@ -154,8 +165,10 @@ function deleteUser(req, res) {
                 message: "Delete successfully...",
                 data: { id },
             });
+            logger_1.default.info(`Delete user successfully... Requested by: ${req.ip}`);
         }
         catch (error) {
+            logger_1.default.error(`Error for delete user Requested by: ${req.ip} message: ${error.message}`);
             res.status(500).json({ message: "An error occurred while connecting" });
         }
     });

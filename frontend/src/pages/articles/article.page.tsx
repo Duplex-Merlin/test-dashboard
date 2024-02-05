@@ -7,7 +7,6 @@ import {
   NewspaperIcon,
   PencilIcon,
   TrashIcon,
-  UserPlusIcon,
 } from "@heroicons/react/24/solid";
 import {
   Card,
@@ -17,10 +16,6 @@ import {
   Button,
   CardBody,
   Chip,
-  CardFooter,
-  Tabs,
-  TabsHeader,
-  Tab,
   Avatar,
   IconButton,
   Tooltip,
@@ -28,39 +23,40 @@ import {
 import { Content } from "../../layouts";
 import { ArticleResponse } from "../../core/entities";
 import {
-  CreateArticleDialog,
   DeleteDialog,
   DialogWithImage,
   SpinnerLoader,
 } from "../../components";
-import { isEmpty } from "lodash";
+import { isEmpty, isNil } from "lodash";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { deleteArticle, getAllArticles } from "../../core/api/api";
+import { toast } from "react-toastify";
 
-const TABS = [
-  {
-    label: "All",
-    value: "all",
-  },
-  {
-    label: "Online",
-    value: "online",
-  },
-  {
-    label: "Offline",
-    value: "offline",
-  },
+const TABLE_HEAD = [
+  "Cover",
+  "Title",
+  "Description",
+  "Status",
+  "Created",
+  "Actions",
 ];
 
-const TABLE_HEAD = ["Cover", "Title", "Description", "Status", "Created", ""];
-
 export default function ArticlePage() {
+  const {
+    data: articlesData,
+    isLoading: isLoadingArticles,
+    refetch: refreshArticles,
+  } = useQuery<ArticleResponse[]>({
+    queryKey: ["all-Articles"],
+    queryFn: getAllArticles,
+  });
+
   const [openImage, setOpenImage] = React.useState(false);
-  const [openCreate, setOpenCreate] = React.useState(false);
+
   const [openDelete, setOpenDelete] = React.useState(false);
   const [openUpdate, setOpenUpdate] = React.useState(false);
   const [image, setImage] = React.useState<string>("");
-  const [isDeleteLoading, setDeleteLoading] = React.useState<boolean>(false);
 
-  const [articles, setArticles] = React.useState<ArticleResponse[]>([]);
   const [article, setArticle] = React.useState<ArticleResponse>();
 
   const [isFecthArticles, setIsFecthArticles] = React.useState(false);
@@ -75,10 +71,6 @@ export default function ArticlePage() {
     setIsFecthArticles(false);
   }, []);
 
-  React.useEffect(() => {
-    fecthArticles();
-  }, []);
-
   const handleDelete = React.useCallback((item: ArticleResponse) => {
     setArticle(item);
     setOpenDelete(true);
@@ -89,52 +81,67 @@ export default function ArticlePage() {
     setOpenUpdate(true);
   }, []);
 
+  const { mutate: handleDeleteArticle, isPending: deleteISpending } = useMutation({
+    mutationFn: (articleId: string) => {
+      return deleteArticle(articleId);
+    },
+    onSuccess(data) {
+      if (!isNil(data.data)) {
+        refreshArticles();
+        toast("Article deleted", { type: "success" });
+        setOpenDelete(false);
+      } else {
+        toast(data.message, { type: "error" });
+        setOpenDelete(false);
+      }
+    },
+    onError(error) {},
+  });
   const handleConfirmDelete = React.useCallback(async () => {
-    setDeleteLoading(true);
-    setDeleteLoading(false);
-  }, [article?.id, articles]);
+    handleDeleteArticle(article?.id!)
+  }, [article?.id, handleDeleteArticle]);
 
-  const handleResponse = React.useCallback(
-    (item: ArticleResponse) => {
-      setArticles([item, ...articles]);
-    },
-    [articles]
-  );
+  // const handleResponse = React.useCallback(
+  //   (item: ArticleResponse) => {
+  //     setArticles([item, ...articles]);
+  //   },
+  //   [articles]
+  // );
 
-  const handleUpdateResponse = React.useCallback(
-    (art: ArticleResponse) => {
-      setArticles((prevUsers) => {
-        const index = articles.findIndex((item) => item.id === art.id);
-        if (index > -1) {
-          const newArticles = [...prevUsers];
-          newArticles[index] = {
-            ...newArticles[index],
-            title: art.title,
-            description: art.description,
-            content: art.content,
-            coverPicture: art.coverPicture,
-          };
-          return newArticles;
-        }
-        return prevUsers;
-      });
-    },
-    [articles]
-  );
+  // const handleUpdateResponse = React.useCallback(
+  //   (art: ArticleResponse) => {
+  //     setArticles((prevUsers) => {
+  //       const index = articles.findIndex((item) => item.id === art.id);
+  //       if (index > -1) {
+  //         const newArticles = [...prevUsers];
+  //         newArticles[index] = {
+  //           ...newArticles[index],
+  //           title: art.title,
+  //           description: art.description,
+  //           content: art.content,
+  //           coverPicture: art.coverPicture,
+  //         };
+  //         return newArticles;
+  //       }
+  //       return prevUsers;
+  //     });
+  //   },
+  //   [articles]
+  // );
 
   const findArticles = React.useMemo(() => {
     if (isEmpty(qSearch)) {
-      return articles;
+      return articlesData;
     }
-    return articles.filter(
+    return articlesData?.filter(
       (item) =>
         item.title.includes(qSearch) || item.description.includes(qSearch)
     );
-  }, [articles, qSearch]);
+  }, [articlesData, qSearch]);
 
   return (
     <Content>
-      <div className="mb-8 flex flex-col gap-12">
+      <div className="mb-8 flex flex-col gap-12 h-full">
         <Card className="h-full w-full" placeholder="">
           <CardHeader
             floated={false}
@@ -158,7 +165,6 @@ export default function ArticlePage() {
               <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
                 <Button
                   className="flex items-center gap-3"
-                  onClick={() => setOpenCreate(true)}
                   size="sm"
                   placeholder=""
                 >
@@ -186,7 +192,7 @@ export default function ArticlePage() {
               </div>
             </div>
           </CardHeader>
-          <CardBody className="overflow-scroll px-0" placeholder="">
+          <CardBody className="px-0" placeholder="">
             {isFecthArticles ? (
               <SpinnerLoader size="xl" />
             ) : (
@@ -217,8 +223,8 @@ export default function ArticlePage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {findArticles.map((item, index) => {
-                    const isLast = index === articles.length - 1;
+                  {findArticles?.map((item, index) => {
+                    const isLast = index === fecthArticles.length - 1;
                     const classes = isLast
                       ? "p-4"
                       : "p-4 border-b border-blue-gray-50";
@@ -229,12 +235,16 @@ export default function ArticlePage() {
                           <div className="flex items-center cursor-pointer gap-3">
                             <Avatar
                               variant="square"
-                              src={`http://localhost:8001/uploads/${item.coverPicture}`}
+                              src={
+                                process.env.REACT_APP_FILE_URL +
+                                `/uploads/${item.coverPicture}`
+                              }
                               alt={item.title}
                               size="xl"
                               onClick={() => {
                                 setImage(
-                                  `http://localhost:8001/uploads/${item.coverPicture}`
+                                  process.env.REACT_APP_FILE_URL +
+                                    `/uploads/${item.coverPicture}`
                                 );
                                 setOpenImage(true);
                               }}
@@ -340,28 +350,23 @@ export default function ArticlePage() {
         open={openImage}
         handleOpen={() => setOpenImage(!openImage)}
         imageUrl={image}
-      />
+      />{" "}
       <DeleteDialog
         open={openDelete}
-        loading={isDeleteLoading}
+        loading={deleteISpending}
         handleDelete={handleConfirmDelete}
         handleOpen={() => setOpenDelete(!openDelete)}
         title="Delete this item"
         description="Are you sure you want to delete this item?"
       />
-      <CreateArticleDialog
-        open={openCreate}
-        handleOpen={() => setOpenCreate(!openCreate)}
-        dispatch={handleResponse}
-        action="add"
-      />
+      {/*
       <CreateArticleDialog
         open={openUpdate}
         handleOpen={() => setOpenUpdate(!openUpdate)}
         dispatch={handleUpdateResponse}
         action="edit"
         article={article}
-      />
+      /> */}
     </Content>
   );
 }

@@ -8,7 +8,7 @@ export default function Content({ children }: PropsWithChildren) {
       <NavbarSimple />
       <Sidebar />
       <main className=" h-screen ml-80 pt-16 max-w-[calc(100vw-320px)]">
-        <div className="bg-blue-gray-50 h-full p-6">{children}</div>
+        <div className="p-6">{children}</div>
       </main>
     </>
   );
