@@ -51,3 +51,5 @@
 {"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:57:46.807Z"}
 {"level":"info","message":"Delete article successfully!. Requested by: ::1","timestamp":"2024-02-05T09:57:49.320Z"}
 {"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:57:49.362Z"}
+{"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-02-05T09:58:13.042Z"}
+{"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-02-05T09:58:17.156Z"}
