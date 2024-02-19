@@ -18,6 +18,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const config_1 = __importDefault(require("../utils/config"));
 const user_entity_1 = __importDefault(require("../database/entities/user.entity"));
 const logger_1 = __importDefault(require("../utils/logger"));
+const lodash_1 = require("lodash");
 function signup(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -124,10 +125,32 @@ exports.changePassword = changePassword;
 function getAllUsers(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const users = yield user_entity_1.default.findAll({ attributes: { exclude: ["password"] } });
+            var page = req.query.page ? parseInt(req.query.page) : 1;
+            var pageSize = req.query.pageSize
+                ? parseInt(req.query.pageSize)
+                : 10;
+            let query = {};
+            if (!(0, lodash_1.isEmpty)(req.query.pageSize)) {
+                query = {
+                    limit: pageSize,
+                    offset: (page - 1) * pageSize,
+                };
+            }
+            let attributes = {};
+            attributes = Object.assign({ where: {} }, query);
+            const users = yield user_entity_1.default.findAll({
+                attributes: Object.assign({ exclude: ["password"] }, attributes),
+            });
+            const count = yield user_entity_1.default.count();
+            const totalPages = Math.ceil(count / pageSize);
+            const customUsersList = users.filter((user) => user.email != "account@alpha.com");
             logger_1.default.info(`Successfully get all users list. Requested by: ${req.ip}`);
             res.json({
-                data: users.filter((user) => user.email != "account@alpha.com"),
+                data: customUsersList,
+                page,
+                pageSize: pageSize,
+                totalResults: customUsersList.length,
+                totalPages,
             });
         }
         catch (error) {

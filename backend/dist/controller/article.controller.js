@@ -12,17 +12,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteArticle = exports.updateStatusArticle = exports.updateArticle = exports.getAllArticle = exports.createArticle = exports.countDashboard = void 0;
+exports.deleteArticle = exports.updateStatusArticle = exports.updateArticle = exports.getAllArticle = exports.createArticle = exports.getMonthlyStats = exports.getDailyStats = exports.trackVisit = exports.countDashboard = void 0;
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const article_entity_1 = __importDefault(require("../database/entities/article.entity"));
 const user_entity_1 = __importDefault(require("../database/entities/user.entity"));
 const logger_1 = __importDefault(require("../utils/logger"));
+const visitor_entity_1 = __importDefault(require("../database/entities/visitor.entity"));
+const sequelize_1 = require("sequelize");
+const lodash_1 = require("lodash");
 function countDashboard(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const news = yield article_entity_1.default.count();
             const users = yield user_entity_1.default.count();
-            res.json({ data: [news, 0, 0, users] });
+            const visotors = yield visitor_entity_1.default.count();
+            res.json({ data: [news, visotors, 0, users] });
         }
         catch (error) {
             logger_1.default.error(`An error occurred while registering. Requested by: ${req.ip} message: ${error.message}`);
@@ -31,6 +35,97 @@ function countDashboard(req, res) {
     });
 }
 exports.countDashboard = countDashboard;
+function trackVisit(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const existingVisit = yield visitor_entity_1.default.findOne({
+                where: { ipAddress: req.ip, timestamp: { [sequelize_1.Op.gte]: today } },
+            });
+            if (!existingVisit) {
+                yield visitor_entity_1.default.create({
+                    ipAddress: req.ip,
+                    userAgent: req.get("User-Agent"),
+                    timestamp: new Date(),
+                    date: today,
+                });
+            }
+            res.sendStatus(200);
+        }
+        catch (error) {
+            console.error(error);
+            res.sendStatus(500);
+        }
+    });
+}
+exports.trackVisit = trackVisit;
+function getDailyStats(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const stats = yield visitor_entity_1.default.findAll({
+                attributes: [
+                    [(0, sequelize_1.fn)("DATE_TRUNC", "day", (0, sequelize_1.col)("date")), "day"],
+                    [(0, sequelize_1.fn)("COUNT", (0, sequelize_1.col)("id")), "count"],
+                ],
+                where: { date: { [sequelize_1.Op.gte]: today } },
+                group: [(0, sequelize_1.fn)("DATE_TRUNC", "day", (0, sequelize_1.col)("date"))],
+                order: [[(0, sequelize_1.fn)("DATE_TRUNC", "day", (0, sequelize_1.col)("date")), "ASC"]],
+            });
+            const transformedStats = stats.map((stat) => {
+                return {
+                    day: new Date(stat.dataValues.day).toLocaleString("default", {
+                        weekday: "long",
+                    }), // Change 'long' to 'short' for abbreviated month names
+                    count: stat.dataValues.count,
+                };
+            });
+            res.json(transformedStats);
+        }
+        catch (error) {
+            console.error(error);
+            res.sendStatus(500);
+        }
+    });
+}
+exports.getDailyStats = getDailyStats;
+function getMonthlyStats(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const stats = yield visitor_entity_1.default.findAll({
+                attributes: [
+                    [(0, sequelize_1.fn)("DATE_TRUNC", "month", (0, sequelize_1.col)("date")), "month"],
+                    [(0, sequelize_1.fn)("COUNT", (0, sequelize_1.col)("id")), "count"],
+                ],
+                where: {
+                    date: {
+                        [sequelize_1.Op.gte]: new Date(today.getFullYear(), 0, 1),
+                    },
+                },
+                group: [(0, sequelize_1.fn)("DATE_TRUNC", "month", (0, sequelize_1.col)("date"))],
+                order: [[(0, sequelize_1.fn)("DATE_TRUNC", "month", (0, sequelize_1.col)("date")), "ASC"]],
+            });
+            const transformedStats = stats.map((stat) => {
+                return {
+                    month: new Date(stat.dataValues.month).toLocaleString("default", {
+                        month: "long",
+                    }), // Change 'long' to 'short' for abbreviated month names
+                    count: stat.dataValues.count,
+                };
+            });
+            res.json(transformedStats);
+        }
+        catch (error) {
+            console.error(error);
+            res.sendStatus(500);
+        }
+    });
+}
+exports.getMonthlyStats = getMonthlyStats;
 function createArticle(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -59,9 +154,30 @@ exports.createArticle = createArticle;
 function getAllArticle(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const articles = yield article_entity_1.default.findAll();
+            var page = req.query.page ? parseInt(req.query.page) : 1;
+            var pageSize = req.query.pageSize
+                ? parseInt(req.query.pageSize)
+                : 10;
+            let query = {};
+            if (!(0, lodash_1.isEmpty)(req.query.pageSize)) {
+                query = {
+                    limit: pageSize,
+                    offset: (page - 1) * pageSize,
+                };
+            }
+            let attributes = {};
+            attributes = Object.assign({ where: {} }, query);
+            const articles = yield article_entity_1.default.findAll(Object.assign({}, attributes));
+            const count = yield article_entity_1.default.count();
+            const totalPages = Math.ceil(count / pageSize);
             logger_1.default.info(`Get all l successfully!. Requested by: ${req.ip}`);
-            res.json({ data: articles });
+            res.json({
+                data: articles,
+                page,
+                pageSize: pageSize,
+                totalResults: articles.length,
+                totalPages
+            });
         }
         catch (error) {
             logger_1.default.error(`An error occurred while registering. Requested by: ${req.ip} message: ${error.message}`);

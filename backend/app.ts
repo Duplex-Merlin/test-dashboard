@@ -6,6 +6,7 @@ import authRouter from "./routes/auth.route";
 import appRouter from "./routes/app.route";
 import "./utils/upload-file";
 import logsRouter from "./routes/logs.route";
+import path from "path";
 // import chatBotRouter from "./routes/bot.route";
 // import "./nld";
 
@@ -19,7 +20,7 @@ var corsOptions = {
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
 
-// app.use(express.static(path.join(__dirname, '../../frontend/build')));
+app.use(express.static(path.join(__dirname, '../../frontend/build')));
 
 app.use(express.static("uploads"));
 

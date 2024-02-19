@@ -18,6 +18,13 @@ export interface User {
   lastLogin: string;
   createdAt: string;
 }
+export interface UserPaginate {
+  data: User[],
+  page: number;
+  pageSize: number;
+  totalResults: number;
+  totalPages: number
+}
 
 export interface UserRequest {
   email: string;

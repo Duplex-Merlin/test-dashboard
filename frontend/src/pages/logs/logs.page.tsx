@@ -1,28 +1,32 @@
-import { useQuery } from "@tanstack/react-query";
+import React from "react";
 import { Content } from "../../layouts";
 import {
   Card,
   CardHeader,
   CardBody,
   Typography,
-  Badge,
   Button,
 } from "@material-tailwind/react";
 import { getAllLogs } from "../../core/api/api";
-import { SpinnerLoader } from "../../components";
+import { PaginationCustom, SpinnerLoader } from "../../components";
 import classNames from "classnames";
-import { ArrowDownTrayIcon, SpeakerWaveIcon } from "@heroicons/react/24/solid";
-import { Link } from "react-router-dom";
+import { ArrowDownTrayIcon } from "@heroicons/react/24/solid";
+import { useQuery } from "@tanstack/react-query";
 
 export default function LogsPage() {
+  const [query, setQuery] = React.useState<string>("");
+
   const {
     data: logsData,
     isLoading: isLoadingLogs,
-    error,
-  } = useQuery<any[]>({
-    queryKey: ["all-logs"],
-    queryFn: getAllLogs,
+  } = useQuery<any>({
+    queryKey: ["all-logs", query],
+    queryFn: () => getAllLogs(query),
   });
+
+  const handleChangePage = (item: number) => {
+    setQuery(`?page=${item}`);
+  };
 
   return (
     <Content>
@@ -81,8 +85,8 @@ export default function LogsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {logsData ? (
-                    logsData!.map((item, key) => {
+                  {logsData.logs ? (
+                    logsData!.logs.map((item: any, key: any) => {
                       const className = `py-3 px-5 `;
                       const level =
                         item.level === "info"
@@ -115,6 +119,13 @@ export default function LogsPage() {
                 </tbody>
               </table>
             )}
+            <PaginationCustom
+              prevPage={(index) => handleChangePage(index - 1)}
+              nextPage={(index) => handleChangePage(index + 1)}
+              changePage={handleChangePage}
+              totalPages={logsData?.totalPages!}
+              page={logsData?.page!}
+            />
           </CardBody>
         </Card>
       </div>

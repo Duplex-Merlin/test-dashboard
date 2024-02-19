@@ -12,7 +12,6 @@ import MDEditor from "@uiw/react-md-editor";
 import { Content } from "../../layouts";
 import { AlertNotification, SpinnerLoader } from "../../components";
 import { toast } from "react-toastify";
-import { ArticleResponse } from "../../core/entities";
 import { createArticle } from "../../core/api/api";
 
 export default function NewArticlePage() {

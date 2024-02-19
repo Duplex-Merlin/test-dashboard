@@ -2,7 +2,6 @@ import { LoginRequest } from "../entities";
 import {
   UpdateRequest,
   UserRequest,
-  UserUpdateRequest,
 } from "../entities/user";
 import {
   axiospost,
@@ -17,14 +16,14 @@ export const loginUser = async (body: LoginRequest) => {
   return await res.json();
 };
 
-export const getAllLogs = async () => {
-  const res = await get("/logs");
-  return (await res.json()).logs;
+export const getAllLogs = async (query?: string) => {
+  const res = await get(`/logs${query}`);
+  return (await res.json());
 };
 
-export const getAllUsers = async () => {
-  const res = await get("/users");
-  return (await res.json()).data;
+export const getAllUsers = async (query?: string) => {
+  const res = await get(`/users${query}`);
+  return (await res.json());
 };
 
 export const createUser = async (body: UserRequest) => {
@@ -42,9 +41,9 @@ export const deleteUser = async (userId: String) => {
   return await res.json();
 };
 
-export const getAllArticles = async () => {
-  const res = await get("/articles");
-  return (await res.json()).data;
+export const getAllArticles = async (query?: string) => {
+  const res = await get(`/articles${query}`);
+  return (await res.json());
 };
 
 export const createArticle = async (data: any) => {
@@ -55,4 +54,19 @@ export const createArticle = async (data: any) => {
 export const deleteArticle = async (articleId: String) => {
   const res = await del(`/article/${articleId}/delete`);
   return await res.json();
+};
+
+export const getStats = async () => {
+  const res = await get("/dasboard");
+  return (await res.json()).data;
+};
+
+export const getDayStats = async () => {
+  const res = await get("/get-daily-stats");
+  return (await res.json());
+};
+
+export const getMonthStats = async () => {
+  const res = await get("/get-month-stats");
+  return (await res.json());
 };

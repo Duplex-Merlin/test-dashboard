@@ -12,6 +12,9 @@ import {
   createArticle,
   deleteArticle,
   getAllArticle,
+  getDailyStats,
+  getMonthlyStats,
+  trackVisit,
   updateArticle,
   updateStatusArticle,
 } from "../controller/article.controller";
@@ -19,6 +22,9 @@ import { upload } from "../utils/upload-file";
 
 const appRouter = Router();
 
+appRouter.get("/track-visit", trackVisit);
+appRouter.get("/get-daily-stats", authenticate, getDailyStats);
+appRouter.get("/get-month-stats", authenticate, getMonthlyStats);
 appRouter.get("/dasboard", authenticate, countDashboard);
 
 appRouter.get("/users", authenticate, getAllUsers);

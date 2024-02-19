@@ -11,11 +11,9 @@ import {
 } from "@material-tailwind/react";
 import {
   PresentationChartBarIcon,
-  UserCircleIcon,
   Cog6ToothIcon,
   PowerIcon,
   UserGroupIcon,
-  Squares2X2Icon,
   GlobeEuropeAfricaIcon,
   ChevronRightIcon,
   ChevronDownIcon,
@@ -65,12 +63,12 @@ const navigations = {
     },
   ],
   tree: [
-    {
-      href: "#",
-      name: "Settings",
-      icon: <Cog6ToothIcon className="h-5 w-5" />,
-      children: [],
-    },
+    // {
+    //   href: "#",
+    //   name: "Settings",
+    //   icon: <Cog6ToothIcon className="h-5 w-5" />,
+    //   children: [],
+    // },
     {
       href: "/dashboard/logs",
       name: "Logs",

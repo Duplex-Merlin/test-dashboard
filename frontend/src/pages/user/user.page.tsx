@@ -12,21 +12,28 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { PencilIcon, TrashIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import React from "react";
 import { Content } from "../../layouts";
-import { UpdateRequest, User, UserRole } from "../../core/entities/user";
-import { DeleteDialog, SignUpDialog, SpinnerLoader } from "../../components";
+import { UpdateRequest, User, UserPaginate, UserRole } from "../../core/entities/user";
+import {
+  DeleteDialog,
+  PaginationCustom,
+  SignUpDialog,
+  SpinnerLoader,
+} from "../../components";
 import { isNil } from "lodash";
 import { parseDateWith, parseDateWithHour } from "../../utils/common";
 import { deleteUser, getAllUsers } from "../../core/api/api";
 import { toast } from "react-toastify";
 
 export default function UserPage() {
+  const [query, setQuery] = React.useState<string>("");
+
   const {
     data: usersData,
     isLoading: isLoadingUsers,
     refetch: refreshUsers,
-  } = useQuery<User[]>({
-    queryKey: ["all-users"],
-    queryFn: getAllUsers,
+  } = useQuery<UserPaginate>({
+    queryKey: ["all-users", query],
+    queryFn: () => getAllUsers(query),
   });
 
   const { mutate: handleDeleteUser, isPending: deleteISpending } = useMutation({
@@ -49,31 +56,17 @@ export default function UserPage() {
   const [openSignUp, setOpenSignUp] = React.useState(false);
   const [openUpadeSignUp, setOpenUpdateSignUp] = React.useState(false);
 
-  const [users, setUsers] = React.useState<User[]>([]);
   const [user, setUser] = React.useState<User>();
 
   const handleResponse = React.useCallback(() => {
     refreshUsers();
-  }, [users]);
+  }, [refreshUsers]);
 
   const handleUpdateResponse = React.useCallback(
     (user: UpdateRequest) => {
       refreshUsers();
-      // setUsers((prevUsers) => {
-      //   const index = users.findIndex((item) => item.id === user.id);
-      //   if (index > -1) {
-      //     const newUsers = [...prevUsers];
-      //     newUsers[index] = {
-      //       ...newUsers[index],
-      //       email: user.email,
-      //       username: user.username,
-      //     };
-      //     return newUsers;
-      //   }
-      //   return prevUsers;
-      // });
     },
-    [users]
+    [refreshUsers]
   );
 
   const handleDelete = React.useCallback((user: User) => {
@@ -88,11 +81,14 @@ export default function UserPage() {
 
   const handleConfirmDelete = React.useCallback(async () => {
     handleDeleteUser(user!.id);
-  }, [open, user?.id, users]);
+  }, [handleDeleteUser, user]);
+
+  const handleChangePage = (item: number) => {
+    setQuery(`?page=${item}`);
+  };
 
   return (
     <Content>
-      {" "}
       <div className="mt-12 mb-8 flex flex-col gap-12">
         <Card placeholder={""}>
           <CardHeader
@@ -126,14 +122,10 @@ export default function UserPage() {
               </Button>
             </div>
           </CardHeader>
-          <CardBody
-            placeholder={""}
-            className="px-0 pt-0 pb-2"
-          >
+          <CardBody placeholder={""} className="px-0 pt-0 pb-2">
             {isLoadingUsers ? (
               <SpinnerLoader size="xl" />
             ) : (
-              
               <table className="w-full min-w-[640px] table-auto">
                 <thead>
                   <tr>
@@ -161,8 +153,8 @@ export default function UserPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {usersData!.length > 0 ? (
-                    usersData!.map((item, key) => {
+                  {usersData!.data.length > 0 ? (
+                    usersData!.data.map((item, key) => {
                       const className = `py-3 px-5 `;
                       return (
                         <tr key={key}>
@@ -254,6 +246,13 @@ export default function UserPage() {
                 </tbody>
               </table>
             )}
+            <PaginationCustom
+              prevPage={(index) => handleChangePage(index - 1)}
+              nextPage={(index) => handleChangePage(index + 1)}
+              changePage={handleChangePage}
+              totalPages={usersData?.totalPages!}
+              page={usersData?.page!}
+            />
           </CardBody>
         </Card>
       </div>

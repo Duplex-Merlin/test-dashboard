@@ -3,11 +3,7 @@ import {
   MagnifyingGlassIcon,
   ChevronUpDownIcon,
 } from "@heroicons/react/24/outline";
-import {
-  NewspaperIcon,
-  PencilIcon,
-  TrashIcon,
-} from "@heroicons/react/24/solid";
+import { NewspaperIcon, TrashIcon } from "@heroicons/react/24/solid";
 import {
   Card,
   CardHeader,
@@ -21,16 +17,19 @@ import {
   Tooltip,
 } from "@material-tailwind/react";
 import { Content } from "../../layouts";
-import { ArticleResponse } from "../../core/entities";
+import { ArticleResponse, ArticlesPaginate } from "../../core/entities";
 import {
   DeleteDialog,
   DialogWithImage,
+  PaginationCustom,
   SpinnerLoader,
 } from "../../components";
 import { isEmpty, isNil } from "lodash";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { deleteArticle, getAllArticles } from "../../core/api/api";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { parseDateWith } from "../../utils/common";
 
 const TABLE_HEAD = [
   "Cover",
@@ -42,63 +41,62 @@ const TABLE_HEAD = [
 ];
 
 export default function ArticlePage() {
+  const [query, setQuery] = React.useState<string>("");
+
   const {
     data: articlesData,
-    isLoading: isLoadingArticles,
     refetch: refreshArticles,
-  } = useQuery<ArticleResponse[]>({
-    queryKey: ["all-Articles"],
-    queryFn: getAllArticles,
+    isPending,
+  } = useQuery<ArticlesPaginate>({
+    queryKey: ["all-Articles", query],
+    queryFn: () => getAllArticles(query),
   });
+
+  const navigate = useNavigate();
 
   const [openImage, setOpenImage] = React.useState(false);
 
   const [openDelete, setOpenDelete] = React.useState(false);
-  const [openUpdate, setOpenUpdate] = React.useState(false);
+
   const [image, setImage] = React.useState<string>("");
 
   const [article, setArticle] = React.useState<ArticleResponse>();
 
-  const [isFecthArticles, setIsFecthArticles] = React.useState(false);
   const [qSearch, setQSearch] = React.useState<string>("");
 
   const handleQueryChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQSearch(e.target.value);
   };
 
-  const fecthArticles = React.useCallback(async () => {
-    setIsFecthArticles(true);
-    setIsFecthArticles(false);
-  }, []);
-
   const handleDelete = React.useCallback((item: ArticleResponse) => {
     setArticle(item);
     setOpenDelete(true);
   }, []);
 
-  const handleUpdate = React.useCallback((item: ArticleResponse) => {
-    setArticle(item);
-    setOpenUpdate(true);
-  }, []);
+  // const handleUpdate = React.useCallback((item: ArticleResponse) => {
+  //   setArticle(item);
+  //   setOpenUpdate(true);
+  // }, []);
 
-  const { mutate: handleDeleteArticle, isPending: deleteISpending } = useMutation({
-    mutationFn: (articleId: string) => {
-      return deleteArticle(articleId);
-    },
-    onSuccess(data) {
-      if (!isNil(data.data)) {
-        refreshArticles();
-        toast("Article deleted", { type: "success" });
-        setOpenDelete(false);
-      } else {
-        toast(data.message, { type: "error" });
-        setOpenDelete(false);
-      }
-    },
-    onError(error) {},
-  });
+  const { mutate: handleDeleteArticle, isPending: deleteISpending } =
+    useMutation({
+      mutationFn: (articleId: string) => {
+        return deleteArticle(articleId);
+      },
+      onSuccess(data) {
+        if (!isNil(data.data)) {
+          refreshArticles();
+          toast("Article deleted", { type: "success" });
+          setOpenDelete(false);
+        } else {
+          toast(data.message, { type: "error" });
+          setOpenDelete(false);
+        }
+      },
+      onError(error) {},
+    });
   const handleConfirmDelete = React.useCallback(async () => {
-    handleDeleteArticle(article?.id!)
+    handleDeleteArticle(article?.id!);
   }, [article?.id, handleDeleteArticle]);
 
   // const handleResponse = React.useCallback(
@@ -130,14 +128,26 @@ export default function ArticlePage() {
   // );
 
   const findArticles = React.useMemo(() => {
-    if (isEmpty(qSearch)) {
+    if (isEmpty(articlesData?.data)) {
       return articlesData;
     }
-    return articlesData?.filter(
+    
+    const filteredArticles = articlesData?.data.filter(
       (item) =>
-        item.title.includes(qSearch) || item.description.includes(qSearch)
+        item.title.toLowerCase().includes(qSearch.toLowerCase()) ||
+        item.description.toLowerCase().includes(qSearch.toLowerCase())
     );
+  
+    return {
+      ...articlesData,
+      data: filteredArticles,
+    };
   }, [articlesData, qSearch]);
+  
+
+  const handleChangePage = (item: number) => {
+    setQuery(`?page=${item}`);
+  };
 
   return (
     <Content>
@@ -167,6 +177,7 @@ export default function ArticlePage() {
                   className="flex items-center gap-3"
                   size="sm"
                   placeholder=""
+                  onClick={() => navigate("/dashboard/new-articles")}
                 >
                   <NewspaperIcon strokeWidth={2} className="h-4 w-4" /> Add news
                 </Button>
@@ -192,8 +203,8 @@ export default function ArticlePage() {
               </div>
             </div>
           </CardHeader>
-          <CardBody className="px-0" placeholder="">
-            {isFecthArticles ? (
+          <CardBody className="px-4" placeholder="">
+            {isPending ? (
               <SpinnerLoader size="xl" />
             ) : (
               <table className="mt-4 w-full min-w-max table-auto text-left">
@@ -223,11 +234,11 @@ export default function ArticlePage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {findArticles?.map((item, index) => {
-                    const isLast = index === fecthArticles.length - 1;
+                  {findArticles!.data?.map((item, index) => {
+                    const isLast = index === findArticles!.data!.length - 1;
                     const classes = isLast
                       ? "p-4"
-                      : "p-4 border-b border-blue-gray-50";
+                      : "p-4 border-b border-blue-gray-50 ";
 
                     return (
                       <tr key={index}>
@@ -297,11 +308,11 @@ export default function ArticlePage() {
                             className="font-normal"
                             placeholder=""
                           >
-                            {item.status}
+                            {parseDateWith(item.createdAt)}
                           </Typography>
                         </td>
                         <td className={classes}>
-                          <Tooltip content="Edit News">
+                          {/* <Tooltip content="Edit News">
                             <IconButton
                               variant="text"
                               onClick={() => handleUpdate(item)}
@@ -309,7 +320,7 @@ export default function ArticlePage() {
                             >
                               <PencilIcon className="h-4 w-4" color="green" />
                             </IconButton>
-                          </Tooltip>
+                          </Tooltip> */}
                           <Tooltip content="Delete News">
                             <IconButton
                               variant="text"
@@ -326,6 +337,13 @@ export default function ArticlePage() {
                 </tbody>
               </table>
             )}
+            <PaginationCustom
+              prevPage={(index) => handleChangePage(index - 1)}
+              nextPage={(index) => handleChangePage(index + 1)}
+              changePage={handleChangePage}
+              totalPages={findArticles?.totalPages!}
+              page={findArticles?.page!}
+            />
           </CardBody>
           {/* <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
             <Typography

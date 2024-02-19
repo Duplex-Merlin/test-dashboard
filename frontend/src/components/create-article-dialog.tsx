@@ -12,7 +12,6 @@ import {
 import { isEmpty } from "lodash";
 import { AlertNotification, SpinnerLoader } from ".";
 // import { web } from "@/core/interceptor/web.interceptor";
-import { toast } from "react-toastify";
 import { actionsType } from "../core/entities/user";
 import { ArticleResponse } from "../core/entities";
 

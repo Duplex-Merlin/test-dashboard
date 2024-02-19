@@ -8,7 +8,7 @@
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/app.js\"",
     "start": "npm run build:frontend && node dist/app.js",
     "build:frontend": "cd ../frontend && npm install && npm run build",
-    "start:frontend": "cd frontend && npm run start",
+    "start:frontend": "cd ../frontend && npm run start",
     "migration:generate": "npx sequelize-cli migration:generate --name",
     "migration:run": "npx sequelize-cli db:migrate",
     "migration:revert": "npx sequelize-cli db:migrate:undo",

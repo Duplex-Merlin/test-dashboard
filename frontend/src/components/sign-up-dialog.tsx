@@ -76,7 +76,7 @@ export function SignUpDialog({
       onError(error) {},
     });
 
-  const { mutate: updateUserMutate, isPending: updateUserIsPending } =
+  const { mutate: updateUserMutate } =
     useMutation({
       mutationFn: (userUpdate: UserUpdateRequest) => {
         return updateUser(userUpdate.userId, userUpdate.userRequest);

@@ -1,4 +1,4 @@
 import { LoginRequest } from "./user";
-import { ArticleResponse } from "./article";
+import { ArticleResponse, ArticlesPaginate } from "./article";
 
-export type { LoginRequest, ArticleResponse  };
+export type { LoginRequest, ArticleResponse, ArticlesPaginate };

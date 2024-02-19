@@ -45,7 +45,14 @@ function logsData(req, res) {
             const logPath = path_1.default.resolve(__dirname, "../../logs/combined.log");
             const rawLogs = yield readLastLines.read(logPath, 10000000000);
             const logLines = rawLogs.split("\n").filter(Boolean);
-            const logs = logLines.map((logLine) => {
+            const logsPerPage = req.query.pageSize
+                ? parseInt(req.query.pageSize)
+                : 10;
+            const page = req.query.page ? parseInt(req.query.page) : 1;
+            const offset = (page - 1) * logsPerPage;
+            const logs = logLines
+                .slice(offset, offset + logsPerPage)
+                .map((logLine) => {
                 try {
                     return JSON.parse(logLine);
                 }
@@ -58,7 +65,16 @@ function logsData(req, res) {
                     };
                 }
             });
-            res.json({ logs: logs.reverse() });
+            // Obtenir le nombre total de logs pour la pagination
+            const totalLogs = logLines.length;
+            const totalPages = Math.ceil(totalLogs / logsPerPage);
+            res.json({
+                logs: logs.reverse(),
+                page,
+                pageSize: logsPerPage,
+                totalResults: logs.length,
+                totalPages,
+            });
         }
         catch (error) {
             logger_1.default.error(`Error while fetching logs: ${error.message}`);

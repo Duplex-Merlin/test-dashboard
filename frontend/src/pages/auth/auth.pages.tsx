@@ -98,12 +98,12 @@ export default function AuthPage() {
               <></>
             )}
             <Card
-              className="absolute top-2/4 left-2/4 w-full max-w-[24rem] -translate-y-2/4 -translate-x-2/4"
+              className="absolute top-2/4 left-2/4 w-full max-w-[24rem] -translate-y-2/4 -translate-x-2/4 px-4 py-8"
               placeholder={""}
               shadow={false}
             >
               <CardHeader
-                className="mb-4 grid h-28 place-items-center relative"
+                className="mb-0 grid h-28 place-items-center relative"
                 placeholder={""}
                 shadow={false}
               >

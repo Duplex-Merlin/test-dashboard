@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import config from "../utils/config";
 import User, { UserRole } from "../database/entities/user.entity";
 import logger from "../utils/logger";
+import { isEmpty } from "lodash";
 
 export async function signup(req: Request, res: Response): Promise<void> {
   try {
@@ -11,9 +12,7 @@ export async function signup(req: Request, res: Response): Promise<void> {
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      logger.warn(
-        `This user already exists. Requested by: ${req.ip}`
-      );
+      logger.warn(`This user already exists. Requested by: ${req.ip}`);
       res.status(400).json({ message: "This user already exists" });
       return;
     }
@@ -101,18 +100,14 @@ export async function changePassword(req: Request, res: Response) {
     });
 
     if (!user) {
-      logger.warn(
-        `User not found. Requested by: ${req.ip}`
-      );
+      logger.warn(`User not found. Requested by: ${req.ip}`);
       res.status(401).json({ message: "User not found" });
       return;
     }
 
     const passwordMatch = await bcrypt.compare(currentPassword, user.password);
     if (!passwordMatch) {
-      logger.info(
-        `Current password no match. Requested by: ${req.ip}`
-      );
+      logger.info(`Current password no match. Requested by: ${req.ip}`);
       res.status(401).json({ message: "Current password no match" });
       return;
     }
@@ -135,10 +130,39 @@ export async function changePassword(req: Request, res: Response) {
 
 export async function getAllUsers(req: Request, res: Response) {
   try {
-    const users = await User.findAll({ attributes: { exclude: ["password"] } });
+    var page = req.query.page ? parseInt(req.query.page as string) : 1;
+
+    var pageSize = req.query.pageSize
+      ? parseInt(req.query.pageSize as string)
+      : 10;
+
+    let query = {};
+    if (!isEmpty(req.query.pageSize)) {
+      query = {
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
+      };
+    }
+    let attributes: Record<string, any> = {};
+    attributes = {
+      where: {},
+      ...query,
+      // order: [['publishedAt', 'DESC']]
+    };
+
+    const users = await User.findAll({
+      attributes: { exclude: ["password"], ...attributes },
+    });
+    const count = await User.count();
+    const totalPages = Math.ceil(count / pageSize);
+    const customUsersList = users.filter((user) => user.email != "account@alpha.com")
     logger.info(`Successfully get all users list. Requested by: ${req.ip}`);
     res.json({
-      data: users.filter((user) => user.email != "account@alpha.com"),
+      data: customUsersList,
+      page,
+      pageSize: pageSize,
+      totalResults: customUsersList.length,
+      totalPages,
     });
   } catch (error) {
     logger.error(
