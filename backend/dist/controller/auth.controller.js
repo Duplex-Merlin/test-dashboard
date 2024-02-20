@@ -113,7 +113,7 @@ function changePassword(req, res) {
             const hashedPassword = yield bcrypt_1.default.hash(newPassword, 10);
             yield user_entity_1.default.update({ password: hashedPassword }, { where: { id } });
             logger_1.default.info(`The password was changed successfully. Requested by: ${req.ip}`);
-            res.json({ message: "The password was changed successfully" });
+            res.json({ status: 200, message: "The password was changed successfully" });
         }
         catch (error) {
             logger_1.default.error(`Error for change password user Requested by: ${req.ip} message: ${error.message}`);

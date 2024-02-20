@@ -65,20 +65,30 @@ function getDailyStats(req, res) {
         try {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
+            // Get the first day of the week
+            const firstDayOfWeek = new Date(today);
+            firstDayOfWeek.setDate(today.getDate() - today.getDay());
+            // Get the last day of the week
+            const lastDayOfWeek = new Date(firstDayOfWeek);
+            lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
             const stats = yield visitor_entity_1.default.findAll({
                 attributes: [
-                    [(0, sequelize_1.fn)("DATE_TRUNC", "day", (0, sequelize_1.col)("date")), "day"],
-                    [(0, sequelize_1.fn)("COUNT", (0, sequelize_1.col)("id")), "count"],
+                    [(0, sequelize_1.literal)("DATE_TRUNC('day', date)"), "day"],
+                    [(0, sequelize_1.literal)("COUNT(id)"), "count"],
                 ],
-                where: { date: { [sequelize_1.Op.gte]: today } },
-                group: [(0, sequelize_1.fn)("DATE_TRUNC", "day", (0, sequelize_1.col)("date"))],
-                order: [[(0, sequelize_1.fn)("DATE_TRUNC", "day", (0, sequelize_1.col)("date")), "ASC"]],
+                where: {
+                    date: {
+                        [sequelize_1.Op.between]: [firstDayOfWeek, lastDayOfWeek],
+                    },
+                },
+                group: [(0, sequelize_1.literal)("DATE_TRUNC('day', date)")],
+                order: [(0, sequelize_1.literal)("DATE_TRUNC('day', date) ASC")],
             });
             const transformedStats = stats.map((stat) => {
                 return {
                     day: new Date(stat.dataValues.day).toLocaleString("default", {
                         weekday: "long",
-                    }), // Change 'long' to 'short' for abbreviated month names
+                    }),
                     count: stat.dataValues.count,
                 };
             });
@@ -176,7 +186,7 @@ function getAllArticle(req, res) {
                 page,
                 pageSize: pageSize,
                 totalResults: articles.length,
-                totalPages
+                totalPages,
             });
         }
         catch (error) {

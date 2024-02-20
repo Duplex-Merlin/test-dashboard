@@ -52,3 +52,8 @@ export interface UserUpdateRequest {
   userId: string;
   userRequest: UpdateRequest;
 }
+
+export interface UserPasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}

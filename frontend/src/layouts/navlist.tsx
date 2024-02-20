@@ -7,10 +7,15 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { BreadcrumbsMenu, SwitchCustom } from "../components";
+import { useAuthContext } from "../core/context/auth-context";
+import { useLocation } from "react-router-dom";
+import { valueAfterSlash } from "../utils/common";
 
 export function NavbarSimple() {
   const [openNav, setOpenNav] = React.useState<boolean>(false);
   const [mode, setMode] = React.useState<boolean>(false);
+  const location = useLocation();
+  const { currentUser } = useAuthContext();
 
   const handleWindowResize = () =>
     window.innerWidth >= 960 && setOpenNav(false);
@@ -30,7 +35,10 @@ export function NavbarSimple() {
       fullWidth={true}
     >
       <div className="flex items-center justify-between text-blue-gray-900">
-        <BreadcrumbsMenu />
+        <BreadcrumbsMenu
+          name={valueAfterSlash(location.pathname)}
+          path={location.pathname}
+        />
         <div className="hidden lg:block">
           {/* <div className="flex items-center gap-x-3">
             <SwitchCustom
@@ -44,12 +52,16 @@ export function NavbarSimple() {
             )}
           </div> */}
         </div>
-        <Avatar
-          placeholder={""}
-          src={"/assets/images/avatar.jpg"}
-          alt={"user"}
-          size="sm"
-        />
+        <div className="flex justify-center items-center gap-4">
+          <span>{currentUser?.username}</span>
+          <Avatar
+            placeholder={""}
+            src={"/assets/images/avatar.jpg"}
+            alt={"user"}
+            size="sm"
+          />
+        </div>
+
         {/* <IconButton
           variant="text"
           className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"

@@ -37,6 +37,7 @@ export const AuthProvider = ({ children }: Props) => {
     //   return navigate("/");
     // }
     setCurrentUser(currentUserFromCookies());
+
   }, []);
 
   const signOut = () => {

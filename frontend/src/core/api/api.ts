@@ -1,6 +1,7 @@
 import { LoginRequest } from "../entities";
 import {
   UpdateRequest,
+  UserPasswordRequest,
   UserRequest,
 } from "../entities/user";
 import {
@@ -33,6 +34,11 @@ export const createUser = async (body: UserRequest) => {
 
 export const updateUser = async (userId: string, body: UpdateRequest) => {
   const res = await patch(`/user/${userId}/update`, body);
+  return await res.json();
+};
+
+export const updateUserPassword = async (userId: string, password: UserPasswordRequest) => {
+  const res = await patch(`/user/${userId}/password-update`, password);
   return await res.json();
 };
 

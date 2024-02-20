@@ -5,7 +5,7 @@ import Article from "../database/entities/article.entity";
 import User from "../database/entities/user.entity";
 import logger from "../utils/logger";
 import Visitor from "../database/entities/visitor.entity";
-import { Op, col, fn } from "sequelize";
+import { Op, col, fn, literal } from "sequelize";
 import { isEmpty } from "lodash";
 
 export async function countDashboard(req: Request, res: Response) {
@@ -55,21 +55,33 @@ export async function getDailyStats(req: Request, res: Response) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    // Get the first day of the week
+    const firstDayOfWeek = new Date(today);
+    firstDayOfWeek.setDate(today.getDate() - today.getDay());
+
+    // Get the last day of the week
+    const lastDayOfWeek = new Date(firstDayOfWeek);
+    lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
+
     const stats = await Visitor.findAll({
       attributes: [
-        [fn("DATE_TRUNC", "day", col("date")), "day"],
-        [fn("COUNT", col("id")), "count"],
+        [literal("DATE_TRUNC('day', date)"), "day"],
+        [literal("COUNT(id)"), "count"],
       ],
-      where: { date: { [Op.gte]: today } },
-      group: [fn("DATE_TRUNC", "day", col("date"))],
-      order: [[fn("DATE_TRUNC", "day", col("date")), "ASC"]],
+      where: {
+        date: {
+          [Op.between]: [firstDayOfWeek, lastDayOfWeek],
+        },
+      },
+      group: [literal("DATE_TRUNC('day', date)")],
+      order: [literal("DATE_TRUNC('day', date) ASC")],
     });
 
-    const transformedStats = stats.map((stat) => {
+    const transformedStats = stats.map((stat: any) => {
       return {
         day: new Date(stat.dataValues.day).toLocaleString("default", {
           weekday: "long",
-        }), // Change 'long' to 'short' for abbreviated month names
+        }),
         count: stat.dataValues.count,
       };
     });
@@ -174,7 +186,7 @@ export async function getAllArticle(req: Request, res: Response) {
       page,
       pageSize: pageSize,
       totalResults: articles.length,
-      totalPages
+      totalPages,
     });
   } catch (error) {
     logger.error(

@@ -1,11 +1,21 @@
 import Cookies from "js-cookie";
 import { DateTime } from "luxon";
 import { BEARER_TOKEN, USER_TOKEN } from "../core/entities/contant";
-import { User } from "../core/entities/user";
+import { User, UserRole } from "../core/entities/user";
+import { jwtDecode } from "jwt-decode";
 
 export const currentUserFromCookies = (): User | null => {
   const userToken = Cookies.get(USER_TOKEN);
-  const user = userToken ? (JSON.parse(userToken) as User) : null;
+  const token = Cookies.get(BEARER_TOKEN);
+  if (!token) {
+    return null;
+  }
+  const decoded = jwtDecode(token);
+  let user = userToken ? (JSON.parse(userToken) as User) : null;
+  if (user) {
+    //@ts-ignore
+    user.role = decoded.role;
+  }
   return user;
 };
 
@@ -24,4 +34,12 @@ export const parseDateWithHour = (inputDate: string): string => {
   const parsedDate = DateTime.fromJSDate(new Date(inputDate));
 
   return parsedDate.toFormat("dd, LLL y HH:mm a");
+};
+
+export const isSuperAdmin = (role: string): boolean => {
+  return role === UserRole.SuperAdmin;
+};
+
+export const valueAfterSlash = (path: string): string => {
+  return path.split("/")[2];
 };

@@ -117,7 +117,7 @@ export async function changePassword(req: Request, res: Response) {
     logger.info(
       `The password was changed successfully. Requested by: ${req.ip}`
     );
-    res.json({ message: "The password was changed successfully" });
+    res.json({ status: 200, message: "The password was changed successfully" });
   } catch (error) {
     logger.error(
       `Error for change password user Requested by: ${req.ip} message: ${

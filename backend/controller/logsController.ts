@@ -19,7 +19,7 @@ export async function logsData(req: Request, res: Response) {
 
     const logsPerPage = req.query.pageSize
       ? parseInt(req.query.pageSize as string)
-      : 10;
+      : 100;
     const page = req.query.page ? parseInt(req.query.page as string) : 1;
     const offset = (page - 1) * logsPerPage;
 

@@ -21,6 +21,7 @@ import { ArticleResponse, ArticlesPaginate } from "../../core/entities";
 import {
   DeleteDialog,
   DialogWithImage,
+  EmptyBlock,
   PaginationCustom,
   SpinnerLoader,
 } from "../../components";
@@ -29,7 +30,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { deleteArticle, getAllArticles } from "../../core/api/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { parseDateWith } from "../../utils/common";
+import { isSuperAdmin, parseDateWith } from "../../utils/common";
+import { useAuthContext } from "../../core/context/auth-context";
 
 const TABLE_HEAD = [
   "Cover",
@@ -41,6 +43,7 @@ const TABLE_HEAD = [
 ];
 
 export default function ArticlePage() {
+  const { currentUser } = useAuthContext();
   const [query, setQuery] = React.useState<string>("");
 
   const {
@@ -131,19 +134,18 @@ export default function ArticlePage() {
     if (isEmpty(articlesData?.data)) {
       return articlesData;
     }
-    
+
     const filteredArticles = articlesData?.data.filter(
       (item) =>
         item.title.toLowerCase().includes(qSearch.toLowerCase()) ||
         item.description.toLowerCase().includes(qSearch.toLowerCase())
     );
-  
+
     return {
       ...articlesData,
       data: filteredArticles,
     };
   }, [articlesData, qSearch]);
-  
 
   const handleChangePage = (item: number) => {
     setQuery(`?page=${item}`);
@@ -234,85 +236,87 @@ export default function ArticlePage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {findArticles!.data?.map((item, index) => {
-                    const isLast = index === findArticles!.data!.length - 1;
-                    const classes = isLast
-                      ? "p-4"
-                      : "p-4 border-b border-blue-gray-50 ";
+                  {findArticles!.data!.length > 0 ? (
+                    findArticles!.data?.map((item, index) => {
+                      const isLast = index === findArticles!.data!.length - 1;
+                      const classes = isLast
+                        ? "p-4"
+                        : "p-4 border-b border-blue-gray-50 ";
 
-                    return (
-                      <tr key={index}>
-                        <td className={classes}>
-                          <div className="flex items-center cursor-pointer gap-3">
-                            <Avatar
-                              variant="square"
-                              src={
-                                process.env.REACT_APP_FILE_URL +
-                                `/uploads/${item.coverPicture}`
-                              }
-                              alt={item.title}
-                              size="xl"
-                              onClick={() => {
-                                setImage(
+                      return (
+                        <tr key={index}>
+                          <td className={classes}>
+                            <div className="flex items-center cursor-pointer gap-3">
+                              <Avatar
+                                variant="square"
+                                src={
                                   process.env.REACT_APP_FILE_URL +
-                                    `/uploads/${item.coverPicture}`
-                                );
-                                setOpenImage(true);
-                              }}
-                              placeholder=""
-                            />
-                          </div>
-                        </td>
-                        <td className={classes}>
-                          <div className="flex items-center gap-3">
+                                  `/uploads/${item.coverPicture}`
+                                }
+                                alt={item.title}
+                                size="xl"
+                                onClick={() => {
+                                  setImage(
+                                    process.env.REACT_APP_FILE_URL +
+                                      `/uploads/${item.coverPicture}`
+                                  );
+                                  setOpenImage(true);
+                                }}
+                                placeholder=""
+                              />
+                            </div>
+                          </td>
+                          <td className={classes}>
+                            <div className="flex items-center gap-3">
+                              <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal"
+                                placeholder=""
+                              >
+                                {item.title.length < 20
+                                  ? item.title
+                                  : item.title.slice(0, 20) + "..."}
+                              </Typography>
+                            </div>
+                          </td>
+                          <td className={classes}>
+                            <div className="flex flex-col">
+                              <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal opacity-70"
+                                placeholder=""
+                              >
+                                {item.description.length < 50
+                                  ? item.description
+                                  : item.description.slice(0, 50) + "..."}
+                              </Typography>
+                            </div>
+                          </td>
+                          <td className={classes}>
+                            <div className="w-max">
+                              <Chip
+                                variant="ghost"
+                                size="sm"
+                                value={item.status ? "online" : "offline"}
+                                color={item.status ? "green" : "blue-gray"}
+                              />
+                            </div>
+                          </td>
+                          <td className={classes}>
                             <Typography
                               variant="small"
                               color="blue-gray"
                               className="font-normal"
                               placeholder=""
                             >
-                              {item.title.length < 20
-                                ? item.title
-                                : item.title.slice(0, 20) + "..."}
+                              {parseDateWith(item.createdAt)}
                             </Typography>
-                          </div>
-                        </td>
-                        <td className={classes}>
-                          <div className="flex flex-col">
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal opacity-70"
-                              placeholder=""
-                            >
-                              {item.description.length < 50
-                                ? item.description
-                                : item.description.slice(0, 50) + "..."}
-                            </Typography>
-                          </div>
-                        </td>
-                        <td className={classes}>
-                          <div className="w-max">
-                            <Chip
-                              variant="ghost"
-                              size="sm"
-                              value={item.status ? "online" : "offline"}
-                              color={item.status ? "green" : "blue-gray"}
-                            />
-                          </div>
-                        </td>
-                        <td className={classes}>
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                            placeholder=""
-                          >
-                            {parseDateWith(item.createdAt)}
-                          </Typography>
-                        </td>
-                        <td className={classes}>
-                          {/* <Tooltip content="Edit News">
+                          </td>
+                          {isSuperAdmin(currentUser?.role!) ? (
+                            <td className={classes}>
+                              {/* <Tooltip content="Edit News">
                             <IconButton
                               variant="text"
                               onClick={() => handleUpdate(item)}
@@ -321,19 +325,29 @@ export default function ArticlePage() {
                               <PencilIcon className="h-4 w-4" color="green" />
                             </IconButton>
                           </Tooltip> */}
-                          <Tooltip content="Delete News">
-                            <IconButton
-                              variant="text"
-                              onClick={() => handleDelete(item)}
-                              placeholder=""
-                            >
-                              <TrashIcon className="h-4 w-4" color="red" />
-                            </IconButton>
-                          </Tooltip>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                              <Tooltip content="Delete News">
+                                <IconButton
+                                  variant="text"
+                                  onClick={() => handleDelete(item)}
+                                  placeholder=""
+                                >
+                                  <TrashIcon className="h-4 w-4" color="red" />
+                                </IconButton>
+                              </Tooltip>
+                            </td>
+                          ) : (
+                            <></>
+                          )}
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan={6}>
+                        <EmptyBlock />
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             )}

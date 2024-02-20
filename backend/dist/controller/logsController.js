@@ -47,7 +47,7 @@ function logsData(req, res) {
             const logLines = rawLogs.split("\n").filter(Boolean);
             const logsPerPage = req.query.pageSize
                 ? parseInt(req.query.pageSize)
-                : 10;
+                : 100;
             const page = req.query.page ? parseInt(req.query.page) : 1;
             const offset = (page - 1) * logsPerPage;
             const logs = logLines

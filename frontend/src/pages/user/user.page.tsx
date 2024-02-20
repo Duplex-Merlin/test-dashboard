@@ -7,24 +7,45 @@ import {
   Tooltip,
   IconButton,
   Button,
+  Input,
 } from "@material-tailwind/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { PencilIcon, TrashIcon, UserPlusIcon } from "@heroicons/react/24/solid";
-import React from "react";
+import {
+  ClipboardDocumentIcon,
+  LockClosedIcon,
+  MagnifyingGlassIcon,
+  PencilIcon,
+  TrashIcon,
+  UserPlusIcon,
+} from "@heroicons/react/24/solid";
+import React, { ChangeEvent } from "react";
 import { Content } from "../../layouts";
-import { UpdateRequest, User, UserPaginate, UserRole } from "../../core/entities/user";
+import {
+  UpdateRequest,
+  User,
+  UserPaginate,
+  UserRole,
+} from "../../core/entities/user";
 import {
   DeleteDialog,
+  EmptyBlock,
   PaginationCustom,
   SignUpDialog,
   SpinnerLoader,
+  UpdatePasswordDialog,
 } from "../../components";
-import { isNil } from "lodash";
-import { parseDateWith, parseDateWithHour } from "../../utils/common";
+import { isEmpty, isNil } from "lodash";
+import {
+  isSuperAdmin,
+  parseDateWith,
+  parseDateWithHour,
+} from "../../utils/common";
 import { deleteUser, getAllUsers } from "../../core/api/api";
 import { toast } from "react-toastify";
+import { useAuthContext } from "../../core/context/auth-context";
 
 export default function UserPage() {
+  const { currentUser } = useAuthContext();
   const [query, setQuery] = React.useState<string>("");
 
   const {
@@ -55,6 +76,8 @@ export default function UserPage() {
   const [open, setOpen] = React.useState(false);
   const [openSignUp, setOpenSignUp] = React.useState(false);
   const [openUpadeSignUp, setOpenUpdateSignUp] = React.useState(false);
+  const [openUpadePassword, setOpenUpdatePassword] = React.useState(false);
+  const [qSearch, setQSearch] = React.useState<string>("");
 
   const [user, setUser] = React.useState<User>();
 
@@ -79,6 +102,11 @@ export default function UserPage() {
     setOpenUpdateSignUp(true);
   }, []);
 
+  const handleUpdatePassword = React.useCallback((item: User) => {
+    setUser(item);
+    setOpenUpdatePassword(true);
+  }, []);
+
   const handleConfirmDelete = React.useCallback(async () => {
     handleDeleteUser(user!.id);
   }, [handleDeleteUser, user]);
@@ -86,6 +114,25 @@ export default function UserPage() {
   const handleChangePage = (item: number) => {
     setQuery(`?page=${item}`);
   };
+  const handleQueryChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setQSearch(e.target.value);
+  };
+  const findUsers = React.useMemo(() => {
+    if (isEmpty(usersData?.data)) {
+      return usersData;
+    }
+
+    const filteredUsers = usersData?.data.filter(
+      (item) =>
+        item.username.toLowerCase().includes(qSearch.toLowerCase()) ||
+        item.email.toLowerCase().includes(qSearch.toLowerCase())
+    );
+
+    return {
+      ...usersData,
+      data: filteredUsers,
+    };
+  }, [usersData, qSearch]);
 
   return (
     <Content>
@@ -111,15 +158,30 @@ export default function UserPage() {
                 </Typography>
               </div>
             </div>
-            <div>
-              <Button
-                onClick={() => setOpenSignUp(true)}
-                className="flex items-center gap-3"
-                size="sm"
-                placeholder={""}
-              >
-                <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Add user
-              </Button>
+            <div className="flex flex-col justify-end items-end gap-4">
+              {isSuperAdmin(currentUser?.role!) ? (
+                <div>
+                  <Button
+                    onClick={() => setOpenSignUp(true)}
+                    className="flex items-center gap-3"
+                    size="sm"
+                    placeholder={""}
+                  >
+                    <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Add
+                    user
+                  </Button>
+                </div>
+              ) : (
+                <></>
+              )}
+              <div className="w-full md:w-72">
+                <Input
+                  label="Search: Name, Email"
+                  crossOrigin=""
+                  onChange={handleQueryChange}
+                  icon={<MagnifyingGlassIcon className="h-5 w-5" />}
+                />
+              </div>
             </div>
           </CardHeader>
           <CardBody placeholder={""} className="px-0 pt-0 pb-2">
@@ -153,8 +215,8 @@ export default function UserPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {usersData!.data.length > 0 ? (
-                    usersData!.data.map((item, key) => {
+                  {findUsers!.data!.length > 0 ? (
+                    findUsers!.data?.map((item, key) => {
                       const className = `py-3 px-5 `;
                       return (
                         <tr key={key}>
@@ -215,32 +277,54 @@ export default function UserPage() {
                               {parseDateWith(item.createdAt)}
                             </Typography>
                           </td>
-                          <td className={className}>
-                            <Tooltip content="Edit User">
-                              <IconButton
-                                variant="text"
-                                onClick={() => handleUpdate(item)}
-                                placeholder={""}
-                              >
-                                <PencilIcon className="h-4 w-4" color="green" />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip content="Delete User">
-                              <IconButton
-                                variant="text"
-                                onClick={() => handleDelete(item)}
-                                placeholder={""}
-                              >
-                                <TrashIcon className="h-4 w-4" color="red" />
-                              </IconButton>
-                            </Tooltip>
-                          </td>
+                          {isSuperAdmin(currentUser?.role!) ? (
+                            <td className={className}>
+                              <Tooltip content="Update Password">
+                                <IconButton
+                                  variant="text"
+                                  onClick={() => handleUpdatePassword(item)}
+                                  placeholder={""}
+                                >
+                                  <LockClosedIcon
+                                    className="h-4 w-4"
+                                    color="info"
+                                  />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip content="Edit User">
+                                <IconButton
+                                  variant="text"
+                                  onClick={() => handleUpdate(item)}
+                                  placeholder={""}
+                                >
+                                  <PencilIcon
+                                    className="h-4 w-4"
+                                    color="green"
+                                  />
+                                </IconButton>
+                              </Tooltip>
+
+                              <Tooltip content="Delete User">
+                                <IconButton
+                                  variant="text"
+                                  onClick={() => handleDelete(item)}
+                                  placeholder={""}
+                                >
+                                  <TrashIcon className="h-4 w-4" color="red" />
+                                </IconButton>
+                              </Tooltip>
+                            </td>
+                          ) : (
+                            <></>
+                          )}
                         </tr>
                       );
                     })
                   ) : (
                     <tr>
-                      <td className={`py-3 px-5 `}>No data found</td>
+                      <td colSpan={6}>
+                        <EmptyBlock />
+                      </td>
                     </tr>
                   )}
                 </tbody>
@@ -250,8 +334,8 @@ export default function UserPage() {
               prevPage={(index) => handleChangePage(index - 1)}
               nextPage={(index) => handleChangePage(index + 1)}
               changePage={handleChangePage}
-              totalPages={usersData?.totalPages!}
-              page={usersData?.page!}
+              totalPages={findUsers?.totalPages!}
+              page={findUsers?.page!}
             />
           </CardBody>
         </Card>
@@ -281,6 +365,15 @@ export default function UserPage() {
         description="Update your name and email."
         action="edit"
       />
+      {!isNil(user) ? (
+        <UpdatePasswordDialog
+          userId={user.id}
+          open={openUpadePassword}
+          handleOpen={() => setOpenUpdatePassword(!openUpadePassword)}
+        />
+      ) : (
+        <></>
+      )}
     </Content>
   );
 }

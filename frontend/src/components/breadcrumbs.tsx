@@ -1,7 +1,12 @@
 import { Breadcrumbs } from "@material-tailwind/react";
 import { NavLink } from "react-router-dom";
 
-export function BreadcrumbsMenu() {
+interface BreadcrumbsMenuProsp {
+  path: string;
+  name: string
+}
+
+export function BreadcrumbsMenu({path, name}:BreadcrumbsMenuProsp) {
   return (
     <Breadcrumbs placeholder={""}>
       <NavLink to="#" className="opacity-60">
@@ -14,10 +19,10 @@ export function BreadcrumbsMenu() {
           <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
         </svg>
       </NavLink>
-      <NavLink to="#" className="opacity-60">
+      <NavLink to="/" className="opacity-60">
         <span>Dashboard</span>
       </NavLink>
-      <NavLink to="#">Home</NavLink>
+      <NavLink to={path}>{name}</NavLink>
     </Breadcrumbs>
   );
 }

@@ -10,6 +10,7 @@ import CategoryPage from "./pages/category/category.page";
 import ArticlePage from "./pages/articles/article.page";
 import NewArticlePage from "./pages/articles/new-article";
 import LogsPage from "./pages/logs/logs.page";
+import NotFound from "./pages/404/not-found.page";
 
 function App() {
   return (
@@ -28,6 +29,8 @@ function App() {
               <Route path="/dashboard/articles" element={<ArticlePage />} />
               <Route path="/dashboard/users" element={<UserPage />} />
               <Route path="/dashboard/logs" element={<LogsPage />} />
+              <Route path="*" element={<NotFound />} />
+
             </Routes>
           </AuthProvider>
         </AuthMiddleware>
