@@ -10,16 +10,20 @@ import {
 } from "@material-tailwind/react";
 import { isEmpty, isNil, omit } from "lodash";
 import { useMutation } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
+import Cookies from "js-cookie";
+
 import { AlertNotification, SpinnerLoader } from "../../components";
 import { AlertType } from "../../components/alert-notification";
 import { TailwindIcon } from "../../components/icons";
 import { LoginRequest } from "../../core/entities";
 import { loginUser } from "../../core/api/api";
-import Cookies from "js-cookie";
-import { BEARER_TOKEN, USER_TOKEN } from "../../core/entities/contant";
+import { BEARER_TOKEN, LANG, USER_TOKEN } from "../../core/entities/contant";
 import { User } from "../../core/entities/user";
+import { LockClosedIcon } from "@heroicons/react/24/solid";
 
 export default function AuthPage() {
+  const { t, i18n } = useTranslation();
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
   const [open, setOpen] = React.useState<boolean>(false);
@@ -76,6 +80,11 @@ export default function AuthPage() {
     [mutate, password, email]
   );
 
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+    Cookies.set(LANG, lng);
+  };
+
   const message = !isEmpty(messages?.message) ? messages?.message! : "";
 
   return (
@@ -98,16 +107,19 @@ export default function AuthPage() {
               <></>
             )}
             <Card
-              className="absolute top-2/4 left-2/4 w-full max-w-[24rem] -translate-y-2/4 -translate-x-2/4 px-4 py-8"
+              className="absolute bg-transparent top-2/4 left-2/4 w-full max-w-[24rem] -translate-y-2/4 -translate-x-2/4 px-4 py-8"
               placeholder={""}
               shadow={false}
             >
               <CardHeader
-                className="mb-0 grid h-28 place-items-center relative"
+                className="mb-0 flex flex-col h-28 bg-transparent place-items-center relative"
                 placeholder={""}
                 shadow={false}
               >
-                <TailwindIcon className="text-blue-700" />
+                <LockClosedIcon className="h-28 w-28" />
+                <span className="text-primary-600 text-3xl font-semibold">
+                  Authentication
+                </span>
               </CardHeader>
               <CardBody className="flex flex-col gap-4" placeholder={""}>
                 <Typography variant="small" color="black" placeholder={""}>
@@ -121,6 +133,7 @@ export default function AuthPage() {
                   type="email"
                   label="Email"
                   size="lg"
+                  className="bg-white"
                 />
                 <Typography variant="small" color="black" placeholder={""}>
                   Mot de passe
@@ -133,6 +146,7 @@ export default function AuthPage() {
                   disabled={isPending}
                   onChange={(e) => setPassword(e.target.value)}
                   size="lg"
+                  className="bg-white"
                 />
               </CardBody>
               <CardFooter className="pt-0" placeholder={""}>
@@ -143,7 +157,7 @@ export default function AuthPage() {
                   type="submit"
                   placeholder={""}
                 >
-                  {!isPending ? "Connexion" : <SpinnerLoader size="sm" />}
+                  {!isPending ? "Login" : <SpinnerLoader size="sm" />}
                 </Button>
               </CardFooter>
               <div className="flex flex-row justify-center items-center gap-x-6 my-12">
@@ -151,7 +165,8 @@ export default function AuthPage() {
                   variant="small"
                   color="black"
                   placeholder={""}
-                  className="cursor-pointer"
+                  className="cursor-pointer hover:text-light-blue-700"
+                  onClick={() => changeLanguage("fr")}
                 >
                   Français
                 </Typography>
@@ -159,11 +174,13 @@ export default function AuthPage() {
                   variant="small"
                   color="black"
                   placeholder={""}
-                  className="cursor-pointer"
+                  className="cursor-pointer hover:text-light-blue-700"
+                  onClick={() => changeLanguage("en")}
                 >
                   Anglais
                 </Typography>
               </div>
+              {/* <h1>{t("Welcome to React")}</h1> */}
               <div className="flex flex-col justify-center items-center gap-y-1">
                 <TailwindIcon className="text-sm w-24 text-blue-700" />
                 <span className="text-xs">Copyright© 2024 Merlin-3D.</span>

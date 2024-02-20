@@ -8,7 +8,7 @@ module.exports = withMT({
   theme: {
     extend: {
       backgroundImage :{
-        element: "url('../public/assets/images/element.png')",
+        element: "url('../public/assets/images/vector-line-1.png')",
       }
     },
   

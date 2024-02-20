@@ -16,8 +16,11 @@ import { isNil } from "lodash";
 //@ts-ignore
 import Plot from "react-plotly.js";
 import { StatsDay, StatsMonth } from "../../core/entities/stats";
+import { useAuthContext } from "../../core/context/auth-context";
 
 export default function HomePage() {
+  // const { t } = useTranslation();
+  const { t } = useAuthContext();
   const { data: statsData } = useQuery<any[]>({
     queryKey: ["stats-admin"],
     queryFn: getStats,
@@ -32,8 +35,7 @@ export default function HomePage() {
     queryKey: ["month-stats"],
     queryFn: getMonthStats,
   });
-
-  console.log(monthStats);
+  
   return (
     <Content>
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
@@ -58,6 +60,7 @@ export default function HomePage() {
           />
         ))}
       </div>
+      <h1>{t("Welcome to React")}</h1>
       <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2">
         <Card
           placeholder={""}

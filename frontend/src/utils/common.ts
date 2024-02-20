@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 import { DateTime } from "luxon";
-import { BEARER_TOKEN, USER_TOKEN } from "../core/entities/contant";
+import { BEARER_TOKEN, LANG, USER_TOKEN } from "../core/entities/contant";
 import { User, UserRole } from "../core/entities/user";
 import { jwtDecode } from "jwt-decode";
 
@@ -19,9 +19,15 @@ export const currentUserFromCookies = (): User | null => {
   return user;
 };
 
+export const currentLang = (): string => {
+  const lang = Cookies.get(LANG)!
+  return lang;
+};
+
 export const removeUserFromCookies = () => {
   Cookies.remove(BEARER_TOKEN);
   Cookies.remove(USER_TOKEN);
+  Cookies.remove(LANG);
 };
 
 export const parseDateWith = (inputDate: string): string => {
