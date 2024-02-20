@@ -67,7 +67,7 @@ export default function AlertNotification({
           variant="text"
           color="white"
           size="sm"
-          className="!absolute top-3 right-3"
+          className="!absolute top-0 bottom-0 right-3"
           onClick={handleOpen}
           placeholder={""}
         >

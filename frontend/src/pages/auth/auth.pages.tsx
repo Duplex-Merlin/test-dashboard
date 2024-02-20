@@ -99,7 +99,7 @@ export default function AuthPage() {
                 content={message}
                 color={messages ? messages!.color : "white"}
                 type={messages ? messages?.type! : "info"}
-                className=" w-96"
+                className="py-2 w-96"
               >
                 <></>
               </AlertNotification>
@@ -112,7 +112,7 @@ export default function AuthPage() {
               shadow={false}
             >
               <CardHeader
-                className="mb-0 flex flex-col h-28 bg-transparent place-items-center relative"
+                className="mb-0 flex flex-col bg-transparent place-items-center relative"
                 placeholder={""}
                 shadow={false}
               >
@@ -149,7 +149,7 @@ export default function AuthPage() {
                   className="bg-white"
                 />
               </CardBody>
-              <CardFooter className="pt-0" placeholder={""}>
+              <CardFooter className="py-0" placeholder={""}>
                 <Button
                   variant="gradient"
                   disabled={isPending}
@@ -160,7 +160,7 @@ export default function AuthPage() {
                   {!isPending ? "Login" : <SpinnerLoader size="sm" />}
                 </Button>
               </CardFooter>
-              <div className="flex flex-row justify-center items-center gap-x-6 my-12">
+              <div className="flex flex-row justify-center items-center gap-x-6 my-6">
                 <Typography
                   variant="small"
                   color="black"
