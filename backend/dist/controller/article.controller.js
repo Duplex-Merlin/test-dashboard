@@ -81,7 +81,10 @@ function getDailyStats(req, res) {
                         [sequelize_1.Op.between]: [firstDayOfWeek, lastDayOfWeek],
                     },
                 },
-                group: [(0, sequelize_1.literal)("DATE_TRUNC('day', date)")],
+                group: [
+                    //@ts-ignore
+                    (0, sequelize_1.literal)("DATE_TRUNC('day', date)")
+                ],
                 order: [(0, sequelize_1.literal)("DATE_TRUNC('day', date) ASC")],
             });
             const transformedStats = stats.map((stat) => {

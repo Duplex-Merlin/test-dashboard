@@ -19,7 +19,6 @@ import { StatsDay, StatsMonth } from "../../core/entities/stats";
 import { useAuthContext } from "../../core/context/auth-context";
 
 export default function HomePage() {
-  // const { t } = useTranslation();
   const { t } = useAuthContext();
   const { data: statsData } = useQuery<any[]>({
     queryKey: ["stats-admin"],
@@ -60,7 +59,6 @@ export default function HomePage() {
           />
         ))}
       </div>
-      <h1>{t("Welcome to React")}</h1>
       <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2">
         <Card
           placeholder={""}
@@ -89,14 +87,14 @@ export default function HomePage() {
           </CardHeader>
           <CardBody placeholder={""} className="px-6 pt-0">
             <Typography placeholder={""} variant="h6" color="blue-gray">
-              Website view Per Day
+            {t("home.chart.one.title")}
             </Typography>
             <Typography
               placeholder={""}
               variant="small"
               className="font-normal text-blue-gray-600"
             >
-              Last Campaign Performance
+              {t("home.chart.one.description")}
             </Typography>
           </CardBody>
         </Card>
@@ -127,14 +125,14 @@ export default function HomePage() {
           </CardHeader>
           <CardBody placeholder={""} className="px-6 pt-0">
             <Typography placeholder={""} variant="h6" color="blue-gray">
-              Website View Per Month
+            {t("home.chart.two.title")}
             </Typography>
             <Typography
               placeholder={""}
               variant="small"
               className="font-normal text-blue-gray-600"
             >
-              Last Campaign Performance
+             {t("home.chart.two.description")}
             </Typography>
           </CardBody>
         </Card>

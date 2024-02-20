@@ -15,7 +15,7 @@ export function NavbarSimple() {
   const [openNav, setOpenNav] = React.useState<boolean>(false);
   const [mode, setMode] = React.useState<boolean>(false);
   const location = useLocation();
-  const { currentUser } = useAuthContext();
+  const { t, currentUser } = useAuthContext();
 
   const handleWindowResize = () =>
     window.innerWidth >= 960 && setOpenNav(false);
@@ -36,6 +36,7 @@ export function NavbarSimple() {
     >
       <div className="flex items-center justify-between text-blue-gray-900">
         <BreadcrumbsMenu
+          label={t("sidebar.dashboard")}
           name={valueAfterSlash(location.pathname)}
           path={location.pathname}
         />

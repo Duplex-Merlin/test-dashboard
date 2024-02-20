@@ -24,67 +24,69 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import classNames from "classnames";
 import { useAuthContext } from "../core/context/auth-context";
 
-const navigations = {
-  one: [
-    {
-      href: "/dashboard",
-      name: "Dashboard",
-      icon: <PresentationChartBarIcon className="h-5 w-5" />,
-      children: [],
-    },
-  ],
-  two: [
-    // {
-    //   href: "/dashboard/category",
-    //   name: "Categories",
-    //   icon: <Squares2X2Icon className="h-5 w-5" />,
-    //   children: [],
-    // },
-    {
-      href: "#",
-      name: "News",
-      icon: <GlobeEuropeAfricaIcon className="h-5 w-5" />,
-      children: [
-        {
-          href: "/dashboard/new-articles",
-          name: "Write News",
-        },
-        {
-          href: "/dashboard/articles",
-          name: "List News",
-        },
-      ],
-    },
-    {
-      href: "/dashboard/users",
-      name: "Users",
-      icon: <UserGroupIcon className="h-5 w-5" />,
-      children: [],
-    },
-  ],
-  tree: [
-    // {
-    //   href: "#",
-    //   name: "Settings",
-    //   icon: <Cog6ToothIcon className="h-5 w-5" />,
-    //   children: [],
-    // },
-    {
-      href: "/dashboard/logs",
-      name: "Logs",
-      icon: <CircleStackIcon className="h-5 w-5" />,
-      children: [],
-    },
-  ],
-};
+
 
 export function Sidebar() {
-  const { signOut } = useAuthContext();
+  const { t, signOut } = useAuthContext();
   const location = useLocation();
   const [open, setOpen] = React.useState<number>(0);
 
   const handleOpen = (value: number) => {
     setOpen(open === value ? 0 : value);
+  };
+
+  const navigations = {
+    one: [
+      {
+        href: "/dashboard",
+        name: t('sidebar.dashboard'),
+        icon: <PresentationChartBarIcon className="h-5 w-5" />,
+        children: [],
+      },
+    ],
+    two: [
+      // {
+      //   href: "/dashboard/category",
+      //   name: "Categories",
+      //   icon: <Squares2X2Icon className="h-5 w-5" />,
+      //   children: [],
+      // },
+      {
+        href: "#",
+        name: t('sidebar.news'),
+        icon: <GlobeEuropeAfricaIcon className="h-5 w-5" />,
+        children: [
+          {
+            href: "/dashboard/new-articles",
+            name: t('sidebar.write_news'),
+          },
+          {
+            href: "/dashboard/articles",
+            name: t('sidebar.list_news'),
+          },
+        ],
+      },
+      {
+        href: "/dashboard/users",
+        name: t('sidebar.users'),
+        icon: <UserGroupIcon className="h-5 w-5" />,
+        children: [],
+      },
+    ],
+    tree: [
+      // {
+      //   href: "#",
+      //   name: "Settings",
+      //   icon: <Cog6ToothIcon className="h-5 w-5" />,
+      //   children: [],
+      // },
+      {
+        href: "/dashboard/logs",
+        name: t('sidebar.logs'),
+        icon: <CircleStackIcon className="h-5 w-5" />,
+        children: [],
+      },
+    ],
   };
 
   return (

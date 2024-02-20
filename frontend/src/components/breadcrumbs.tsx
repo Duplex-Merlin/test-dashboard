@@ -2,11 +2,12 @@ import { Breadcrumbs } from "@material-tailwind/react";
 import { NavLink } from "react-router-dom";
 
 interface BreadcrumbsMenuProsp {
+  label: string;
   path: string;
   name: string
 }
 
-export function BreadcrumbsMenu({path, name}:BreadcrumbsMenuProsp) {
+export function BreadcrumbsMenu({label, path, name}:BreadcrumbsMenuProsp) {
   return (
     <Breadcrumbs placeholder={""}>
       <NavLink to="#" className="opacity-60">
@@ -20,7 +21,7 @@ export function BreadcrumbsMenu({path, name}:BreadcrumbsMenuProsp) {
         </svg>
       </NavLink>
       <NavLink to="/" className="opacity-60">
-        <span>Dashboard</span>
+        <span>{label}</span>
       </NavLink>
       <NavLink to={path}>{name}</NavLink>
     </Breadcrumbs>

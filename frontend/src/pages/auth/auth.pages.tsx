@@ -118,12 +118,12 @@ export default function AuthPage() {
               >
                 <LockClosedIcon className="h-28 w-28" />
                 <span className="text-primary-600 text-3xl font-semibold">
-                  Authentication
+                  {t('auth.title')}
                 </span>
               </CardHeader>
               <CardBody className="flex flex-col gap-4" placeholder={""}>
                 <Typography variant="small" color="black" placeholder={""}>
-                  Adresse email
+                {t('auth.email_address')}
                 </Typography>
                 <Input
                   crossOrigin=""
@@ -131,7 +131,7 @@ export default function AuthPage() {
                   disabled={isPending}
                   onChange={(e) => setEmail(e.target.value)}
                   type="email"
-                  label="Email"
+                  label={t('auth.email')}
                   size="lg"
                   className="bg-white"
                 />
@@ -141,7 +141,7 @@ export default function AuthPage() {
                 <Input
                   crossOrigin=""
                   type="password"
-                  label="Password"
+                  label={t('auth.password')}
                   required={true}
                   disabled={isPending}
                   onChange={(e) => setPassword(e.target.value)}
@@ -157,7 +157,7 @@ export default function AuthPage() {
                   type="submit"
                   placeholder={""}
                 >
-                  {!isPending ? "Login" : <SpinnerLoader size="sm" />}
+                  {!isPending ? t('actions.login') : <SpinnerLoader size="sm" />}
                 </Button>
               </CardFooter>
               <div className="flex flex-row justify-center items-center gap-x-6 my-6">
@@ -168,7 +168,7 @@ export default function AuthPage() {
                   className="cursor-pointer hover:text-light-blue-700"
                   onClick={() => changeLanguage("fr")}
                 >
-                  Français
+                  {t('auth.french')}
                 </Typography>
                 <Typography
                   variant="small"
@@ -177,7 +177,7 @@ export default function AuthPage() {
                   className="cursor-pointer hover:text-light-blue-700"
                   onClick={() => changeLanguage("en")}
                 >
-                  Anglais
+                  {t('auth.english')}
                 </Typography>
               </div>
               {/* <h1>{t("Welcome to React")}</h1> */}

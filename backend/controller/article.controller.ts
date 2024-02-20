@@ -73,7 +73,9 @@ export async function getDailyStats(req: Request, res: Response) {
           [Op.between]: [firstDayOfWeek, lastDayOfWeek],
         },
       },
-      group: [literal("DATE_TRUNC('day', date)")],
+      group: [
+        //@ts-ignore
+        literal("DATE_TRUNC('day', date)")],
       order: [literal("DATE_TRUNC('day', date) ASC")],
     });
 
