@@ -13,14 +13,16 @@ import { Content } from "../../layouts";
 import { AlertNotification, SpinnerLoader } from "../../components";
 import { toast } from "react-toastify";
 import { createArticle } from "../../core/api/api";
+import { useMutation } from "@tanstack/react-query";
+import { useAuthContext } from "../../core/context/auth-context";
 
 export default function NewArticlePage() {
+  const { t } = useAuthContext();
   const [title, setTitle] = React.useState<string>("");
   const [description, setDescription] = React.useState<string>("");
   const [content, setContent] = React.useState<any>("");
   const [errorMessage, setErrorMessage] = React.useState<string>("");
 
-  const [_isLoading, setLoading] = React.useState<boolean>(false);
   const [openAlert, setOpenAlert] = React.useState<boolean>(false);
 
   const [file, setFile] = React.useState<File | null>(null);
@@ -31,38 +33,65 @@ export default function NewArticlePage() {
     }
   };
 
+  const { mutate: createArticleMutate, isPending } = useMutation({
+    mutationFn: (articleRequest: FormData) => {
+      return createArticle(articleRequest);
+    },
+    onSuccess(data) {
+      try {
+        if (data.status === 201) {
+          toast(t("news.create_success"), { type: "success" });
+          setFile(null);
+          setTitle("");
+          setDescription("");
+          setContent("");
+        } else {
+          setOpenAlert(true);
+          console.log(data);
+
+          setErrorMessage(data.data.message);
+        }
+      } catch (error) {
+        setOpenAlert(true);
+        setErrorMessage(error as string);
+      }
+    },
+    onError(error) {
+      setOpenAlert(true);
+      setErrorMessage(error.message as string);
+    },
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setErrorMessage("");
-    setOpenAlert(false);
 
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     formData.append("content", content);
     formData.append("coverPicture", file!);
+    createArticleMutate(formData);
+    // const response = await createArticle(formData);
+    // try {
+    //   if (response.status === 201) {
+    //     toast("Create successfuly...", { type: "success" });
+    //     // const data = response.data.data as ArticleResponse;
+    //     setFile(null);
+    //     setTitle("");
+    //     setDescription("");
+    //     setContent("");
+    //   } else {
+    //     console.log(response);
+    //     setOpenAlert(true);
+    //     setErrorMessage(response.data.message);
+    //   }
+    // } catch (error) {
+    //   setOpenAlert(true);
+    //   setErrorMessage(error as string);
+    // }
 
-    const response = await createArticle(formData);
-    try {
-      if (response.status === 201) {
-        toast("Create successfuly...", { type: "success" });
-        // const data = response.data.data as ArticleResponse;
-        setFile(null);
-        setTitle("");
-        setDescription("");
-        setContent("");
-      } else {
-        console.log(response);
-        setOpenAlert(true);
-        setErrorMessage(response.data.message);
-      }
-    } catch (error) {
-      setOpenAlert(true);
-      setErrorMessage(error as string);
-    }
-
-    setLoading(false);
+    // setLoading(false);
   };
 
   return (
@@ -81,14 +110,14 @@ export default function NewArticlePage() {
             <div className="mb-4 flex items-center justify-between gap-8">
               <div>
                 <Typography variant="h5" color="blue-gray" placeholder="">
-                  Write News
+                  {t("news.write_news")}
                 </Typography>
                 <Typography
                   color="gray"
                   className="mb-1 font-normal"
                   placeholder=""
                 >
-                  Write information about your news
+                  {t("news.write_info")}
                 </Typography>
               </div>
             </div>
@@ -104,13 +133,13 @@ export default function NewArticlePage() {
               {" "}
             </AlertNotification>
             <Typography className="pb-2" variant="h6" placeholder={""}>
-              Cover
+              {t("news.cover")}
             </Typography>
             <Input
               type="file"
               // required={isEmpty(article) ? true : false}
-              disabled={_isLoading}
-              label="cover"
+              disabled={isPending}
+              label={t("news.cover")}
               size="lg"
               crossOrigin=""
               accept="image/*"
@@ -119,14 +148,14 @@ export default function NewArticlePage() {
             <div className="grid grid-cols-2 gap-x-2 mt-4">
               <div className="flex flex-col gap-y-4">
                 <Typography className="-mb-2" variant="h6" placeholder={""}>
-                  Title
+                  {t("news.title")}
                 </Typography>
                 <Input
-                  label="Enter Title"
+                  label={t("news.enter_title")}
                   required
                   size="lg"
                   //   defaultValue={!isEmpty(article) ? article.title : ""}
-                  disabled={_isLoading}
+                  disabled={isPending}
                   onChange={(e) => setTitle(e.target.value)}
                   value={title}
                   crossOrigin=""
@@ -134,14 +163,14 @@ export default function NewArticlePage() {
               </div>
               <div className="flex flex-col gap-y-4">
                 <Typography className="-mb-2" variant="h6" placeholder={""}>
-                  Description
+                  {t("news.description")}
                 </Typography>
                 <Input
-                  label="Enter Description"
+                  label={t("news.enter_description")}
                   required
                   size="lg"
                   //   defaultValue={!isEmpty(article) ? article.description : ""}
-                  disabled={_isLoading}
+                  disabled={isPending}
                   onChange={(e) => setDescription(e.target.value)}
                   value={description}
                   crossOrigin=""
@@ -150,7 +179,7 @@ export default function NewArticlePage() {
             </div>
 
             <Typography className="pb-2 pt-4" variant="h6" placeholder={""}>
-              Content
+              {t("news.content")}
             </Typography>
             {/* <Textarea
               className="-mb-2 h-96"
@@ -169,14 +198,14 @@ export default function NewArticlePage() {
             />
           </CardBody>
           <CardFooter placeholder={""} className="flex justify-end">
-            <Button
+            {/* <Button
               variant="text"
               color="blue-gray"
               className="mr-1"
               placeholder={""}
             >
-              <span>Cancel</span>
-            </Button>
+              <span>Reset</span>
+            </Button> */}
             <Button
               variant="gradient"
               color="green"
@@ -184,7 +213,7 @@ export default function NewArticlePage() {
               type="submit"
               placeholder={""}
             >
-              {!_isLoading ? "Create" : <SpinnerLoader size="sm" />}
+              {!isPending ? t("actions.create") : <SpinnerLoader size="sm" />}
             </Button>
           </CardFooter>
         </Card>

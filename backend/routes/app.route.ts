@@ -19,39 +19,53 @@ import {
   updateStatusArticle,
 } from "../controller/article.controller";
 import { upload } from "../utils/upload-file";
+import { verifyRequest } from "../middlewares/verify.request";
 
 const appRouter = Router();
 
-appRouter.get("/track-visit", trackVisit);
-appRouter.get("/get-daily-stats", authenticate, getDailyStats);
-appRouter.get("/get-month-stats", authenticate, getMonthlyStats);
-appRouter.get("/dasboard", authenticate, countDashboard);
+appRouter.get("/track-visit", verifyRequest, trackVisit);
+appRouter.get("/get-daily-stats", verifyRequest, authenticate, getDailyStats);
+appRouter.get("/get-month-stats", verifyRequest, authenticate, getMonthlyStats);
+appRouter.get("/dasboard", verifyRequest, authenticate, countDashboard);
 
-appRouter.get("/users", authenticate, getAllUsers);
-appRouter.post("/user/create", authenticate, signup);
-appRouter.patch("/user/:id/password-update", authenticate, changePassword);
-appRouter.patch("/user/:id/update", authenticate, updateUser);
-appRouter.delete("/user/:id/delete", authenticate, deleteUser);
+appRouter.get("/users", verifyRequest, authenticate, getAllUsers);
+appRouter.post("/user/create", verifyRequest, authenticate, signup);
+appRouter.patch(
+  "/user/:id/password-update",
+  verifyRequest,
+  authenticate,
+  changePassword
+);
+appRouter.patch("/user/:id/update", verifyRequest, authenticate, updateUser);
+appRouter.delete("/user/:id/delete", verifyRequest, authenticate, deleteUser);
 
-appRouter.get("/articles", authenticate, getAllArticle);
+appRouter.get("/articles", verifyRequest, authenticate, getAllArticle);
 appRouter.post(
   "/create-article",
+  verifyRequest,
   authenticate,
   upload.single("coverPicture"),
   createArticle
 );
 appRouter.patch(
   "/article/:id/update",
+  verifyRequest,
   authenticate,
   upload.single("coverPicture"),
   updateArticle
 );
 appRouter.patch(
   "/article/:id/update-status",
+  verifyRequest,
   authenticate,
   updateStatusArticle
 );
 
-appRouter.delete("/article/:id/delete", authenticate, deleteArticle);
+appRouter.delete(
+  "/article/:id/delete",
+  verifyRequest,
+  authenticate,
+  deleteArticle
+);
 
 export default appRouter;

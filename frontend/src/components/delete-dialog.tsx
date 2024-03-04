@@ -9,6 +9,7 @@ import {
 } from "@material-tailwind/react";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { SpinnerLoader } from ".";
+import { useAuthContext } from "../core/context/auth-context";
 
 interface DeleteDialogProps {
   handleOpen: () => void;
@@ -28,6 +29,8 @@ export function DeleteDialog({
   handleOpen,
   handleDelete,
 }: DeleteDialogProps) {
+  const { t } = useAuthContext();
+
   return (
     <>
       <Dialog
@@ -42,10 +45,14 @@ export function DeleteDialog({
       >
         <DialogHeader placeholder={""}>
           <Typography variant="h5" color="blue-gray" placeholder={""}>
-            Your Attention is Required!
+            {t("messages.attention_required")}
           </Typography>
         </DialogHeader>
-        <DialogBody divider className="grid place-items-center gap-4" placeholder={""}>
+        <DialogBody
+          divider
+          className="grid place-items-center gap-4"
+          placeholder={""}
+        >
           <TrashIcon className="h-16" color="red" />
           <Typography color="red" variant="h4" placeholder={""}>
             {title}
@@ -55,8 +62,13 @@ export function DeleteDialog({
           </Typography>
         </DialogBody>
         <DialogFooter className="space-x-2" placeholder={""}>
-          <Button variant="text" color="blue-gray" onClick={handleOpen} placeholder={""}>
-            close
+          <Button
+            variant="text"
+            color="blue-gray"
+            onClick={handleOpen}
+            placeholder={""}
+          >
+            {t("actions.close")}
           </Button>
           <Button
             disabled={loading}
@@ -65,7 +77,7 @@ export function DeleteDialog({
             onClick={handleDelete}
             placeholder={""}
           >
-            {loading ? <SpinnerLoader size="sm" /> : "Ok, Got it"}
+            {loading ? <SpinnerLoader size="sm" /> : t("actions.go_it")}
           </Button>
         </DialogFooter>
       </Dialog>

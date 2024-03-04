@@ -17,6 +17,7 @@
     "seed:run": "npx sequelize-cli seed",
     "seed:revert": "npx sequelize-cli db:seed:undo:all",
     "seed:all": "npx sequelize-cli db:seed:all",
+    "generate:api:key": "node ./utils/generate.api.key.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -48,6 +49,7 @@
     "sequelize": "^6.32.1",
     "sequelize-typescript": "^2.1.5",
     "tail": "^2.2.6",
+    "uuid": "^9.0.1",
     "winston": "^3.11.0"
   },
   "devDependencies": {

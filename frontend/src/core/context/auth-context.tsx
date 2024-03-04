@@ -16,6 +16,9 @@ import {
 } from "../../utils/common";
 import { User } from "../entities/user";
 import { useTranslation } from "react-i18next";
+import Cookies from "js-cookie";
+import { LANG } from "../entities/contant";
+import { isEmpty, isNil } from "lodash";
 
 interface Props {
   children?: ReactNode;
@@ -26,6 +29,8 @@ export const AuthContext = createContext({
   setUser: (item: User) => {},
   currentUser: {} as User | null,
   t: (arg: any) => "",
+  lang: "en",
+  changeLanguage: (arg: string) => {},
 });
 
 export const AuthProvider = ({ children }: Props) => {
@@ -33,21 +38,19 @@ export const AuthProvider = ({ children }: Props) => {
     currentUserFromCookies()
   );
   const { t, i18n } = useTranslation();
+  const [lang, setLang] = useState<string>(
+    !isNil(currentLang()) ? currentLang() : "en"
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
-    // const tokenValid = isTokenValid();
-    // if (!tokenValid) {
-    //   return navigate("/");
-    // }
     setCurrentUser(currentUserFromCookies());
-    const lang = currentLang();
-    i18n.changeLanguage(lang);
+    i18n.changeLanguage(currentLang());
   }, []);
 
   const signOut = () => {
     removeUserFromCookies();
-    navigate("/");
+    navigate("/admin/auth");
   };
 
   const setUser = useCallback((item: User) => {
@@ -55,11 +58,19 @@ export const AuthProvider = ({ children }: Props) => {
     setCurrentUser(user);
   }, []);
 
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+    setLang(i18n.language);
+    Cookies.set(LANG, lng);
+  };
+
   const value = {
     currentUser,
     signOut,
     setUser,
     t,
+    lang,
+    changeLanguage,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

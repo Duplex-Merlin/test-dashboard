@@ -3,6 +3,7 @@ import Cookies from "js-cookie";
 import { BEARER_TOKEN } from "../entities/contant";
 
 const BASE_URL = `${process.env.REACT_APP_BASE_URL}`;
+const API_KEY = `${process.env.REACT_APP_API_KEY}`;
 
 interface RequestOptions {
   headers?: Record<string, string>;
@@ -19,6 +20,7 @@ async function request(
   const headers = {
     ...options?.headers,
     Authorization: `Bearer ${TOKEN}`,
+    "x-api-key": API_KEY,
     "Content-Type": "application/json",
   };
 
@@ -36,7 +38,6 @@ export async function post(
   data: any,
   options?: RequestOptions
 ): Promise<Response> {
-  console.log(process.env.REACT_APP_BASE_URL)
   return request(BASE_URL + url, "POST", {
     ...options,
     body: data,
@@ -73,11 +74,12 @@ export async function axiospost(
   body?: any
 ): Promise<AxiosResponse> {
   const TOKEN = Cookies.get(BEARER_TOKEN);
-  
+
   return await axios.post(BASE_URL + url, body, {
     headers: {
       "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${TOKEN}`,
+      "x-api-key": API_KEY,
     },
   });
 }

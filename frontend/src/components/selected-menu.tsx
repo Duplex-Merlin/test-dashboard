@@ -7,18 +7,14 @@ export interface IOptions {
 
 interface ISelectProps {
   options: IOptions[];
-
+  label: string;
   value: (value: string) => void;
 }
 
-export function SelectedMenu({ options, value }: ISelectProps) {
+export function SelectedMenu({ options, label, value }: ISelectProps) {
   return (
     <div className="w-full">
-      <Select
-        placeholder={""}
-        onChange={(item) => value(item!)}
-        label="Select Role"
-      >
+      <Select placeholder={""} onChange={(item) => value(item!)} label={label}>
         {options.map((item) => (
           <Option value={item.value}>{item.label}</Option>
         ))}

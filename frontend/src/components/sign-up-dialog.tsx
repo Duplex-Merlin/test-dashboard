@@ -24,6 +24,7 @@ import {
 import { IOptions } from "./selected-menu";
 import { useMutation } from "@tanstack/react-query";
 import { createUser, updateUser } from "../core/api/api";
+import { useAuthContext } from "../core/context/auth-context";
 
 const roles: IOptions[] = [
   { value: UserRole.SuperAdmin, label: "Super Admin" },
@@ -49,6 +50,8 @@ export function SignUpDialog({
   handleOpen,
   dispatch,
 }: SignUpDialogProps) {
+  const { t } = useAuthContext();
+
   const [username, setUserName] = React.useState<string>("");
   const [email, setEmail] = React.useState<string>("");
   const [role, setRole] = React.useState<string>("");
@@ -76,24 +79,23 @@ export function SignUpDialog({
       onError(error) {},
     });
 
-  const { mutate: updateUserMutate } =
-    useMutation({
-      mutationFn: (userUpdate: UserUpdateRequest) => {
-        return updateUser(userUpdate.userId, userUpdate.userRequest);
-      },
-      onSuccess(data) {
-        if (!isNil(data.data)) {
-          toast("User update", { type: "success" });
-          const user = data.data as User;
-          dispatch!(user);
-          handleOpen();
-        } else {
-          setErrorMessage(data.message);
-          setOpenAlert(true);
-        }
-      },
-      onError(error) {},
-    });
+  const { mutate: updateUserMutate } = useMutation({
+    mutationFn: (userUpdate: UserUpdateRequest) => {
+      return updateUser(userUpdate.userId, userUpdate.userRequest);
+    },
+    onSuccess(data) {
+      if (!isNil(data.data)) {
+        toast("User update", { type: "success" });
+        const user = data.data as User;
+        dispatch!(user);
+        handleOpen();
+      } else {
+        setErrorMessage(data.message);
+        setOpenAlert(true);
+      }
+    },
+    onError(error) {},
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,7 +120,7 @@ export function SignUpDialog({
     }
   };
 
-  const content = action === "add" ? "Create" : "Update";
+  const content = action === "add" ? t("actions.create") : t("actions.update");
 
   return (
     <>
@@ -163,10 +165,10 @@ export function SignUpDialog({
                 {" "}
               </AlertNotification>
               <Typography className="-mb-2" variant="h6" placeholder={""}>
-                Your Name
+                {t("users.your_name")}
               </Typography>
               <Input
-                label="Name"
+                label={t("users.name")}
                 size="lg"
                 required
                 type="text"
@@ -176,10 +178,10 @@ export function SignUpDialog({
                 crossOrigin=""
               />
               <Typography className="-mb-2" variant="h6" placeholder={""}>
-                Your Email
+                {t("users.your_email")}
               </Typography>
               <Input
-                label="Email"
+                label={t("users.email")}
                 size="lg"
                 type="email"
                 required
@@ -188,17 +190,25 @@ export function SignUpDialog({
                 onChange={(e) => setEmail(e.target.value)}
                 crossOrigin=""
               />
-              <Typography className="-mb-2" variant="h6" placeholder={""}>
-                Role
+              <Typography
+                className="-mb-2 capitalize"
+                variant="h6"
+                placeholder={""}
+              >
+                {t("users.role")}
               </Typography>
-              <SelectedMenu options={roles} value={(item) => setRole(item)} />
+              <SelectedMenu
+                label={t("users.select_label")}
+                options={roles}
+                value={(item) => setRole(item)}
+              />
               {action === "add" && (
                 <>
                   <Typography className="-mb-2" variant="h6" placeholder={""}>
-                    Your Password
+                    {t("users.your_password")}
                   </Typography>
                   <Input
-                    label="Password"
+                    label={t("users.password")}
                     size="lg"
                     required
                     disabled={createUserIsPending}

@@ -34,7 +34,7 @@ export default function HomePage() {
     queryKey: ["month-stats"],
     queryFn: getMonthStats,
   });
-  
+
   return (
     <Content>
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
@@ -70,8 +70,9 @@ export default function HomePage() {
             color={"white"}
             floated={false}
             shadow={false}
+            className="mx-0"
           >
-            <div className="flex justify-center w-full">
+            <div className="flex justify-center w-full ml-4">
               <Plot
                 data={[
                   {
@@ -80,14 +81,25 @@ export default function HomePage() {
                     x: dayStats?.map((item) => item.day),
                     type: "histogram",
                     name: "sum",
+                    marker: {
+                      color: "purple",
+                      opacity: 0.7,
+                    },
                   },
                 ]}
+                layout={{
+                  bargap: 0.05,
+                  bargroupgap: 0.2,
+                  barmode: "overlay",
+                  xaxis: { title: t("home.chart.one.day_week") },
+                  yaxis: { title: t("home.chart.one.number_day") },
+                }}
               />
             </div>
           </CardHeader>
           <CardBody placeholder={""} className="px-6 pt-0">
             <Typography placeholder={""} variant="h6" color="blue-gray">
-            {t("home.chart.one.title")}
+              {t("home.chart.one.title")}
             </Typography>
             <Typography
               placeholder={""}
@@ -108,8 +120,9 @@ export default function HomePage() {
             color={"white"}
             floated={false}
             shadow={false}
+            className="mx-0"
           >
-            <div className="flex justify-center w-full">
+            <div className="flex justify-center w-full ml-4">
               <Plot
                 data={[
                   {
@@ -118,21 +131,31 @@ export default function HomePage() {
                     x: monthStats?.map((item) => item.month),
                     type: "scatter",
                     name: "sum",
+                    marker: {
+                      color: "purple",
+                    },
                   },
                 ]}
+                layout={{
+                  bargap: 0.05,
+                  bargroupgap: 0.2,
+                  barmode: "overlay",
+                  xaxis: { title: t("home.chart.two.month_year") },
+                  yaxis: { title: t("home.chart.two.number_month") },
+                }}
               />
             </div>
           </CardHeader>
           <CardBody placeholder={""} className="px-6 pt-0">
             <Typography placeholder={""} variant="h6" color="blue-gray">
-            {t("home.chart.two.title")}
+              {t("home.chart.two.title")}
             </Typography>
             <Typography
               placeholder={""}
               variant="small"
               className="font-normal text-blue-gray-600"
             >
-             {t("home.chart.two.description")}
+              {t("home.chart.two.description")}
             </Typography>
           </CardBody>
         </Card>

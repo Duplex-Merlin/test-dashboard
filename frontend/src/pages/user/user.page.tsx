@@ -29,6 +29,7 @@ import {
 import {
   DeleteDialog,
   EmptyBlock,
+  ErrorBlock,
   PaginationCustom,
   SignUpDialog,
   SpinnerLoader,
@@ -45,13 +46,14 @@ import { toast } from "react-toastify";
 import { useAuthContext } from "../../core/context/auth-context";
 
 export default function UserPage() {
-  const { currentUser } = useAuthContext();
+  const { t, currentUser } = useAuthContext();
   const [query, setQuery] = React.useState<string>("");
 
   const {
     data: usersData,
     isLoading: isLoadingUsers,
     refetch: refreshUsers,
+    error,
   } = useQuery<UserPaginate>({
     queryKey: ["all-users", query],
     queryFn: () => getAllUsers(query),
@@ -147,14 +149,14 @@ export default function UserPage() {
             <div className="mb-4 flex items-center justify-between gap-8">
               <div>
                 <Typography variant="h5" color="blue-gray" placeholder="">
-                  Users Informations
+                  {t("users.user_info")}
                 </Typography>
                 <Typography
                   color="gray"
                   className="mb-1 font-normal"
                   placeholder=""
                 >
-                  All users list
+                  {t("users.all_user")}
                 </Typography>
               </div>
             </div>
@@ -163,12 +165,13 @@ export default function UserPage() {
                 <div>
                   <Button
                     onClick={() => setOpenSignUp(true)}
-                    className="flex items-center gap-3"
+                    className="flex items-center gap-3 uppercase"
                     size="sm"
+                    color="purple"
                     placeholder={""}
                   >
-                    <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Add
-                    user
+                    <UserPlusIcon strokeWidth={2} className="h-4 w-4" />{" "}
+                    {t("users.add_user")}
                   </Button>
                 </div>
               ) : (
@@ -176,7 +179,7 @@ export default function UserPage() {
               )}
               <div className="w-full md:w-72">
                 <Input
-                  label="Search: Name, Email"
+                  label={t("users.search")}
                   crossOrigin=""
                   onChange={handleQueryChange}
                   icon={<MagnifyingGlassIcon className="h-5 w-5" />}
@@ -192,11 +195,11 @@ export default function UserPage() {
                 <thead>
                   <tr>
                     {[
-                      "Name",
-                      "email",
-                      "role",
-                      "Last Connected",
-                      "created",
+                      t("users.name"),
+                      t("users.email"),
+                      t("users.role"),
+                      t("users.last_connect"),
+                      t("users.created"),
                       "",
                     ].map((el) => (
                       <th
@@ -215,115 +218,131 @@ export default function UserPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {findUsers!.data!.length > 0 ? (
-                    findUsers!.data?.map((item, key) => {
-                      const className = `py-3 px-5 `;
-                      return (
-                        <tr key={key}>
-                          <td className={className}>
-                            <div className="flex items-center gap-4">
-                              <Avatar
-                                placeholder={""}
-                                src={"/assets/images/avatar.jpg"}
-                                alt={item.username}
-                                size="sm"
-                              />
-                              <div>
-                                <Typography
-                                  placeholder={""}
-                                  variant="small"
-                                  color="blue-gray"
-                                  className="font-semibold"
-                                >
-                                  {item.username}
-                                </Typography>
-                              </div>
-                            </div>
-                          </td>
-                          <td className={className}>
-                            <Typography
-                              placeholder={""}
-                              className="text-xs font-normal text-blue-gray-500"
-                            >
-                              {item.email}
-                            </Typography>
-                          </td>
-                          <td className={className}>
-                            <Typography
-                              placeholder={""}
-                              className="text-xs font-normal text-blue-gray-500"
-                            >
-                              {item.role === UserRole.SuperAdmin
-                                ? "Super Admin"
-                                : "Admin"}
-                            </Typography>
-                          </td>
-                          <td className={className}>
-                            <Typography
-                              placeholder={""}
-                              className="text-xs font-semibold text-blue-gray-600"
-                            >
-                              {isNil(item.lastLogin)
-                                ? "..."
-                                : parseDateWithHour(item.lastLogin)}
-                            </Typography>
-                          </td>
-
-                          <td className={className}>
-                            <Typography
-                              placeholder={""}
-                              className="text-xs font-semibold text-blue-gray-600"
-                            >
-                              {parseDateWith(item.createdAt)}
-                            </Typography>
-                          </td>
-                          {isSuperAdmin(currentUser?.role!) ? (
+                  {!error ? (
+                    findUsers!.data!.length > 0 ? (
+                      findUsers!.data?.map((item, key) => {
+                        const className = `py-3 px-5 `;
+                        return (
+                          <tr key={key}>
                             <td className={className}>
-                              <Tooltip content="Update Password">
-                                <IconButton
-                                  variant="text"
-                                  onClick={() => handleUpdatePassword(item)}
+                              <div className="flex items-center gap-4">
+                                <Avatar
                                   placeholder={""}
-                                >
-                                  <LockClosedIcon
-                                    className="h-4 w-4"
-                                    color="info"
-                                  />
-                                </IconButton>
-                              </Tooltip>
-                              <Tooltip content="Edit User">
-                                <IconButton
-                                  variant="text"
-                                  onClick={() => handleUpdate(item)}
-                                  placeholder={""}
-                                >
-                                  <PencilIcon
-                                    className="h-4 w-4"
-                                    color="green"
-                                  />
-                                </IconButton>
-                              </Tooltip>
-
-                              <Tooltip content="Delete User">
-                                <IconButton
-                                  variant="text"
-                                  onClick={() => handleDelete(item)}
-                                  placeholder={""}
-                                >
-                                  <TrashIcon className="h-4 w-4" color="red" />
-                                </IconButton>
-                              </Tooltip>
+                                  src={"/assets/images/avatar.jpg"}
+                                  alt={item.username}
+                                  size="sm"
+                                />
+                                <div>
+                                  <Typography
+                                    placeholder={""}
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-semibold"
+                                  >
+                                    {item.username}
+                                  </Typography>
+                                </div>
+                              </div>
                             </td>
-                          ) : (
-                            <></>
-                          )}
-                        </tr>
-                      );
-                    })
+                            <td className={className}>
+                              <Typography
+                                placeholder={""}
+                                className="text-xs font-normal text-blue-gray-500"
+                              >
+                                {item.email}
+                              </Typography>
+                            </td>
+                            <td className={className}>
+                              <Typography
+                                placeholder={""}
+                                className="text-xs font-normal text-blue-gray-500"
+                              >
+                                {item.role === UserRole.SuperAdmin
+                                  ? "Super Admin"
+                                  : "Admin"}
+                              </Typography>
+                            </td>
+                            <td className={className}>
+                              <Typography
+                                placeholder={""}
+                                className="text-xs font-semibold text-blue-gray-600"
+                              >
+                                {isNil(item.lastLogin)
+                                  ? "..."
+                                  : parseDateWithHour(item.lastLogin)}
+                              </Typography>
+                            </td>
+
+                            <td className={className}>
+                              <Typography
+                                placeholder={""}
+                                className="text-xs font-semibold text-blue-gray-600"
+                              >
+                                {parseDateWith(item.createdAt)}
+                              </Typography>
+                            </td>
+                            {isSuperAdmin(currentUser?.role!) ? (
+                              <td className={className}>
+                                <Tooltip content="Update Password">
+                                  <IconButton
+                                    variant="text"
+                                    onClick={() => handleUpdatePassword(item)}
+                                    placeholder={""}
+                                  >
+                                    <LockClosedIcon
+                                      className="h-4 w-4"
+                                      color="purple"
+                                    />
+                                  </IconButton>
+                                </Tooltip>
+                                <Tooltip content="Edit User">
+                                  <IconButton
+                                    variant="text"
+                                    onClick={() => handleUpdate(item)}
+                                    placeholder={""}
+                                  >
+                                    <PencilIcon
+                                      className="h-4 w-4"
+                                      color="green"
+                                    />
+                                  </IconButton>
+                                </Tooltip>
+
+                                <Tooltip content="Delete User">
+                                  <IconButton
+                                    variant="text"
+                                    onClick={() => handleDelete(item)}
+                                    placeholder={""}
+                                  >
+                                    <TrashIcon
+                                      className="h-4 w-4"
+                                      color="red"
+                                    />
+                                  </IconButton>
+                                </Tooltip>
+                              </td>
+                            ) : (
+                              <></>
+                            )}
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td colSpan={6}>
+                          <EmptyBlock />
+                        </td>
+                      </tr>
+                    )
                   ) : (
                     <tr>
                       <td colSpan={6}>
-                        <EmptyBlock />
+                        <div>
+                          <ErrorBlock
+                            message={error.message}
+                            reload={refreshUsers}
+                          />
+                        </div>
                       </td>
                     </tr>
                   )}
@@ -345,15 +364,15 @@ export default function UserPage() {
         loading={deleteISpending}
         handleOpen={() => setOpen(!open)}
         handleDelete={() => handleConfirmDelete()}
-        title="Remove this User"
-        description="Are you sure you want to delete this user?"
+        title={t("users.remove_user")}
+        description={t("users.are_your_sure")}
       />
       <SignUpDialog
         open={openSignUp}
         handleOpen={() => setOpenSignUp(!openSignUp)}
         dispatch={handleResponse}
-        title="Create new user"
-        description="Enter your login email and password."
+        title={t("users.create_user")}
+        description={t("users.login_email")}
         action="add"
       />
       <SignUpDialog
@@ -361,8 +380,8 @@ export default function UserPage() {
         handleOpen={() => setOpenUpdateSignUp(!openUpadeSignUp)}
         dispatch={handleUpdateResponse}
         user={user}
-        title="Update this user"
-        description="Update your name and email."
+        title={t("users.update_user")}
+        description={t("users.update_info")}
         action="edit"
       />
       {!isNil(user) ? (

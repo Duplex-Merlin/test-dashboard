@@ -18,13 +18,12 @@ import {
   ChevronRightIcon,
   ChevronDownIcon,
   CircleStackIcon,
+  AdjustmentsHorizontalIcon,
 } from "@heroicons/react/24/solid";
 import { TailwindIcon } from "../components/icons";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import classNames from "classnames";
 import { useAuthContext } from "../core/context/auth-context";
-
-
 
 export function Sidebar() {
   const { t, signOut } = useAuthContext();
@@ -39,8 +38,8 @@ export function Sidebar() {
     one: [
       {
         href: "/dashboard",
-        name: t('sidebar.dashboard'),
-        icon: <PresentationChartBarIcon className="h-5 w-5" />,
+        name: t("sidebar.dashboard"),
+        icon: <PresentationChartBarIcon color="purple" className="h-5 w-5" />,
         children: [],
       },
     ],
@@ -51,25 +50,26 @@ export function Sidebar() {
       //   icon: <Squares2X2Icon className="h-5 w-5" />,
       //   children: [],
       // },
+
       {
         href: "#",
-        name: t('sidebar.news'),
-        icon: <GlobeEuropeAfricaIcon className="h-5 w-5" />,
+        name: t("sidebar.news"),
+        icon: <GlobeEuropeAfricaIcon color="purple" className="h-5 w-5" />,
         children: [
           {
             href: "/dashboard/new-articles",
-            name: t('sidebar.write_news'),
+            name: t("sidebar.write_news"),
           },
           {
             href: "/dashboard/articles",
-            name: t('sidebar.list_news'),
+            name: t("sidebar.list_news"),
           },
         ],
       },
       {
         href: "/dashboard/users",
-        name: t('sidebar.users'),
-        icon: <UserGroupIcon className="h-5 w-5" />,
+        name: t("sidebar.users"),
+        icon: <UserGroupIcon color="purple" className="h-5 w-5" />,
         children: [],
       },
     ],
@@ -82,8 +82,8 @@ export function Sidebar() {
       // },
       {
         href: "/dashboard/logs",
-        name: t('sidebar.logs'),
-        icon: <CircleStackIcon className="h-5 w-5" />,
+        name: t("sidebar.logs"),
+        icon: <CircleStackIcon color="purple" className="h-5 w-5" />,
         children: [],
       },
     ],
@@ -96,7 +96,10 @@ export function Sidebar() {
     >
       <div className="mb-2 p-4">
         <a href="/dashboard">
-          <TailwindIcon className="text-blue-700 mr-4 cursor-pointer" />
+          {/* <TailwindIcon className="text-blue-700 mr-4 cursor-pointer" /> */}
+          <h2 className="text-4xl font-semibold text-purple-700 text-center">
+            Merlin-3D
+          </h2>
         </a>
       </div>
       <List placeholder={""}>
@@ -205,9 +208,9 @@ export function Sidebar() {
         <hr className="my-2 border-blue-gray-50" />
         <ListItem placeholder={""} onClick={() => signOut()}>
           <ListItemPrefix placeholder={""}>
-            <PowerIcon className="h-5 w-5" />
+            <PowerIcon color="purple" className="h-5 w-5" />
           </ListItemPrefix>
-          Log Out
+          {t("actions.logout")}
         </ListItem>
       </List>
     </Card>

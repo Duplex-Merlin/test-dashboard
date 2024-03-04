@@ -4,6 +4,7 @@ import CreateArticleDialog from "./create-article-dialog";
 import { DeleteDialog } from "./delete-dialog";
 import { DialogWithImage } from "./dialog-with-image";
 import EmptyBlock from "./empy-block";
+import ErrorBlock from "./error-block";
 import { PaginationCustom } from "./pagination-custom";
 import { SelectedMenu } from "./selected-menu";
 import { SignUpDialog } from "./sign-up-dialog";
@@ -27,5 +28,6 @@ export {
   SelectedMenu,
   PaginationCustom,
   UpdatePasswordDialog,
-  EmptyBlock
+  EmptyBlock,
+  ErrorBlock,
 };
