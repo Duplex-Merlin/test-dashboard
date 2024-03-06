@@ -319,3 +319,49 @@
 {"level":"info","message":"Successful connection. Requested by: ::1","timestamp":"2024-03-04T20:55:09.209Z"}
 {"level":"info","message":"Successfully get all users list. Requested by: ::1","timestamp":"2024-03-04T20:55:15.292Z"}
 {"level":"info","message":"Get all l successfully!. Requested by: ::1","timestamp":"2024-03-04T20:55:25.314Z"}
+{"level":"info","message":"Successful connection. Requested by: ::1","timestamp":"2024-03-05T08:14:00.605Z"}
+{"level":"error","message":"Uncaught Exception: relation \"Customers\" does not exist","timestamp":"2024-03-05T09:46:06.451Z"}
+{"level":"error","message":"Uncaught Exception: res.json is not a function","timestamp":"2024-03-05T10:13:41.390Z"}
+{"level":"error","message":"Uncaught Exception: res.json is not a function","timestamp":"2024-03-05T10:14:46.082Z"}
+{"level":"error","message":"Uncaught Exception: res.json is not a function","timestamp":"2024-03-05T10:15:59.681Z"}
+{"level":"error","message":"Uncaught Exception: res.json is not a function","timestamp":"2024-03-06T01:38:45.189Z"}
+{"level":"error","message":"Uncaught Exception: res.json is not a function","timestamp":"2024-03-06T01:39:22.967Z"}
+{"level":"error","message":"Uncaught Exception: res.json is not a function","timestamp":"2024-03-06T01:39:53.522Z"}
+{"level":"error","message":"Uncaught Exception: res.json is not a function","timestamp":"2024-03-06T01:40:40.809Z"}
+{"level":"error","message":"Error for change password user Requested by: ::1 message: Cannot read properties of undefined (reading 'constructor')","timestamp":"2024-03-06T13:19:22.729Z"}
+{"level":"error","message":"Error for change password user Requested by: ::1 message: No Sequelize instance passed","timestamp":"2024-03-06T13:21:46.542Z"}
+{"level":"error","message":"Error for change password user Requested by: ::1 message: No Sequelize instance passed","timestamp":"2024-03-06T13:22:29.029Z"}
+{"level":"error","message":"Error for change password user Requested by: ::1 message: No Sequelize instance passed","timestamp":"2024-03-06T13:22:46.351Z"}
+{"level":"info","message":"Successful connection. Requested by: ::1","timestamp":"2024-03-06T13:31:48.762Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T13:31:52.055Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T14:40:06.863Z"}
+{"level":"info","message":"Successful connection. Requested by: ::1","timestamp":"2024-03-06T15:00:35.385Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:00:38.322Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:01:21.984Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:03:13.052Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:04:47.996Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:05:26.939Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:06:05.198Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:07:14.831Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:07:28.462Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:08:15.478Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:09:28.535Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:09:50.490Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:10:28.723Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:11:45.255Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:12:03.986Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:13:41.678Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:24:08.909Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:25:27.166Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:25:39.766Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:29:20.115Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:34:43.871Z"}
+{"level":"info","message":"Successful connection. Requested by: ::1","timestamp":"2024-03-06T15:39:51.792Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:39:56.313Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:52:05.731Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T15:52:10.116Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T16:05:18.831Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T16:05:44.412Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T16:06:25.304Z"}
+{"level":"info","message":"Successful connection. Requested by: ::ffff:127.0.0.1","timestamp":"2024-03-06T16:12:55.863Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T16:22:03.817Z"}

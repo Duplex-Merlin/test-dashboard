@@ -1,5 +1,5 @@
 {
-  "name": "test-dashboard",
+  "name": "merlin-dashboard",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -9,14 +9,14 @@
     "start": "npm run build:frontend && node dist/app.js",
     "build:frontend": "cd ../frontend && npm install && npm run build",
     "start:frontend": "cd ../frontend && npm run start",
-    "migration:generate": "npx sequelize-cli migration:generate --name",
-    "migration:run": "npx sequelize-cli db:migrate",
-    "migration:revert": "npx sequelize-cli db:migrate:undo",
-    "migration:revert:one": "npx sequelize-cli db:migrate:undo:all --to",
+    "migration:generate": "sequelize-cli migration:generate --name",
+    "migration:run": "sh ./shell/run-migration.sh",
+    "migration:revert": "sh ./shell/revert-migration.sh",
+    "migration:revert:one": "sh ./shell/revert-one-migration.sh --name ",
     "seed:generate": "npx sequelize-cli seed:generate --name",
-    "seed:run": "npx sequelize-cli seed",
+    "seed:run": "sh ./shell/run-seed.sh",
     "seed:revert": "npx sequelize-cli db:seed:undo:all",
-    "seed:all": "npx sequelize-cli db:seed:all",
+    "create-schema": "npx sequelize-cli db:create",
     "generate:api:key": "node ./utils/generate.api.key.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -57,6 +57,7 @@
     "@types/node": "^20.10.8",
     "concurrently": "^8.2.2",
     "nodemon": "^3.0.2",
+    "sequelize-cli": "^6.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }

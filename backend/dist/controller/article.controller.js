@@ -23,9 +23,10 @@ const lodash_1 = require("lodash");
 function countDashboard(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const news = yield article_entity_1.default.count();
-            const users = yield user_entity_1.default.count();
-            const visotors = yield visitor_entity_1.default.count();
+            // const ArticleWithTenant = initModelWithSchema(Article, req.tenantId!);
+            const news = yield article_entity_1.default.schema(req.tenantId).count();
+            const users = (yield user_entity_1.default.schema(req.tenantId).count()) - 1;
+            const visotors = yield visitor_entity_1.default.schema(req.tenantId).count();
             res.json({ data: [news, visotors, 0, users] });
         }
         catch (error) {
@@ -83,7 +84,7 @@ function getDailyStats(req, res) {
                 },
                 group: [
                     //@ts-ignore
-                    (0, sequelize_1.literal)("DATE_TRUNC('day', date)")
+                    (0, sequelize_1.literal)("DATE_TRUNC('day', date)"),
                 ],
                 order: [(0, sequelize_1.literal)("DATE_TRUNC('day', date) ASC")],
             });

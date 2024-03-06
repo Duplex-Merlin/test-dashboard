@@ -12,6 +12,11 @@ import {
   post,
 } from "../interceptor/api.interceptor";
 
+export const findHosName = async (body: { hostname: string }) => {
+  const res = await post("/auth/find/hostname", body);
+  return await res.json();
+};
+
 export const loginUser = async (body: LoginRequest) => {
   const res = await post("/auth/login", body);
   return await res.json();
@@ -19,12 +24,12 @@ export const loginUser = async (body: LoginRequest) => {
 
 export const getAllLogs = async (query?: string) => {
   const res = await get(`/logs${query}`);
-  return (await res.json());
+  return await res.json();
 };
 
 export const getAllUsers = async (query?: string) => {
   const res = await get(`/users${query}`);
-  return (await res.json());
+  return await res.json();
 };
 
 export const createUser = async (body: UserRequest) => {
@@ -37,7 +42,10 @@ export const updateUser = async (userId: string, body: UpdateRequest) => {
   return await res.json();
 };
 
-export const updateUserPassword = async (userId: string, password: UserPasswordRequest) => {
+export const updateUserPassword = async (
+  userId: string,
+  password: UserPasswordRequest
+) => {
   const res = await patch(`/user/${userId}/password-update`, password);
   return await res.json();
 };
@@ -49,7 +57,7 @@ export const deleteUser = async (userId: String) => {
 
 export const getAllArticles = async (query?: string) => {
   const res = await get(`/articles${query}`);
-  return (await res.json());
+  return await res.json();
 };
 
 export const createArticle = async (data: any) => {
@@ -69,10 +77,10 @@ export const getStats = async () => {
 
 export const getDayStats = async () => {
   const res = await get("/get-daily-stats");
-  return (await res.json());
+  return await res.json();
 };
 
 export const getMonthStats = async () => {
   const res = await get("/get-month-stats");
-  return (await res.json());
+  return await res.json();
 };

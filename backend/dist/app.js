@@ -12,6 +12,7 @@ const app_route_1 = __importDefault(require("./routes/app.route"));
 require("./utils/upload-file");
 const logs_route_1 = __importDefault(require("./routes/logs.route"));
 const path_1 = __importDefault(require("path"));
+const tenant_route_1 = __importDefault(require("./routes/tenant.route"));
 // import chatBotRouter from "./routes/bot.route";
 // import "./nld";
 dotenv_1.default.config();
@@ -22,7 +23,7 @@ var corsOptions = {
     origin: "*",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
-app.use(express_1.default.static(path_1.default.join(__dirname, '../../frontend/build')));
+app.use(express_1.default.static(path_1.default.join(__dirname, "../../frontend/build")));
 app.use(express_1.default.static("uploads"));
 app.use((0, cors_1.default)(corsOptions));
 app.use(body_parser_1.default.json());
@@ -33,6 +34,7 @@ app.get("/", (req, res) => {
 app.use("/api/v1/auth", auth_route_1.default);
 app.use("/api/v1", app_route_1.default);
 app.use("/api/v1", logs_route_1.default);
+app.use("/tenant", tenant_route_1.default);
 // app.use("/bot", chatBotRouter);
 const PORT = process.env.PORT || 8001;
 app.listen(PORT, () => {

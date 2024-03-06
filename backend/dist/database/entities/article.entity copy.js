@@ -1,7 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
-const sequelize_2 = require("../config/sequelize");
+const sequelize_2 = __importDefault(require("../config/sequelize"));
 class Article extends sequelize_1.Model {
 }
 Article.init({
@@ -33,7 +36,7 @@ Article.init({
     },
 }, {
     timestamps: true,
-    sequelize: sequelize_2.sequelize,
+    sequelize: sequelize_2.default,
     modelName: "Articles",
 });
 exports.default = Article;

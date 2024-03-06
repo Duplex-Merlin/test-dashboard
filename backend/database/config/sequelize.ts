@@ -3,12 +3,21 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const sequelize = new Sequelize({
-  host: process.env.PG_HOST,
+  host: process.env.DB_HOST_NAME,
   port: 5432,
-  database: process.env.DATA_BASE as string,
-  username: process.env.USER_NAME as string,
-  password: process.env.PASSWORD as string,
+  database: process.env.DB_NAME as string,
+  username: process.env.DB_USER_NAME as string,
+  password: process.env.DB_PASSWORD as string,
   dialect: "postgres",
+  // schema: schema ?? "public",
 });
 
-export default sequelize;
+const sequelizePublic = new Sequelize({
+  host: process.env.DB_HOST_NAME,
+  port: 5432,
+  database: process.env.DB_NAME as string,
+  username: process.env.DB_USER_NAME as string,
+  password: process.env.DB_PASSWORD as string,
+  dialect: "postgres",
+});
+export { sequelize, sequelizePublic };

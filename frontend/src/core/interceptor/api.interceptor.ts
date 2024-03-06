@@ -1,9 +1,12 @@
 import axios, { AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 import { BEARER_TOKEN } from "../entities/contant";
+import { getHostName, getTenant } from "../../utils/common";
 
 const BASE_URL = `${process.env.REACT_APP_BASE_URL}`;
 const API_KEY = `${process.env.REACT_APP_API_KEY}`;
+const X_TENANT_ID = getTenant();
+const HOSTNAME = getHostName();
 
 interface RequestOptions {
   headers?: Record<string, string>;
@@ -21,6 +24,9 @@ async function request(
     ...options?.headers,
     Authorization: `Bearer ${TOKEN}`,
     "x-api-key": API_KEY,
+    "X-Tenant-Id": X_TENANT_ID,
+    "X-Customer-Hostname": HOSTNAME,
+
     "Content-Type": "application/json",
   };
 

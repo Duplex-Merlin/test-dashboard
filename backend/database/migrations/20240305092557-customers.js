@@ -5,7 +5,7 @@ module.exports = {
     return queryInterface.sequelize
       .query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";')
       .then(() => {
-        return queryInterface.createTable("Users", {
+        return queryInterface.createTable("Customers", {
           id: {
             type: Sequelize.UUID,
             defaultValue: Sequelize.literal("uuid_generate_v4()"),
@@ -13,27 +13,41 @@ module.exports = {
             primaryKey: true,
             allowNull: false,
           },
-          username: {
+          customerFirstName: {
             type: Sequelize.STRING,
             allowNull: false,
           },
-          email: {
-            type: Sequelize.STRING,
-            allowNull: false,
-            unique: true,
-          },
-          password: {
-            type: Sequelize.STRING,
-            allowNull: false,
-          },
-          role: {
-            type: Sequelize.ENUM,
-            values: ['super_admin', 'admin'],
-            allowNull: false,
-          },
-          lastLogin: {
+          customerLastName: {
             type: Sequelize.STRING,
             allowNull: true,
+          },
+          customerEmail: {
+            type: Sequelize.STRING,
+            allowNull: false,
+          },
+          customerPhoneNumber: {
+            type: Sequelize.STRING,
+            allowNull: false,
+          },
+          customerLocation: {
+            type: Sequelize.STRING,
+            allowNull: false,
+          },
+          customerWebsite: {
+            type: Sequelize.STRING,
+            allowNull: true,
+          },
+          profilePicture: {
+            type: Sequelize.STRING,
+            allowNull: true,
+          },
+          hostName: {
+            type: Sequelize.STRING,
+            allowNull: false,
+          },
+          tenantId: {
+            type: Sequelize.STRING,
+            allowNull: false,
           },
           createdAt: {
             type: "TIMESTAMP",
@@ -45,13 +59,13 @@ module.exports = {
             defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
             allowNull: true,
           },
-        }, { schema: process.env.DB_SCHEMA },);
+        }, { schema: 'public' },);
       });
   },
 
   async down(queryInterface) {
     return queryInterface.bulkDelete(
-      { tableName: 'Users', schema: process.env.DB_SCHEMA },
+      { tableName: 'Customers', schema: 'public' },
       null,
       {},
     );

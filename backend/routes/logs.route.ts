@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { logsData } from "../controller/logsController";
-import { authenticate } from "../middlewares/authenticate";
-import { verifyRequest } from "../middlewares/verify.request";
+import { authenticateMiddleware } from "../middlewares/authenticate.middleware";
+import { verifyMiddleware } from "../middlewares/verify.middleware";
 
 const logsRouter = Router();
 
-logsRouter.get("/logs", verifyRequest, authenticate, logsData);
+logsRouter.get("/logs", verifyMiddleware, authenticateMiddleware, logsData);
 
 export default logsRouter;

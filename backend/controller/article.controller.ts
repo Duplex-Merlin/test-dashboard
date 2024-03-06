@@ -7,12 +7,16 @@ import logger from "../utils/logger";
 import Visitor from "../database/entities/visitor.entity";
 import { Op, col, fn, literal } from "sequelize";
 import { isEmpty } from "lodash";
+interface CustomRequest extends Request {
+  tenantId?: string;
+}
 
-export async function countDashboard(req: Request, res: Response) {
+export async function countDashboard(req: CustomRequest, res: Response) {
   try {
-    const news = await Article.count();
-    const users = await User.count();
-    const visotors = await Visitor.count();
+    // const ArticleWithTenant = initModelWithSchema(Article, req.tenantId!);
+    const news = await Article.schema(req.tenantId!).count();
+    const users = (await User.schema(req.tenantId!).count()) - 1;
+    const visotors = await Visitor.schema(req.tenantId!).count();
 
     res.json({ data: [news, visotors, 0, users] });
   } catch (error) {
@@ -75,7 +79,8 @@ export async function getDailyStats(req: Request, res: Response) {
       },
       group: [
         //@ts-ignore
-        literal("DATE_TRUNC('day', date)")],
+        literal("DATE_TRUNC('day', date)"),
+      ],
       order: [literal("DATE_TRUNC('day', date) ASC")],
     });
 

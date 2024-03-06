@@ -5,7 +5,12 @@ import config from "../utils/config";
 import User, { UserRole } from "../database/entities/user.entity";
 import logger from "../utils/logger";
 import { isEmpty } from "lodash";
+import dotenv from "dotenv";
+dotenv.config();
 
+interface CustomRequest extends Request {
+  tenantId?: string;
+}
 export async function signup(req: Request, res: Response): Promise<void> {
   try {
     const { email, password, role, username } = req.body;
@@ -38,10 +43,11 @@ export async function signup(req: Request, res: Response): Promise<void> {
   }
 }
 
-export async function login(req: Request, res: Response): Promise<void> {
+export async function login(req: CustomRequest, res: Response): Promise<void> {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({
+
+    const user = await User.schema(req.tenantId!).findOne({
       where: { email },
       attributes: { exclude: ["updatedAt", "createdAt"] },
     });
@@ -87,7 +93,7 @@ export async function login(req: Request, res: Response): Promise<void> {
 
 function generateToken(userId: string, userRole: string): string {
   return jwt.sign({ userId, role: userRole }, config.jwtSecret!, {
-    expiresIn: "12h",
+    expiresIn: process.env.TOKEN_EXPIRATION,
   });
 }
 
@@ -155,7 +161,9 @@ export async function getAllUsers(req: Request, res: Response) {
     });
     const count = await User.count();
     const totalPages = Math.ceil(count / pageSize);
-    const customUsersList = users.filter((user) => user.email != "account@alpha.com")
+    const customUsersList = users.filter(
+      (user) => user.email != "account@alpha.com"
+    );
     logger.info(`Successfully get all users list. Requested by: ${req.ip}`);
     res.json({
       data: customUsersList,

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import config from "../utils/config";
 
-export function authenticate(
+export function authenticateMiddleware(
   req: Request,
   res: Response,
   next: NextFunction

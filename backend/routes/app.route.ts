@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authenticate } from "../middlewares/authenticate";
+import { authenticateMiddleware } from "../middlewares/authenticate.middleware";
 import {
   changePassword,
   deleteUser,
@@ -19,52 +19,89 @@ import {
   updateStatusArticle,
 } from "../controller/article.controller";
 import { upload } from "../utils/upload-file";
-import { verifyRequest } from "../middlewares/verify.request";
+import { verifyMiddleware } from "../middlewares/verify.middleware";
+import { TenantMiddelware } from "../middlewares/tenant.middleware";
 
 const appRouter = Router();
 
-appRouter.get("/track-visit", verifyRequest, trackVisit);
-appRouter.get("/get-daily-stats", verifyRequest, authenticate, getDailyStats);
-appRouter.get("/get-month-stats", verifyRequest, authenticate, getMonthlyStats);
-appRouter.get("/dasboard", verifyRequest, authenticate, countDashboard);
+appRouter.get("/track-visit", verifyMiddleware, trackVisit);
+appRouter.get(
+  "/get-daily-stats",
+  verifyMiddleware,
+  authenticateMiddleware,
+  getDailyStats
+);
+appRouter.get(
+  "/get-month-stats",
+  verifyMiddleware,
+  authenticateMiddleware,
+  getMonthlyStats
+);
+appRouter.get(
+  "/dasboard",
+  verifyMiddleware,
+  TenantMiddelware,
+  authenticateMiddleware,
+  countDashboard
+);
 
-appRouter.get("/users", verifyRequest, authenticate, getAllUsers);
-appRouter.post("/user/create", verifyRequest, authenticate, signup);
+appRouter.get("/users", verifyMiddleware, authenticateMiddleware, getAllUsers);
+appRouter.post(
+  "/user/create",
+  verifyMiddleware,
+  authenticateMiddleware,
+  signup
+);
 appRouter.patch(
   "/user/:id/password-update",
-  verifyRequest,
-  authenticate,
+  verifyMiddleware,
+  authenticateMiddleware,
   changePassword
 );
-appRouter.patch("/user/:id/update", verifyRequest, authenticate, updateUser);
-appRouter.delete("/user/:id/delete", verifyRequest, authenticate, deleteUser);
+appRouter.patch(
+  "/user/:id/update",
+  verifyMiddleware,
+  authenticateMiddleware,
+  updateUser
+);
+appRouter.delete(
+  "/user/:id/delete",
+  verifyMiddleware,
+  authenticateMiddleware,
+  deleteUser
+);
 
-appRouter.get("/articles", verifyRequest, authenticate, getAllArticle);
+appRouter.get(
+  "/articles",
+  verifyMiddleware,
+  authenticateMiddleware,
+  getAllArticle
+);
 appRouter.post(
   "/create-article",
-  verifyRequest,
-  authenticate,
+  verifyMiddleware,
+  authenticateMiddleware,
   upload.single("coverPicture"),
   createArticle
 );
 appRouter.patch(
   "/article/:id/update",
-  verifyRequest,
-  authenticate,
+  verifyMiddleware,
+  authenticateMiddleware,
   upload.single("coverPicture"),
   updateArticle
 );
 appRouter.patch(
   "/article/:id/update-status",
-  verifyRequest,
-  authenticate,
+  verifyMiddleware,
+  authenticateMiddleware,
   updateStatusArticle
 );
 
 appRouter.delete(
   "/article/:id/delete",
-  verifyRequest,
-  authenticate,
+  verifyMiddleware,
+  authenticateMiddleware,
   deleteArticle
 );
 

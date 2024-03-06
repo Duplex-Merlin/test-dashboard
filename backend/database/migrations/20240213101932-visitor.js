@@ -39,11 +39,15 @@ module.exports = {
             defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
             allowNull: true,
           },
-        });
+        }, { schema: process.env.DB_SCHEMA },);
       });
   },
 
-  async down(queryInterface, Sequelize) {
-    return queryInterface.dropTable("Visitors");
+  async down(queryInterface) {
+    return queryInterface.bulkDelete(
+      { tableName: 'Visitors', schema: process.env.DB_SCHEMA },
+      null,
+      {},
+    );
   },
 };

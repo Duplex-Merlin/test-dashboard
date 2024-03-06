@@ -1,5 +1,5 @@
 import { Model, DataTypes } from "sequelize";
-import sequelize from "../config/sequelize";
+import { sequelize } from "../config/sequelize";
 
 class Article extends Model {
   public id!: string;

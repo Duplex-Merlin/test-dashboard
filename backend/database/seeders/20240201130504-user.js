@@ -6,7 +6,7 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.sequelize.transaction(async (transaction) => {
       await queryInterface.bulkInsert(
-        "Users",
+        { tableName: 'Users', schema: process.env.DB_SCHEMA },
         [
           {
             username: "Alpha",
@@ -19,7 +19,11 @@ module.exports = {
     });
   },
 
-  async down (queryInterface, Sequelize) {
-    return queryInterface.bulkDelete("Users", null, {});
-  }
+  async down(queryInterface) {
+    return queryInterface.bulkDelete(
+      { tableName: 'Users', schema: process.env.DB_SCHEMA },
+      null,
+      {},
+    );
+  },
 };

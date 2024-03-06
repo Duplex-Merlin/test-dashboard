@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-export async function verifyRequest(
+export async function verifyMiddleware(
   req: Request,
   res: Response,
   next: NextFunction

@@ -2,6 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const auth_controller_1 = require("../controller/auth.controller");
+const verify_middleware_1 = require("../middlewares/verify.middleware");
+const tenant_controller_1 = require("../controller/tenant.controller");
 const authRouter = (0, express_1.Router)();
-authRouter.post("/login", auth_controller_1.login);
+authRouter.post("/find/hostname", verify_middleware_1.verifyMiddleware, tenant_controller_1.findCustomerByHostName);
+authRouter.post("/login", verify_middleware_1.verifyMiddleware, auth_controller_1.login);
 exports.default = authRouter;

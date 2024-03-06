@@ -7,6 +7,7 @@ import appRouter from "./routes/app.route";
 import "./utils/upload-file";
 import logsRouter from "./routes/logs.route";
 import path from "path";
+import tenantRouter from "./routes/tenant.route";
 // import chatBotRouter from "./routes/bot.route";
 // import "./nld";
 
@@ -20,7 +21,7 @@ var corsOptions = {
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
 
-app.use(express.static(path.join(__dirname, '../../frontend/build')));
+app.use(express.static(path.join(__dirname, "../../frontend/build")));
 
 app.use(express.static("uploads"));
 
@@ -37,6 +38,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1", appRouter);
 app.use("/api/v1", logsRouter);
+app.use("/tenant", tenantRouter);
 
 // app.use("/bot", chatBotRouter);
 

@@ -19,6 +19,8 @@ const config_1 = __importDefault(require("../utils/config"));
 const user_entity_1 = __importDefault(require("../database/entities/user.entity"));
 const logger_1 = __importDefault(require("../utils/logger"));
 const lodash_1 = require("lodash");
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 function signup(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -52,7 +54,7 @@ function login(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { email, password } = req.body;
-            const user = yield user_entity_1.default.findOne({
+            const user = yield user_entity_1.default.schema(req.tenantId).findOne({
                 where: { email },
                 attributes: { exclude: ["updatedAt", "createdAt"] },
             });
@@ -88,7 +90,7 @@ function login(req, res) {
 exports.login = login;
 function generateToken(userId, userRole) {
     return jsonwebtoken_1.default.sign({ userId, role: userRole }, config_1.default.jwtSecret, {
-        expiresIn: "12h",
+        expiresIn: process.env.TOKEN_EXPIRATION,
     });
 }
 function changePassword(req, res) {

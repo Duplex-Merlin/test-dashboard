@@ -11,6 +11,7 @@ import ArticlePage from "./pages/articles/article.page";
 import NewArticlePage from "./pages/articles/new-article";
 import LogsPage from "./pages/logs/logs.page";
 import NotFound from "./pages/404/not-found.page";
+import StartPage from "./pages/start/start.page";
 
 function App() {
   return (
@@ -19,7 +20,8 @@ function App() {
         <AuthMiddleware>
           <AuthProvider>
             <Routes>
-              <Route path="/" element={<AuthPage />} />
+              <Route path="/" element={<StartPage />} />
+              <Route path="/login" element={<AuthPage />} />
               <Route path="/dashboard" element={<HomePage />} />
               <Route path="/dashboard/category" element={<CategoryPage />} />
               <Route
@@ -30,7 +32,6 @@ function App() {
               <Route path="/dashboard/users" element={<UserPage />} />
               <Route path="/dashboard/logs" element={<LogsPage />} />
               <Route path="*" element={<NotFound />} />
-
             </Routes>
           </AuthProvider>
         </AuthMiddleware>
