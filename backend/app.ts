@@ -8,7 +8,6 @@ import "./utils/upload-file";
 import logsRouter from "./routes/logs.route";
 import path from "path";
 import tenantRouter from "./routes/tenant.route";
-import { TenantMiddelware } from "./middlewares/tenant.middleware";
 // import chatBotRouter from "./routes/bot.route";
 // import "./nld";
 
@@ -32,7 +31,7 @@ app.use(bodyParser.json());
 
 app.use("/uploads", express.static("./uploads"));
 
-app.get("/", TenantMiddelware, (req: Request, res: Response) => {
+app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
 });
 
