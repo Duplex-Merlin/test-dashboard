@@ -1,5 +1,18 @@
 require('dotenv').config();
 
+const sslConfig =
+`${process.env.DB_SSL}` === "true"
+    ? {
+        ssl: false,
+        dialectOptions: {
+          ssl: {
+            require: false,
+            rejectUnauthorized: false,
+          },
+        },
+      }
+    : {};
+
 const config = {
   development: {
     host: `${process.env.DB_HOST_NAME}`,
@@ -12,6 +25,7 @@ const config = {
     dialectOptions: {
       schema: process.env.DB_SCHEMA,
     },
+    ...sslConfig
   },
   test: {
     username: 'postgres',
