@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: Props) => {
 
   const signOut = () => {
     removeUserFromCookies();
-    navigate("/admin/auth");
+    navigate("/");
   };
 
   const setUser = useCallback((item: User) => {

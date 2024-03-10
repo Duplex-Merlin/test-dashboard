@@ -6,6 +6,7 @@ import { findHosName } from "../../core/api/api";
 import { isNil } from "lodash";
 import Cookies from "js-cookie";
 import { BEARER_TOKEN, HOSTNAME, TENANT_ID } from "../../core/entities/contant";
+import { SpinnerLoader } from "../../components";
 
 export default function StartPage() {
   const [hostName, setHostName] = React.useState<string>("");
@@ -24,6 +25,16 @@ export default function StartPage() {
         Cookies.set(HOSTNAME, hosname, { path: "/" });
 
         window.location.href = "/login";
+        //   process.env.REACT_APP_PROTOCOLE +
+        //   `${hostName}.` +
+        //   process.env.REACT_APP_DOMAIN +
+        //   "/login";
+        //   const newWindow = window.open(
+        //   process.env.REACT_APP_PROTOCOLE +
+        //     `${hostName}.` +
+        //     process.env.REACT_APP_DOMAIN +
+        //     "/login",
+        // );
       } else {
         setMessage(data.message);
       }
@@ -53,30 +64,26 @@ export default function StartPage() {
         </a>
         <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-sm lg:w-96">
-            <div>
+            <div className="flex flex-col gap-y-4">
               <h2 className="mt-8 text-4xl font-normal leading-9 tracking-tight text-gray-900">
-                Customer
+                What's the name of your company ?
               </h2>
+              <span className="text-sm text-gray-600">
+                This will be the name of your administration console.
+              </span>
             </div>
 
-            <div className="mt-10">
+            <div className="mt-4">
               <div>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium leading-6 text-gray-900"
-                    >
-                      HostName
-                    </label>
-
+                <form onSubmit={handleSubmit} className="space-y-10">
+                  <div className="relative">
                     <div className="mt-2 flex rounded-md shadow-sm">
                       <input
                         type="text"
                         required={true}
                         disabled={isPending}
                         className="block w-full min-w-0 flex-1 px-3 rounded-none rounded-l-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 focus:outline-none sm:text-sm sm:leading-6"
-                        placeholder="mycompany"
+                        placeholder="companyname"
                         onChange={(e) => setHostName(e.target.value)}
                       />
                       <span className="inline-flex items-center rounded-r-md border border-l-0 border-gray-300 px-3 text-gray-500 sm:text-sm">
@@ -84,12 +91,14 @@ export default function StartPage() {
                       </span>
                     </div>
                     {message ? (
-                      <span className="text-sm text-red-300">{message} </span>
+                      <span className="absolute text-sm text-red-300">
+                        {message}{" "}
+                      </span>
                     ) : (
                       <></>
                     )}
                   </div>
-                  <div>
+                  <div className="w-40">
                     <Button
                       variant="gradient"
                       disabled={isPending}
@@ -97,8 +106,12 @@ export default function StartPage() {
                       color="purple"
                       type="submit"
                       placeholder={""}
+                      size="md"
+                      className="rounded-none"
                     >
-                      <span>{isPending ? "Loading..." : "Go To Login"} </span>
+                      <span>
+                        {isPending ? <SpinnerLoader size="sm" /> : "Next"}{" "}
+                      </span>
                     </Button>
                   </div>
                 </form>

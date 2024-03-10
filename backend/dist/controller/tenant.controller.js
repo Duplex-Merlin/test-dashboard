@@ -57,7 +57,7 @@ function deleteCustomer(req, res) {
         const { id } = req.params;
         const getCustomer = yield customer_entity_1.default.findByPk(id);
         if (!getCustomer) {
-            return res.status(404).json({ message: "Customer not found" });
+            return res.status(404).json({ message: "Company not found." });
         }
         yield customer_entity_1.default.destroy({
             where: { id: getCustomer.id },
@@ -78,7 +78,7 @@ function findCustomerByHostName(req, res) {
                 where: { hostName: hostname },
             });
             if (!data) {
-                return res.status(404).send({ message: "Customer not found" });
+                return res.status(404).send({ message: "Company not found." });
             }
             res.json({ data: { tenantId: data === null || data === void 0 ? void 0 : data.tenantId, hosname: data === null || data === void 0 ? void 0 : data.hostName } });
         }

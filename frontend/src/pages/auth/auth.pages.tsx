@@ -20,12 +20,14 @@ import { LoginRequest } from "../../core/entities";
 import { loginUser } from "../../core/api/api";
 import { BEARER_TOKEN, LANG, USER_TOKEN } from "../../core/entities/contant";
 import { User } from "../../core/entities/user";
-import { LockClosedIcon } from "@heroicons/react/24/solid";
+import { ArrowLeftIcon, LockClosedIcon } from "@heroicons/react/24/solid";
 import classNames from "classnames";
 import { useAuthContext } from "../../core/context/auth-context";
+import { useNavigate } from "react-router-dom";
 
 export default function AuthPage() {
-  const { t, lang, changeLanguage } = useAuthContext();
+  const { t, lang, changeLanguage, signOut } = useAuthContext();
+  const navigate = useNavigate();
 
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
@@ -103,7 +105,16 @@ export default function AuthPage() {
   const message = !isEmpty(messages?.message) ? messages?.message! : "";
 
   return (
-    <>
+    <main>
+      <div
+        onClick={() => {
+          signOut();
+          navigate("/");
+        }}
+        className="z-50 border border-purple-400 p-2 rounded-md hover:bg-purple-400 flex absolute left-10 top-10 group"
+      >
+        <ArrowLeftIcon className="w-10 h-10 group-hover:text-white cursor-pointer" />
+      </div>
       <div className="absolute inset-0 z-0 h-full w-full bg-element bg-cover bg-no-repeat bg-primary-20">
         <div className="container mx-auto p-4">
           <form onSubmit={handleSubmit} className="flex justify-center">
@@ -212,6 +223,6 @@ export default function AuthPage() {
           </form>
         </div>
       </div>
-    </>
+    </main>
   );
 }

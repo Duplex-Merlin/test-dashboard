@@ -52,7 +52,7 @@ export async function deleteCustomer(req: Request, res: Response) {
   const { id } = req.params;
   const getCustomer = await Customer.findByPk(id);
   if (!getCustomer) {
-    return res.status(404).json({ message: "Customer not found" });
+    return res.status(404).json({ message: "Company not found." });
   }
   await Customer.destroy({
     where: { id: getCustomer.id },
@@ -73,7 +73,7 @@ export async function findCustomerByHostName(req: Request, res: Response) {
       where: { hostName: hostname },
     });
     if (!data) {
-      return res.status(404).send({ message: "Customer not found" });
+      return res.status(404).send({ message: "Company not found." });
     }
 
     res.json({ data: { tenantId: data?.tenantId, hosname: data?.hostName } });
