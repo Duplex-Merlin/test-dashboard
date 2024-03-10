@@ -25,7 +25,7 @@ async function request(
     Authorization: `Bearer ${TOKEN}`,
     "x-api-key": API_KEY,
     "X-Tenant-Id": X_TENANT_ID,
-    "X-Customer-Hostname": HOSTNAME,
+    // "X-Customer-Hostname": HOSTNAME,
 
     "Content-Type": "application/json",
   };
@@ -85,6 +85,7 @@ export async function axiospost(
     headers: {
       "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${TOKEN}`,
+      "X-Tenant-Id": X_TENANT_ID,
       "x-api-key": API_KEY,
     },
   });

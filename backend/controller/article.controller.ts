@@ -7,9 +7,7 @@ import logger from "../utils/logger";
 import Visitor from "../database/entities/visitor.entity";
 import { Op, col, fn, literal } from "sequelize";
 import { isEmpty } from "lodash";
-interface CustomRequest extends Request {
-  tenantId?: string;
-}
+import { CustomRequest } from "../contant/contants";
 
 export async function countDashboard(req: CustomRequest, res: Response) {
   try {
@@ -29,17 +27,17 @@ export async function countDashboard(req: CustomRequest, res: Response) {
   }
 }
 
-export async function trackVisit(req: Request, res: Response) {
+export async function trackVisit(req: CustomRequest, res: Response) {
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const existingVisit = await Visitor.findOne({
+    const existingVisit = await Visitor.schema(req.tenantId!).findOne({
       where: { ipAddress: req.ip, timestamp: { [Op.gte]: today } },
     });
 
     if (!existingVisit) {
-      await Visitor.create({
+      await Visitor.schema(req.tenantId!).create({
         ipAddress: req.ip,
         userAgent: req.get("User-Agent"),
         timestamp: new Date(),
@@ -54,7 +52,7 @@ export async function trackVisit(req: Request, res: Response) {
   }
 }
 
-export async function getDailyStats(req: Request, res: Response) {
+export async function getDailyStats(req: CustomRequest, res: Response) {
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -67,7 +65,7 @@ export async function getDailyStats(req: Request, res: Response) {
     const lastDayOfWeek = new Date(firstDayOfWeek);
     lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
 
-    const stats = await Visitor.findAll({
+    const stats = await Visitor.schema(req.tenantId!).findAll({
       attributes: [
         [literal("DATE_TRUNC('day', date)"), "day"],
         [literal("COUNT(id)"), "count"],
@@ -100,12 +98,12 @@ export async function getDailyStats(req: Request, res: Response) {
   }
 }
 
-export async function getMonthlyStats(req: Request, res: Response) {
+export async function getMonthlyStats(req: CustomRequest, res: Response) {
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const stats = await Visitor.findAll({
+    const stats = await Visitor.schema(req.tenantId!).findAll({
       attributes: [
         [fn("DATE_TRUNC", "month", col("date")), "month"],
         [fn("COUNT", col("id")), "count"],
@@ -135,12 +133,12 @@ export async function getMonthlyStats(req: Request, res: Response) {
   }
 }
 
-export async function createArticle(req: Request, res: Response) {
+export async function createArticle(req: CustomRequest, res: Response) {
   try {
     const { title, description, status, content } = req.body;
     //@ts-ignore
     const { filename } = req.file;
-    const article = await Article.create({
+    const article = await Article.schema(req.tenantId!).create({
       title,
       description,
       coverPicture: filename,
@@ -157,11 +155,12 @@ export async function createArticle(req: Request, res: Response) {
         (error as any).message
       }`
     );
+    console.log(error);
     res.status(500).json({ message: "An error occurred while registering" });
   }
 }
 
-export async function getAllArticle(req: Request, res: Response) {
+export async function getAllArticle(req: CustomRequest, res: Response) {
   try {
     var page = req.query.page ? parseInt(req.query.page as string) : 1;
 
@@ -183,8 +182,10 @@ export async function getAllArticle(req: Request, res: Response) {
       // order: [['publishedAt', 'DESC']]
     };
 
-    const articles = await Article.findAll({ ...attributes });
-    const count = await Article.count();
+    const articles = await Article.schema(req.tenantId!).findAll({
+      ...attributes,
+    });
+    const count = await Article.schema(req.tenantId!).count();
     const totalPages = Math.ceil(count / pageSize);
 
     logger.info(`Get all l successfully!. Requested by: ${req.ip}`);
@@ -205,7 +206,7 @@ export async function getAllArticle(req: Request, res: Response) {
   }
 }
 
-export async function updateArticle(req: Request, res: Response) {
+export async function updateArticle(req: CustomRequest, res: Response) {
   try {
     const { title, description, status, content } = req.body;
     const { id } = req.params;
@@ -213,18 +214,18 @@ export async function updateArticle(req: Request, res: Response) {
     if (req.file) {
       //@ts-ignore
       const { filename } = req.file;
-      const article = await Article.findByPk(id);
+      const article = await Article.schema(req.tenantId!).findByPk(id);
 
       if (!article) {
         logger.warn(`Article not found!. Requested by: ${req.ip}`);
         return res.status(404).json({ message: "Article not found" });
       }
 
-      const imagePath = `uploads/${article.coverPicture}`;
+      const imagePath = `uploads/${req.tenantId!}/${article.coverPicture}`;
       if (fs.existsSync(imagePath)) {
         fs.unlinkSync(imagePath);
       }
-      const articleUpdate = await Article.update(
+      const articleUpdate = await Article.schema(req.tenantId!).update(
         { title, description, coverPicture: filename, status, content },
         { where: { id }, returning: true }
       );
@@ -236,7 +237,7 @@ export async function updateArticle(req: Request, res: Response) {
       return;
     }
 
-    const articleUpdate = await Article.update(
+    const articleUpdate = await Article.schema(req.tenantId!).update(
       { title, description, status, content },
       { where: { id }, returning: true }
     );
@@ -255,11 +256,11 @@ export async function updateArticle(req: Request, res: Response) {
   }
 }
 
-export async function updateStatusArticle(req: Request, res: Response) {
+export async function updateStatusArticle(req: CustomRequest, res: Response) {
   try {
     const { status } = req.body;
     const { id } = req.params;
-    await Article.update({ status }, { where: { id } });
+    await Article.schema(req.tenantId!).update({ status }, { where: { id } });
     logger.info(
       `Article status changed successfully!. Requested by: ${req.ip}`
     );
@@ -277,22 +278,22 @@ export async function updateStatusArticle(req: Request, res: Response) {
   }
 }
 
-export async function deleteArticle(req: Request, res: Response) {
+export async function deleteArticle(req: CustomRequest, res: Response) {
   try {
     const { id } = req.params;
-    const article = await Article.findByPk(id);
+    const article = await Article.schema(req.tenantId!).findByPk(id);
 
     if (!article) {
       logger.warn(`Article not found. Requested by: ${req.ip}`);
       return res.status(404).json({ message: "Article not found" });
     }
     if (article.coverPicture) {
-      const imagePath = `uploads/${article.coverPicture}`;
+      const imagePath = `uploads/${req.tenantId!}/${article.coverPicture}`;
       if (fs.existsSync(imagePath)) {
         fs.unlinkSync(imagePath);
       }
     }
-    await Article.destroy({ where: { id } });
+    await Article.schema(req.tenantId!).destroy({ where: { id } });
     logger.info(`Delete article successfully!. Requested by: ${req.ip}`);
     res.json({
       message: "Delete successfully...",

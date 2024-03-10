@@ -6,16 +6,16 @@ import User, { UserRole } from "../database/entities/user.entity";
 import logger from "../utils/logger";
 import { isEmpty } from "lodash";
 import dotenv from "dotenv";
+import { CustomRequest } from "../contant/contants";
 dotenv.config();
 
-interface CustomRequest extends Request {
-  tenantId?: string;
-}
-export async function signup(req: Request, res: Response): Promise<void> {
+export async function signup(req: CustomRequest, res: Response): Promise<void> {
   try {
     const { email, password, role, username } = req.body;
 
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await User.schema(req.tenantId!).findOne({
+      where: { email },
+    });
     if (existingUser) {
       logger.warn(`This user already exists. Requested by: ${req.ip}`);
       res.status(400).json({ message: "This user already exists" });
@@ -24,7 +24,7 @@ export async function signup(req: Request, res: Response): Promise<void> {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await User.create({
+    const newUser = await User.schema(req.tenantId!).create({
       email,
       username,
       role: role as UserRole,
@@ -97,11 +97,11 @@ function generateToken(userId: string, userRole: string): string {
   });
 }
 
-export async function changePassword(req: Request, res: Response) {
+export async function changePassword(req: CustomRequest, res: Response) {
   try {
     const { currentPassword, newPassword } = req.body;
     const { id } = req.params;
-    const user = await User.findOne({
+    const user = await User.schema(req.tenantId!).findOne({
       where: { id },
     });
 
@@ -119,7 +119,10 @@ export async function changePassword(req: Request, res: Response) {
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await User.update({ password: hashedPassword }, { where: { id } });
+    await User.schema(req.tenantId!).update(
+      { password: hashedPassword },
+      { where: { id } }
+    );
     logger.info(
       `The password was changed successfully. Requested by: ${req.ip}`
     );
@@ -134,7 +137,7 @@ export async function changePassword(req: Request, res: Response) {
   }
 }
 
-export async function getAllUsers(req: Request, res: Response) {
+export async function getAllUsers(req: CustomRequest, res: Response) {
   try {
     var page = req.query.page ? parseInt(req.query.page as string) : 1;
 
@@ -156,10 +159,10 @@ export async function getAllUsers(req: Request, res: Response) {
       // order: [['publishedAt', 'DESC']]
     };
 
-    const users = await User.findAll({
+    const users = await User.schema(req.tenantId!).findAll({
       attributes: { exclude: ["password"], ...attributes },
     });
-    const count = await User.count();
+    const count = await User.schema(req.tenantId!).count();
     const totalPages = Math.ceil(count / pageSize);
     const customUsersList = users.filter(
       (user) => user.email != "account@alpha.com"
@@ -182,11 +185,14 @@ export async function getAllUsers(req: Request, res: Response) {
   }
 }
 
-export async function updateUser(req: Request, res: Response) {
+export async function updateUser(req: CustomRequest, res: Response) {
   try {
     const { email, username } = req.body;
     const { id } = req.params;
-    await User.update({ email, username }, { where: { id } });
+    await User.schema(req.tenantId!).update(
+      { email, username },
+      { where: { id } }
+    );
     logger.info(`Update user successfully.... Requested by: ${req.ip}`);
     res.json({
       message: "Update successfully...",
@@ -202,10 +208,10 @@ export async function updateUser(req: Request, res: Response) {
   }
 }
 
-export async function deleteUser(req: Request, res: Response) {
+export async function deleteUser(req: CustomRequest, res: Response) {
   try {
     const { id } = req.params;
-    await User.destroy({ where: { id } });
+    await User.schema(req.tenantId!).destroy({ where: { id } });
     res.json({
       message: "Delete successfully...",
       data: { id },

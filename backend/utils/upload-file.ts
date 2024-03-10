@@ -2,15 +2,15 @@ import path from "path";
 import fs from "fs";
 import multer from "multer";
 
-const uploadDirectory = "./uploads";
-if (!fs.existsSync(uploadDirectory)) {
-  fs.mkdirSync(uploadDirectory);
-}
-
 // Configure Multer for image uploads
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, uploadDirectory); // Utilisez le dossier 'uploads' pour le stockage des images
+    //@ts-ignore
+    const uploadDirectory = `./uploads/${req.tenantId}`;
+    if (!fs.existsSync(uploadDirectory)) {
+      fs.mkdirSync(uploadDirectory);
+    }
+    callback(null, uploadDirectory);
   },
   filename: function (req, file, callback) {
     const ext = path.extname(file.originalname);

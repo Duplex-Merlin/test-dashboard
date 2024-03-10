@@ -7,14 +7,15 @@ exports.upload = void 0;
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const multer_1 = __importDefault(require("multer"));
-const uploadDirectory = "./uploads";
-if (!fs_1.default.existsSync(uploadDirectory)) {
-    fs_1.default.mkdirSync(uploadDirectory);
-}
 // Configure Multer for image uploads
 const storage = multer_1.default.diskStorage({
     destination: function (req, file, callback) {
-        callback(null, uploadDirectory); // Utilisez le dossier 'uploads' pour le stockage des images
+        //@ts-ignore
+        const uploadDirectory = `./uploads/${req.tenantId}`;
+        if (!fs_1.default.existsSync(uploadDirectory)) {
+            fs_1.default.mkdirSync(uploadDirectory);
+        }
+        callback(null, uploadDirectory);
     },
     filename: function (req, file, callback) {
         const ext = path_1.default.extname(file.originalname);

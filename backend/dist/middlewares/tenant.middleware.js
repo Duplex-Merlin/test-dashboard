@@ -10,13 +10,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TenantMiddelware = void 0;
+const url_1 = require("url");
 const sequelize_1 = require("../database/config/sequelize");
 const tenant_controller_1 = require("../controller/tenant.controller");
 function TenantMiddelware(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const tenantId = req.headers["x-tenant-id"];
-            const xHostname = req.headers["x-customer-hostname"];
+            // const xHostname = req.headers["x-customer-hostname"];
+            // console.log();
+            console.log(req.headers);
+            const parsedUrl = new url_1.URL(req.headers["origin"]);
+            const xHostname = parsedUrl.hostname.split(".")[0];
+            parsedUrl.hostname.split(".")[0];
             if (!xHostname) {
                 res.status(406).send("You must fill in the Hostname");
             }

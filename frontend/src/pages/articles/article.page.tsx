@@ -31,7 +31,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { deleteArticle, getAllArticles } from "../../core/api/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { isSuperAdmin, parseDateWith } from "../../utils/common";
+import { getTenant, isSuperAdmin, parseDateWith } from "../../utils/common";
 import { useAuthContext } from "../../core/context/auth-context";
 
 export default function ArticlePage() {
@@ -223,14 +223,18 @@ export default function ArticlePage() {
                                   variant="square"
                                   src={
                                     process.env.REACT_APP_FILE_URL +
-                                    `/uploads/${item.coverPicture}`
+                                    `/uploads/${getTenant()}/${
+                                      item.coverPicture
+                                    }`
                                   }
                                   alt={item.title}
                                   size="xl"
                                   onClick={() => {
                                     setImage(
                                       process.env.REACT_APP_FILE_URL +
-                                        `/uploads/${item.coverPicture}`
+                                        `/uploads/${getTenant()}/${
+                                          item.coverPicture
+                                        }`
                                     );
                                     setOpenImage(true);
                                   }}

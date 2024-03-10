@@ -24,16 +24,18 @@ import { TenantMiddelware } from "../middlewares/tenant.middleware";
 
 const appRouter = Router();
 
-appRouter.get("/track-visit", verifyMiddleware, trackVisit);
+appRouter.get("/track-visit", verifyMiddleware, TenantMiddelware, trackVisit);
 appRouter.get(
   "/get-daily-stats",
-  verifyMiddleware,
+  // verifyMiddleware,
+  TenantMiddelware,
   authenticateMiddleware,
   getDailyStats
 );
 appRouter.get(
   "/get-month-stats",
   verifyMiddleware,
+  TenantMiddelware,
   authenticateMiddleware,
   getMonthlyStats
 );
@@ -45,28 +47,38 @@ appRouter.get(
   countDashboard
 );
 
-appRouter.get("/users", verifyMiddleware, authenticateMiddleware, getAllUsers);
+appRouter.get(
+  "/users",
+  verifyMiddleware,
+  TenantMiddelware,
+  authenticateMiddleware,
+  getAllUsers
+);
 appRouter.post(
   "/user/create",
   verifyMiddleware,
+  TenantMiddelware,
   authenticateMiddleware,
   signup
 );
 appRouter.patch(
   "/user/:id/password-update",
   verifyMiddleware,
+  TenantMiddelware,
   authenticateMiddleware,
   changePassword
 );
 appRouter.patch(
   "/user/:id/update",
   verifyMiddleware,
+  TenantMiddelware,
   authenticateMiddleware,
   updateUser
 );
 appRouter.delete(
   "/user/:id/delete",
   verifyMiddleware,
+  TenantMiddelware,
   authenticateMiddleware,
   deleteUser
 );
@@ -74,12 +86,14 @@ appRouter.delete(
 appRouter.get(
   "/articles",
   verifyMiddleware,
+  TenantMiddelware,
   authenticateMiddleware,
   getAllArticle
 );
 appRouter.post(
   "/create-article",
   verifyMiddleware,
+  TenantMiddelware,
   authenticateMiddleware,
   upload.single("coverPicture"),
   createArticle
@@ -87,6 +101,7 @@ appRouter.post(
 appRouter.patch(
   "/article/:id/update",
   verifyMiddleware,
+  TenantMiddelware,
   authenticateMiddleware,
   upload.single("coverPicture"),
   updateArticle
@@ -94,6 +109,7 @@ appRouter.patch(
 appRouter.patch(
   "/article/:id/update-status",
   verifyMiddleware,
+  TenantMiddelware,
   authenticateMiddleware,
   updateStatusArticle
 );
@@ -101,6 +117,7 @@ appRouter.patch(
 appRouter.delete(
   "/article/:id/delete",
   verifyMiddleware,
+  TenantMiddelware,
   authenticateMiddleware,
   deleteArticle
 );

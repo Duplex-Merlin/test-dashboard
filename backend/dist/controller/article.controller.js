@@ -41,11 +41,11 @@ function trackVisit(req, res) {
         try {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            const existingVisit = yield visitor_entity_1.default.findOne({
+            const existingVisit = yield visitor_entity_1.default.schema(req.tenantId).findOne({
                 where: { ipAddress: req.ip, timestamp: { [sequelize_1.Op.gte]: today } },
             });
             if (!existingVisit) {
-                yield visitor_entity_1.default.create({
+                yield visitor_entity_1.default.schema(req.tenantId).create({
                     ipAddress: req.ip,
                     userAgent: req.get("User-Agent"),
                     timestamp: new Date(),
@@ -72,7 +72,7 @@ function getDailyStats(req, res) {
             // Get the last day of the week
             const lastDayOfWeek = new Date(firstDayOfWeek);
             lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
-            const stats = yield visitor_entity_1.default.findAll({
+            const stats = yield visitor_entity_1.default.schema(req.tenantId).findAll({
                 attributes: [
                     [(0, sequelize_1.literal)("DATE_TRUNC('day', date)"), "day"],
                     [(0, sequelize_1.literal)("COUNT(id)"), "count"],
@@ -110,7 +110,7 @@ function getMonthlyStats(req, res) {
         try {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            const stats = yield visitor_entity_1.default.findAll({
+            const stats = yield visitor_entity_1.default.schema(req.tenantId).findAll({
                 attributes: [
                     [(0, sequelize_1.fn)("DATE_TRUNC", "month", (0, sequelize_1.col)("date")), "month"],
                     [(0, sequelize_1.fn)("COUNT", (0, sequelize_1.col)("id")), "count"],
@@ -146,7 +146,7 @@ function createArticle(req, res) {
             const { title, description, status, content } = req.body;
             //@ts-ignore
             const { filename } = req.file;
-            const article = yield article_entity_1.default.create({
+            const article = yield article_entity_1.default.schema(req.tenantId).create({
                 title,
                 description,
                 coverPicture: filename,
@@ -160,6 +160,7 @@ function createArticle(req, res) {
         }
         catch (error) {
             logger_1.default.error(`An error occurred while registering. Requested by: ${req.ip} message: ${error.message}`);
+            console.log(error);
             res.status(500).json({ message: "An error occurred while registering" });
         }
     });
@@ -181,8 +182,8 @@ function getAllArticle(req, res) {
             }
             let attributes = {};
             attributes = Object.assign({ where: {} }, query);
-            const articles = yield article_entity_1.default.findAll(Object.assign({}, attributes));
-            const count = yield article_entity_1.default.count();
+            const articles = yield article_entity_1.default.schema(req.tenantId).findAll(Object.assign({}, attributes));
+            const count = yield article_entity_1.default.schema(req.tenantId).count();
             const totalPages = Math.ceil(count / pageSize);
             logger_1.default.info(`Get all l successfully!. Requested by: ${req.ip}`);
             res.json({
@@ -208,16 +209,16 @@ function updateArticle(req, res) {
             if (req.file) {
                 //@ts-ignore
                 const { filename } = req.file;
-                const article = yield article_entity_1.default.findByPk(id);
+                const article = yield article_entity_1.default.schema(req.tenantId).findByPk(id);
                 if (!article) {
                     logger_1.default.warn(`Article not found!. Requested by: ${req.ip}`);
                     return res.status(404).json({ message: "Article not found" });
                 }
-                const imagePath = `uploads/${article.coverPicture}`;
+                const imagePath = `uploads/${req.tenantId}/${article.coverPicture}`;
                 if (fs_extra_1.default.existsSync(imagePath)) {
                     fs_extra_1.default.unlinkSync(imagePath);
                 }
-                const articleUpdate = yield article_entity_1.default.update({ title, description, coverPicture: filename, status, content }, { where: { id }, returning: true });
+                const articleUpdate = yield article_entity_1.default.schema(req.tenantId).update({ title, description, coverPicture: filename, status, content }, { where: { id }, returning: true });
                 logger_1.default.info(`Create article successfully!. Requested by: ${req.ip}`);
                 res.json({
                     message: "Update successfully...",
@@ -225,7 +226,7 @@ function updateArticle(req, res) {
                 });
                 return;
             }
-            const articleUpdate = yield article_entity_1.default.update({ title, description, status, content }, { where: { id }, returning: true });
+            const articleUpdate = yield article_entity_1.default.schema(req.tenantId).update({ title, description, status, content }, { where: { id }, returning: true });
             res.json({
                 message: "Update successfully...",
                 data: articleUpdate[1],
@@ -244,7 +245,7 @@ function updateStatusArticle(req, res) {
         try {
             const { status } = req.body;
             const { id } = req.params;
-            yield article_entity_1.default.update({ status }, { where: { id } });
+            yield article_entity_1.default.schema(req.tenantId).update({ status }, { where: { id } });
             logger_1.default.info(`Article status changed successfully!. Requested by: ${req.ip}`);
             res.json({
                 message: "Status changed successfully...",
@@ -262,18 +263,18 @@ function deleteArticle(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { id } = req.params;
-            const article = yield article_entity_1.default.findByPk(id);
+            const article = yield article_entity_1.default.schema(req.tenantId).findByPk(id);
             if (!article) {
                 logger_1.default.warn(`Article not found. Requested by: ${req.ip}`);
                 return res.status(404).json({ message: "Article not found" });
             }
             if (article.coverPicture) {
-                const imagePath = `uploads/${article.coverPicture}`;
+                const imagePath = `uploads/${req.tenantId}/${article.coverPicture}`;
                 if (fs_extra_1.default.existsSync(imagePath)) {
                     fs_extra_1.default.unlinkSync(imagePath);
                 }
             }
-            yield article_entity_1.default.destroy({ where: { id } });
+            yield article_entity_1.default.schema(req.tenantId).destroy({ where: { id } });
             logger_1.default.info(`Delete article successfully!. Requested by: ${req.ip}`);
             res.json({
                 message: "Delete successfully...",

@@ -25,14 +25,16 @@ function signup(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { email, password, role, username } = req.body;
-            const existingUser = yield user_entity_1.default.findOne({ where: { email } });
+            const existingUser = yield user_entity_1.default.schema(req.tenantId).findOne({
+                where: { email },
+            });
             if (existingUser) {
                 logger_1.default.warn(`This user already exists. Requested by: ${req.ip}`);
                 res.status(400).json({ message: "This user already exists" });
                 return;
             }
             const hashedPassword = yield bcrypt_1.default.hash(password, 10);
-            const newUser = yield user_entity_1.default.create({
+            const newUser = yield user_entity_1.default.schema(req.tenantId).create({
                 email,
                 username,
                 role: role,
@@ -98,7 +100,7 @@ function changePassword(req, res) {
         try {
             const { currentPassword, newPassword } = req.body;
             const { id } = req.params;
-            const user = yield user_entity_1.default.findOne({
+            const user = yield user_entity_1.default.schema(req.tenantId).findOne({
                 where: { id },
             });
             if (!user) {
@@ -113,7 +115,7 @@ function changePassword(req, res) {
                 return;
             }
             const hashedPassword = yield bcrypt_1.default.hash(newPassword, 10);
-            yield user_entity_1.default.update({ password: hashedPassword }, { where: { id } });
+            yield user_entity_1.default.schema(req.tenantId).update({ password: hashedPassword }, { where: { id } });
             logger_1.default.info(`The password was changed successfully. Requested by: ${req.ip}`);
             res.json({ status: 200, message: "The password was changed successfully" });
         }
@@ -140,10 +142,10 @@ function getAllUsers(req, res) {
             }
             let attributes = {};
             attributes = Object.assign({ where: {} }, query);
-            const users = yield user_entity_1.default.findAll({
+            const users = yield user_entity_1.default.schema(req.tenantId).findAll({
                 attributes: Object.assign({ exclude: ["password"] }, attributes),
             });
-            const count = yield user_entity_1.default.count();
+            const count = yield user_entity_1.default.schema(req.tenantId).count();
             const totalPages = Math.ceil(count / pageSize);
             const customUsersList = users.filter((user) => user.email != "account@alpha.com");
             logger_1.default.info(`Successfully get all users list. Requested by: ${req.ip}`);
@@ -167,7 +169,7 @@ function updateUser(req, res) {
         try {
             const { email, username } = req.body;
             const { id } = req.params;
-            yield user_entity_1.default.update({ email, username }, { where: { id } });
+            yield user_entity_1.default.schema(req.tenantId).update({ email, username }, { where: { id } });
             logger_1.default.info(`Update user successfully.... Requested by: ${req.ip}`);
             res.json({
                 message: "Update successfully...",
@@ -185,7 +187,7 @@ function deleteUser(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { id } = req.params;
-            yield user_entity_1.default.destroy({ where: { id } });
+            yield user_entity_1.default.schema(req.tenantId).destroy({ where: { id } });
             res.json({
                 message: "Delete successfully...",
                 data: { id },
