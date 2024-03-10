@@ -11,6 +11,6 @@ const tenantRouter = Router();
 
 tenantRouter.post("/customer", verifyMiddleware, createCustomer);
 tenantRouter.get("/customers", verifyMiddleware, getCustomers);
-tenantRouter.post("/customer/:id/delete", verifyMiddleware, deleteCustomer);
+tenantRouter.delete("/customer/:id/delete", verifyMiddleware, deleteCustomer);
 
 export default tenantRouter;
