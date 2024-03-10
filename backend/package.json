@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx tsc",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/app.js\"",
-    "start": "npm run build:frontend && node dist/app.js",
+    "start": "node dist/app.js",
     "build:frontend": "cd ../frontend && npm install && npm run build",
     "start:frontend": "cd ../frontend && npm run start",
     "migration:generate": "sequelize-cli migration:generate --name",
