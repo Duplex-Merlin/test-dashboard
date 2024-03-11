@@ -1,5 +1,5 @@
 import React from "react";
-import { TailwindIcon } from "../../components/icons";
+import { LogoIcon, TailwindIcon } from "../../components/icons";
 import { Button, Input } from "@material-tailwind/react";
 import { useMutation } from "@tanstack/react-query";
 import { findHosName } from "../../core/api/api";
@@ -60,7 +60,7 @@ export default function StartPage() {
           href="/"
           className="flex absolute right-4 top-0 font-normal text-primary-35 hover:text-primary-35"
         >
-          <TailwindIcon className="w-36 h-36 mr-2" />
+          <LogoIcon className="w-20 h-20 mr-2 text-blue-700" />
         </a>
         <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-sm lg:w-96">
@@ -82,7 +82,7 @@ export default function StartPage() {
                         type="text"
                         required={true}
                         disabled={isPending}
-                        className="block w-full min-w-0 flex-1 px-3 rounded-none rounded-l-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-500 focus:outline-none sm:text-sm sm:leading-6"
+                        className="block w-full min-w-0 flex-1 px-3 rounded-none rounded-l-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black focus:outline-none sm:text-sm sm:leading-6"
                         placeholder="companyname"
                         onChange={(e) => setHostName(e.target.value)}
                       />
@@ -103,7 +103,7 @@ export default function StartPage() {
                       variant="gradient"
                       disabled={isPending}
                       fullWidth
-                      color="purple"
+                      color="black"
                       type="submit"
                       placeholder={""}
                       size="md"

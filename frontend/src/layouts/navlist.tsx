@@ -85,7 +85,7 @@ export function NavbarSimple() {
                   <button
                     onClick={item.action}
                     className={classNames(
-                      { "bg-purple-600 text-white": item.id === lang },
+                      { "bg-black text-white": item.id === lang },
                       "p-2 flex flex-row items-center border border-gray-300 text-sm font-medium text-gray-700 focus:outline-none"
                     )}
                   >

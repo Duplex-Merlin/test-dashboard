@@ -40,3 +40,4 @@
 {"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T16:05:44.412Z"}
 {"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T16:06:25.304Z"}
 {"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-06T16:22:03.817Z"}
+{"level":"error","message":"Uncaught Exception: Cannot set headers after they are sent to the client","timestamp":"2024-03-10T14:45:46.635Z"}

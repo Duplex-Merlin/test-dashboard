@@ -20,7 +20,7 @@ import {
   CircleStackIcon,
   AdjustmentsHorizontalIcon,
 } from "@heroicons/react/24/solid";
-import { TailwindIcon } from "../components/icons";
+import { LogoIcon, TailwindIcon } from "../components/icons";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import classNames from "classnames";
 import { useAuthContext } from "../core/context/auth-context";
@@ -39,7 +39,7 @@ export function Sidebar() {
       {
         href: "/dashboard",
         name: t("sidebar.dashboard"),
-        icon: <PresentationChartBarIcon color="purple" className="h-5 w-5" />,
+        icon: <PresentationChartBarIcon color="black" className="h-5 w-5" />,
         children: [],
       },
     ],
@@ -54,7 +54,7 @@ export function Sidebar() {
       {
         href: "#",
         name: t("sidebar.news"),
-        icon: <GlobeEuropeAfricaIcon color="purple" className="h-5 w-5" />,
+        icon: <GlobeEuropeAfricaIcon color="black" className="h-5 w-5" />,
         children: [
           {
             href: "/dashboard/new-articles",
@@ -69,7 +69,7 @@ export function Sidebar() {
       {
         href: "/dashboard/users",
         name: t("sidebar.users"),
-        icon: <UserGroupIcon color="purple" className="h-5 w-5" />,
+        icon: <UserGroupIcon color="black" className="h-5 w-5" />,
         children: [],
       },
     ],
@@ -83,7 +83,7 @@ export function Sidebar() {
       {
         href: "/dashboard/logs",
         name: t("sidebar.logs"),
-        icon: <CircleStackIcon color="purple" className="h-5 w-5" />,
+        icon: <CircleStackIcon color="black" className="h-5 w-5" />,
         children: [],
       },
     ],
@@ -97,8 +97,8 @@ export function Sidebar() {
       <div className="mb-2 p-4">
         <a href="/dashboard">
           {/* <TailwindIcon className="text-blue-700 mr-4 cursor-pointer" /> */}
-          <h2 className="text-4xl font-semibold text-purple-700 text-center">
-            Merlin-3D
+          <h2 className="flex justify-center text-4xl font-semibold text-black text-center">
+            <LogoIcon className="text-sm w-24 text-blue-700" />
           </h2>
         </a>
       </div>
@@ -208,7 +208,7 @@ export function Sidebar() {
         <hr className="my-2 border-blue-gray-50" />
         <ListItem placeholder={""} onClick={() => signOut()}>
           <ListItemPrefix placeholder={""}>
-            <PowerIcon color="purple" className="h-5 w-5" />
+            <PowerIcon color="black" className="h-5 w-5" />
           </ListItemPrefix>
           {t("actions.logout")}
         </ListItem>

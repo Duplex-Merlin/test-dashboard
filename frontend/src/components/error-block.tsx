@@ -22,7 +22,7 @@ export default function ErrorBlock({ message, reload }: ErrorBlockProps) {
             {message}
           </p>
           <ArrowPathIcon
-            className="h-6 w-6 hover:text-purple-500 cursor-pointer"
+            className="h-6 w-6 hover:text-black cursor-pointer"
             onClick={reload}
           />
         </div>

@@ -15,7 +15,7 @@ import Cookies from "js-cookie";
 
 import { AlertNotification, SpinnerLoader } from "../../components";
 import { AlertType } from "../../components/alert-notification";
-import { TailwindIcon } from "../../components/icons";
+import { LogoIcon, TailwindIcon } from "../../components/icons";
 import { LoginRequest } from "../../core/entities";
 import { loginUser } from "../../core/api/api";
 import { BEARER_TOKEN, LANG, USER_TOKEN } from "../../core/entities/contant";
@@ -111,7 +111,7 @@ export default function AuthPage() {
           signOut();
           navigate("/");
         }}
-        className="z-50 border border-purple-400 p-2 rounded-md hover:bg-purple-400 flex absolute left-10 top-10 group"
+        className="z-50 border border-black p-2 rounded-md hover:bg-gray-700 flex absolute left-10 top-10 group"
       >
         <ArrowLeftIcon className="w-10 h-10 group-hover:text-white cursor-pointer" />
       </div>
@@ -142,7 +142,7 @@ export default function AuthPage() {
                 placeholder={""}
                 shadow={false}
               >
-                <LockClosedIcon className="h-28 w-28 text-purple-600" />
+                <LockClosedIcon className="h-28 w-28 text-black" />
                 <span className="text-primary-600 text-3xl font-semibold">
                   {t("auth.title")}
                 </span>
@@ -158,7 +158,7 @@ export default function AuthPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   type="email"
                   label={t("auth.email")}
-                  color="purple"
+                  color="black"
                   size="lg"
                   className="bg-white"
                 />
@@ -170,7 +170,7 @@ export default function AuthPage() {
                   type="password"
                   label={t("auth.password")}
                   required={true}
-                  color="purple"
+                  color="black"
                   disabled={isPending}
                   onChange={(e) => setPassword(e.target.value)}
                   size="lg"
@@ -182,7 +182,7 @@ export default function AuthPage() {
                   variant="gradient"
                   disabled={isPending}
                   fullWidth
-                  color="purple"
+                  color="black"
                   type="submit"
                   placeholder={""}
                 >
@@ -202,10 +202,10 @@ export default function AuthPage() {
                       placeholder={""}
                       className={classNames(
                         {
-                          "text-purple-700 underline underline-offset-4":
+                          "text-black underline underline-offset-4":
                             lang === item.id,
                         },
-                        "cursor-pointer hover:text-purple-600"
+                        "cursor-pointer hover:text-gray-700"
                       )}
                       onClick={item.action}
                     >
@@ -216,7 +216,7 @@ export default function AuthPage() {
               </div>
               {/* <h1>{t("Welcome to React")}</h1> */}
               <div className="flex flex-col justify-center items-center gap-y-1">
-                <TailwindIcon className="text-sm w-24 text-blue-700" />
+                <LogoIcon className="text-sm w-24 h-4 text-blue-700" />
                 <span className="text-xs">Copyright© 2024 Merlin-3D.</span>
               </div>
             </Card>

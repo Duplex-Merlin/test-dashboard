@@ -14,13 +14,24 @@ export function DialogWithImage({
   handleOpen,
 }: DialogWithImageProps) {
   return (
-    <Dialog size="xl" className="relative" open={open} handler={handleOpen} placeholder={''}>
+    <Dialog
+      size="xl"
+      className="relative"
+      open={open}
+      handler={handleOpen}
+      placeholder={""}
+    >
       <div className="flex items-center gap-2 bg-gray-500 rounded-lg absolute right-0 z-50">
-        <IconButton variant="text" size="sm" onClick={handleOpen} placeholder={''}>
+        <IconButton
+          variant="text"
+          size="sm"
+          onClick={handleOpen}
+          placeholder={""}
+        >
           <XMarkIcon color="purple" className="h-6" />
         </IconButton>
       </div>
-      <DialogBody placeholder={''}>
+      <DialogBody placeholder={""}>
         <img
           width={760}
           height={768}

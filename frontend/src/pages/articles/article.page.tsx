@@ -148,7 +148,7 @@ export default function ArticlePage() {
                   className="flex items-center gap-3 uppercase"
                   size="sm"
                   placeholder=""
-                  color="purple"
+                  color="black"
                   onClick={() => navigate("/dashboard/new-articles")}
                 >
                   <NewspaperIcon strokeWidth={2} className="h-4 w-4" />{" "}

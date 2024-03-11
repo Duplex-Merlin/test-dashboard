@@ -167,7 +167,7 @@ export default function UserPage() {
                     onClick={() => setOpenSignUp(true)}
                     className="flex items-center gap-3 uppercase"
                     size="sm"
-                    color="purple"
+                    color="black"
                     placeholder={""}
                   >
                     <UserPlusIcon strokeWidth={2} className="h-4 w-4" />{" "}
@@ -291,7 +291,7 @@ export default function UserPage() {
                                   >
                                     <LockClosedIcon
                                       className="h-4 w-4"
-                                      color="purple"
+                                      color="black"
                                     />
                                   </IconButton>
                                 </Tooltip>
