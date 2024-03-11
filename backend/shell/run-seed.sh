@@ -2,7 +2,7 @@
 
 # Tableau contenant les noms de schémas
 # schemas=("merlin-3d" "test")
-schemas=("2ad564a716fd62d28cfd78867cf774a7")
+schemas=("0af1338433e78be00cc497ecd36cc1bd")
 # Boucle sur le tableau et exécute la migration pour chaque schéma
 for schema in "${schemas[@]}"
 do
